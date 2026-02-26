@@ -2,11 +2,54 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import { AppLayout } from "@/components/AppLayout";
+import { useProcessos } from "@/hooks/useProcessos";
+import { DashboardStats } from "@/components/DashboardStats";
+import { ProcessList } from "@/components/ProcessList";
+import { ProcessForm } from "@/components/ProcessForm";
+import { ProcessDetail } from "@/components/ProcessDetail";
+import { ClientRanking } from "@/components/ClientRanking";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
+function AppContent() {
+  const { processos, addProcesso, updateProcesso, deleteProcesso } = useProcessos();
+
+  return (
+    <AppLayout>
+      <Routes>
+        <Route path="/" element={<DashboardStats processos={processos} />} />
+        <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} />} />
+        <Route path="/processos/novo" element={
+          <ProcessForm mode="create" onSubmit={addProcesso} />
+        } />
+        <Route path="/processos/:id" element={
+          <ProcessDetail processos={processos} onDelete={deleteProcesso} />
+        } />
+        <Route path="/processos/:id/editar" element={
+          <EditProcessPage processos={processos} onUpdate={updateProcesso} />
+        } />
+        <Route path="/clientes" element={<ClientRanking processos={processos} />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AppLayout>
+  );
+}
+
+function EditProcessPage({ processos, onUpdate }: { processos: any[]; onUpdate: (id: string, data: any) => void }) {
+  const { id } = useParams();
+  const processo = processos.find((p: any) => p.id === id);
+  if (!processo) return <div className="text-center py-20 text-muted-foreground">Processo não encontrado</div>;
+  return (
+    <ProcessForm
+      mode="edit"
+      initialData={processo}
+      onSubmit={(data) => onUpdate(processo.id, data)}
+    />
+  );
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -14,11 +57,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppContent />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
