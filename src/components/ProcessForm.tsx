@@ -90,7 +90,7 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">Estado *</Label>
-            <Select value={form.estado} onValueChange={v => update('estado', v)}>
+            <Select value={form.estado || undefined} onValueChange={v => update('estado', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
                 {ESTADOS_BRASIL.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}
@@ -99,7 +99,7 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">Esfera *</Label>
-            <Select value={form.esfera} onValueChange={v => update('esfera', v)}>
+            <Select value={form.esfera || undefined} onValueChange={v => update('esfera', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
                 {ESFERAS.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}
@@ -108,7 +108,7 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">Categoria *</Label>
-            <Select value={form.categoria} onValueChange={v => update('categoria', v)}>
+            <Select value={form.categoria || undefined} onValueChange={v => update('categoria', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
                 {CATEGORIAS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
@@ -133,7 +133,7 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">Cliente do escritório *</Label>
-            <Select value={form.clienteEscritorio} onValueChange={v => update('clienteEscritorio', v)}>
+            <Select value={form.clienteEscritorio || undefined} onValueChange={v => update('clienteEscritorio', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Quem é o cliente?" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="Autor">Autor</SelectItem>
@@ -155,7 +155,7 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">Sistema de Acesso</Label>
-            <Select value={form.sistemaAcesso} onValueChange={v => update('sistemaAcesso', v)}>
+            <Select value={form.sistemaAcesso || undefined} onValueChange={v => update('sistemaAcesso', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
                 {SISTEMAS_ACESSO.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
