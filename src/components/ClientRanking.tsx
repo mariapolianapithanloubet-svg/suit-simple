@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { Processo, getClienteName } from '@/types/process';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, TrendingUp } from 'lucide-react';
+import { Users } from 'lucide-react';
 
 interface ClientRankingProps {
   processos: Processo[];
@@ -23,43 +23,48 @@ export function ClientRanking({ processos }: ClientRankingProps) {
       .sort((a, b) => b.total - a.total);
   }, [processos]);
 
+  const maxTotal = ranking.length > 0 ? ranking[0].total : 1;
+
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-display font-bold text-foreground">Ranking de Clientes</h2>
-        <p className="text-sm text-muted-foreground">Clientes ordenados por volume de demandas</p>
+        <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">Ranking de Clientes</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">Clientes ordenados por volume de demandas</p>
       </div>
 
       {ranking.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <Users className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
-            <p className="text-muted-foreground">Nenhum processo cadastrado</p>
+        <Card className="shadow-card border-border/60">
+          <CardContent className="py-16 text-center">
+            <Users className="h-10 w-10 mx-auto text-muted-foreground/20 mb-3" />
+            <p className="text-sm text-muted-foreground">Nenhum processo cadastrado</p>
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {ranking.map((cliente, i) => (
-            <Card key={cliente.nome} className="hover:shadow-md transition-shadow">
-              <CardContent className="py-4 px-5">
+            <Card key={cliente.nome} className="shadow-card hover:shadow-card-hover transition-shadow duration-200 border-border/50">
+              <CardContent className="py-3.5 px-5">
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center h-9 w-9 rounded-full bg-primary/10 text-primary font-display font-bold text-sm">
+                  <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary/8 text-primary font-display font-bold text-xs">
                     {i + 1}º
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-foreground truncate">{cliente.nome}</h4>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="secondary" className="text-[10px]">
-                        {cliente.relevantes} relevante{cliente.relevantes !== 1 ? 's' : ''}
+                    <h4 className="text-sm font-semibold text-foreground truncate">{cliente.nome}</h4>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <div className="flex-1 h-1 rounded-full bg-muted max-w-[120px]">
+                        <div className="h-1 rounded-full bg-primary/60 transition-all duration-500" style={{ width: `${(cliente.total / maxTotal) * 100}%` }} />
+                      </div>
+                      <Badge variant="secondary" className="text-[10px] font-medium">
+                        {cliente.relevantes} rel.
                       </Badge>
-                      <Badge variant="outline" className="text-[10px]">
+                      <Badge variant="outline" className="text-[10px] font-medium">
                         {cliente.acompanhamento} acomp.
                       </Badge>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-foreground">{cliente.total}</p>
-                    <p className="text-[10px] text-muted-foreground uppercase">processos</p>
+                    <p className="text-xl font-bold text-foreground tabular-nums leading-none">{cliente.total}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">processos</p>
                   </div>
                 </div>
               </CardContent>

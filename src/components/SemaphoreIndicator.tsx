@@ -19,16 +19,16 @@ export function SemaphoreIndicator({ date, size = 'sm' }: SemaphoreIndicatorProp
     <div className="flex items-center gap-1.5">
       <span
         className={cn(
-          'inline-block rounded-full',
-          size === 'sm' ? 'h-2.5 w-2.5' : 'h-3.5 w-3.5',
-          status === 'green' && 'bg-semaphore-green',
-          status === 'yellow' && 'bg-semaphore-yellow animate-pulse-soft',
-          status === 'red' && 'bg-semaphore-red animate-pulse-soft',
+          'inline-block rounded-full ring-2',
+          size === 'sm' ? 'h-2 w-2' : 'h-2.5 w-2.5',
+          status === 'green' && 'bg-semaphore-green ring-semaphore-green/20',
+          status === 'yellow' && 'bg-semaphore-yellow ring-semaphore-yellow/20 animate-pulse-soft',
+          status === 'red' && 'bg-semaphore-red ring-semaphore-red/20 animate-pulse-soft',
         )}
       />
       {size === 'md' && (
         <span className={cn(
-          'text-xs font-medium',
+          'text-[11px] font-medium',
           status === 'green' && 'text-semaphore-green',
           status === 'yellow' && 'text-semaphore-yellow',
           status === 'red' && 'text-semaphore-red',
