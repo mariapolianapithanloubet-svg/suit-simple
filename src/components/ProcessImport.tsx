@@ -119,7 +119,7 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
         tipoAcao: r.classe || '',
         estado: '',
         esfera: 'Estadual' as const,
-        categoria: 'Relevante' as const,
+        categoria: 'Mero Acompanhamento' as const,
         autor: r.cliente,
         reu: r.parteContraria,
         clienteEscritorio: 'Autor' as const,
@@ -128,7 +128,7 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
         telefoneSecretaria: '',
         telefoneAssessoria: '',
         senhaAcesso: '',
-        status: '',
+        status: 'Sem movimentação',
         ultimaMovimentacao: '',
         dataUltimoAcompanhamento: '',
       }));
