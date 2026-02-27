@@ -6,6 +6,7 @@ export interface Documento {
   id: string;
   nome: string;
   tipo: 'Petição' | 'Decisão' | 'Sentença' | 'Acórdão' | 'Cálculo' | 'Documento Estratégico' | 'Outro';
+  pasta: string;
   observacao?: string;
   dataUpload: string;
   arquivoUrl?: string;
@@ -26,6 +27,7 @@ export interface Processo {
   varaCamaraTurma: string;
   sistemaAcesso: string;
   telefoneSecretaria: string;
+  telefoneAssessoria: string;
   senhaAcesso: string;
   status: string;
   ultimaMovimentacao: string;
@@ -50,6 +52,10 @@ export const SISTEMAS_ACESSO = ['PJe', 'e-SAJ', 'Projudi', 'SEI', 'e-Proc', 'Out
 
 export const TIPOS_DOCUMENTO: Documento['tipo'][] = [
   'Petição', 'Decisão', 'Sentença', 'Acórdão', 'Cálculo', 'Documento Estratégico', 'Outro'
+];
+
+export const PASTAS_DOCUMENTO = [
+  'Petição Inicial', 'Contestação', 'Réplica', 'Decisões', 'Sentenças', 'Acórdãos', 'Cálculos', 'Outros'
 ];
 
 export function getSemaphoreStatus(dataUltimoAcompanhamento: string): SemaphoreStatus {

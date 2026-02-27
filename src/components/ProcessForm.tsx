@@ -31,6 +31,7 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
     varaCamaraTurma: initialData?.varaCamaraTurma || '',
     sistemaAcesso: initialData?.sistemaAcesso || '',
     telefoneSecretaria: initialData?.telefoneSecretaria || '',
+    telefoneAssessoria: initialData?.telefoneAssessoria || '',
     senhaAcesso: initialData?.senhaAcesso || '',
     status: initialData?.status || '',
     ultimaMovimentacao: initialData?.ultimaMovimentacao || '',
@@ -60,13 +61,13 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl">
+    <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">
             {mode === 'create' ? 'Novo Processo' : 'Editar Processo'}
           </h2>
-          <p className="text-sm text-muted-foreground">Preencha os dados do processo</p>
+          <p className="text-sm text-muted-foreground mt-1">Preencha os dados do processo</p>
         </div>
         <Button variant="ghost" type="button" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-4 w-4 mr-1.5" />
@@ -75,40 +76,40 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
       </div>
 
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-display tracking-tight">Identificação</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight">Identificação</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="space-y-1.5">
-            <Label className="text-xs">Número do Processo *</Label>
-            <Input value={form.numero} onChange={e => update('numero', e.target.value)} placeholder="0000000-00.0000.0.00.0000" className="h-9 text-sm" />
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Número do Processo *</Label>
+            <Input value={form.numero} onChange={e => update('numero', e.target.value)} placeholder="0000000-00.0000.0.00.0000" className="h-10" />
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Tipo de Ação</Label>
-            <Input value={form.tipoAcao} onChange={e => update('tipoAcao', e.target.value)} placeholder="Ex: Indenizatória" className="h-9 text-sm" />
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Tipo de Ação</Label>
+            <Input value={form.tipoAcao} onChange={e => update('tipoAcao', e.target.value)} placeholder="Ex: Indenizatória" className="h-10" />
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Estado *</Label>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Estado *</Label>
             <Select value={form.estado} onValueChange={v => update('estado', v)}>
-              <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
                 {ESTADOS_BRASIL.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Esfera *</Label>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Esfera *</Label>
             <Select value={form.esfera} onValueChange={v => update('esfera', v)}>
-              <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
                 {ESFERAS.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Categoria *</Label>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Categoria *</Label>
             <Select value={form.categoria} onValueChange={v => update('categoria', v)}>
-              <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
                 {CATEGORIAS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
@@ -118,22 +119,22 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
       </Card>
 
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-display tracking-tight">Partes</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight">Partes</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="space-y-1.5">
-            <Label className="text-xs">Autor *</Label>
-            <Input value={form.autor} onChange={e => update('autor', e.target.value)} className="h-9 text-sm" />
+        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Autor *</Label>
+            <Input value={form.autor} onChange={e => update('autor', e.target.value)} className="h-10" />
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Réu *</Label>
-            <Input value={form.reu} onChange={e => update('reu', e.target.value)} className="h-9 text-sm" />
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Réu *</Label>
+            <Input value={form.reu} onChange={e => update('reu', e.target.value)} className="h-10" />
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Cliente do escritório *</Label>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Cliente do escritório *</Label>
             <Select value={form.clienteEscritorio} onValueChange={v => update('clienteEscritorio', v)}>
-              <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Quem é o cliente?" /></SelectTrigger>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Quem é o cliente?" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="Autor">Autor</SelectItem>
                 <SelectItem value="Réu">Réu</SelectItem>
@@ -144,69 +145,73 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
       </Card>
 
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-display tracking-tight">Tramitação</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight">Tramitação</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="space-y-1.5">
-            <Label className="text-xs">Vara / Câmara / Turma</Label>
-            <Input value={form.varaCamaraTurma} onChange={e => update('varaCamaraTurma', e.target.value)} className="h-9 text-sm" />
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Vara / Câmara / Turma</Label>
+            <Input value={form.varaCamaraTurma} onChange={e => update('varaCamaraTurma', e.target.value)} className="h-10" />
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Sistema de Acesso</Label>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Sistema de Acesso</Label>
             <Select value={form.sistemaAcesso} onValueChange={v => update('sistemaAcesso', v)}>
-              <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
                 {SISTEMAS_ACESSO.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Telefone Secretaria</Label>
-            <Input value={form.telefoneSecretaria} onChange={e => update('telefoneSecretaria', e.target.value)} placeholder="(00) 0000-0000" className="h-9 text-sm" />
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Telefone da Secretaria</Label>
+            <Input value={form.telefoneSecretaria} onChange={e => update('telefoneSecretaria', e.target.value)} placeholder="(00) 0000-0000" className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Telefone da Assessoria</Label>
+            <Input value={form.telefoneAssessoria} onChange={e => update('telefoneAssessoria', e.target.value)} placeholder="(00) 0000-0000" className="h-10" />
           </div>
         </CardContent>
       </Card>
 
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-display tracking-tight">Controle Interno</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight">Controle Interno</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <Label className="text-xs">Senha de Acesso</Label>
-            <Input type="password" value={form.senhaAcesso} onChange={e => update('senhaAcesso', e.target.value)} className="h-9 text-sm" />
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Senha de Acesso</Label>
+            <Input type="password" value={form.senhaAcesso} onChange={e => update('senhaAcesso', e.target.value)} className="h-10" />
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Data do último acompanhamento</Label>
-            <Input type="date" value={form.dataUltimoAcompanhamento} onChange={e => update('dataUltimoAcompanhamento', e.target.value)} className="h-9 text-sm" />
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Data do último acompanhamento</Label>
+            <Input type="date" value={form.dataUltimoAcompanhamento} onChange={e => update('dataUltimoAcompanhamento', e.target.value)} className="h-10" />
           </div>
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label className="text-xs">Status / Última Movimentação</Label>
-            <Textarea value={form.status} onChange={e => update('status', e.target.value)} placeholder="Descreva a última movimentação relevante..." rows={3} className="text-sm" />
+          <div className="space-y-2 sm:col-span-2">
+            <Label className="text-sm font-medium">Status / Última Movimentação</Label>
+            <Textarea value={form.status} onChange={e => update('status', e.target.value)} placeholder="Descreva a última movimentação relevante..." rows={3} />
           </div>
         </CardContent>
       </Card>
 
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-display tracking-tight">Execução (quando aplicável)</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight">Execução (quando aplicável)</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <Label className="text-xs">Valor em Execução (R$)</Label>
-            <Input type="number" step="0.01" value={form.valorExecucao || ''} onChange={e => update('valorExecucao', e.target.value ? parseFloat(e.target.value) : undefined)} className="h-9 text-sm" />
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Valor em Execução (R$)</Label>
+            <Input type="number" step="0.01" value={form.valorExecucao || ''} onChange={e => update('valorExecucao', e.target.value ? parseFloat(e.target.value) : undefined)} className="h-10" />
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Data-base do Cálculo</Label>
-            <Input type="date" value={form.dataBaseCalculo} onChange={e => update('dataBaseCalculo', e.target.value)} className="h-9 text-sm" />
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Data-base do Cálculo</Label>
+            <Input type="date" value={form.dataBaseCalculo} onChange={e => update('dataBaseCalculo', e.target.value)} className="h-10" />
           </div>
         </CardContent>
       </Card>
 
       <div className="flex justify-end">
-        <Button type="submit" size="sm" disabled={saving} className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm">
-          <Save className="h-3.5 w-3.5 mr-1.5" />
+        <Button type="submit" disabled={saving} className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-10 px-6">
+          <Save className="h-4 w-4 mr-2" />
           {saving ? 'Salvando...' : mode === 'create' ? 'Cadastrar Processo' : 'Salvar Alterações'}
         </Button>
       </div>

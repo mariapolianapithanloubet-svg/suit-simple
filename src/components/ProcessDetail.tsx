@@ -1,19 +1,20 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Processo, getClienteName, TIPOS_DOCUMENTO } from '@/types/process';
+import { Processo, getClienteName, TIPOS_DOCUMENTO, PASTAS_DOCUMENTO } from '@/types/process';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { SemaphoreIndicator } from '@/components/SemaphoreIndicator';
-import { ArrowLeft, Pencil, Trash2, FileUp, Eye, EyeOff, Download, X } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ArrowLeft, Pencil, Trash2, FileUp, Eye, EyeOff, Download, X, FolderOpen, ChevronDown } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { toast } from 'sonner';
 
 interface ProcessDetailProps {
   processos: Processo[];
   onDelete: (id: string) => void;
-  onUploadDocumento?: (processoId: string, file: File, tipo: string, observacao?: string) => Promise<any>;
+  onUploadDocumento?: (processoId: string, file: File, tipo: string, pasta: string, observacao?: string) => Promise<any>;
   onDeleteDocumento?: (docId: string, filePath?: string) => Promise<void>;
 }
 
@@ -23,6 +24,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
   const [showPassword, setShowPassword] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [docTipo, setDocTipo] = useState<string>('Petição');
+  const [docPasta, setDocPasta] = useState<string>('Petição Inicial');
   const [docObs, setDocObs] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -31,7 +33,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
   if (!processo) {
     return (
       <div className="text-center py-20">
-        <p className="text-muted-foreground text-sm">Processo não encontrado</p>
+        <p className="text-muted-foreground text-base">Processo não encontrado</p>
         <Button variant="ghost" size="sm" className="mt-4" onClick={() => navigate('/processos')}>
           <ArrowLeft className="h-4 w-4 mr-1.5" />
           Voltar
@@ -52,7 +54,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
     if (!files?.length || !onUploadDocumento) return;
     setUploading(true);
     for (const file of Array.from(files)) {
-      await onUploadDocumento(processo.id, file, docTipo, docObs);
+      await onUploadDocumento(processo.id, file, docTipo, docPasta, docObs);
     }
     setUploading(false);
     setDocObs('');
@@ -60,8 +62,17 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
     toast.success('Documento(s) enviado(s)!');
   };
 
+  // Group documents by pasta
+  const docsByPasta: Record<string, typeof processo.documentos> = {};
+  PASTAS_DOCUMENTO.forEach(p => { docsByPasta[p] = []; });
+  processo.documentos.forEach(doc => {
+    const pasta = doc.pasta || 'Outros';
+    if (!docsByPasta[pasta]) docsByPasta[pasta] = [];
+    docsByPasta[pasta].push(doc);
+  });
+
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-8 max-w-4xl">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={() => navigate('/processos')}>
@@ -70,36 +81,36 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
           </Button>
           <div>
             <div className="flex items-center gap-3">
-              <h2 className="text-xl font-display font-bold text-foreground tracking-tight">{processo.numero}</h2>
+              <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">{processo.numero}</h2>
               <SemaphoreIndicator date={processo.dataUltimoAcompanhamento} size="md" />
             </div>
-            <p className="text-xs text-muted-foreground">{processo.tipoAcao}</p>
+            <p className="text-sm text-muted-foreground">{processo.tipoAcao}</p>
           </div>
         </div>
         <div className="flex gap-2">
           <Link to={`/processos/${processo.id}/editar`}>
-            <Button variant="outline" size="sm" className="text-xs">
-              <Pencil className="h-3 w-3 mr-1.5" />
+            <Button variant="outline" size="sm">
+              <Pencil className="h-3.5 w-3.5 mr-1.5" />
               Editar
             </Button>
           </Link>
-          <Button variant="outline" size="sm" className="text-xs text-destructive hover:text-destructive" onClick={handleDelete}>
-            <Trash2 className="h-3 w-3 mr-1.5" />
+          <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={handleDelete}>
+            <Trash2 className="h-3.5 w-3.5 mr-1.5" />
             Excluir
           </Button>
         </div>
       </div>
 
       <div className="flex gap-2 flex-wrap">
-        <Badge variant="secondary" className="text-xs">{processo.categoria}</Badge>
-        <Badge variant="outline" className="text-xs">{processo.esfera}</Badge>
-        <Badge variant="outline" className="text-xs">{processo.estado}</Badge>
+        <Badge variant="secondary">{processo.categoria}</Badge>
+        <Badge variant="outline">{processo.esfera}</Badge>
+        <Badge variant="outline">{processo.estado}</Badge>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-3"><CardTitle className="text-sm font-display tracking-tight">Partes</CardTitle></CardHeader>
-          <CardContent className="space-y-3 text-sm">
+          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">Partes</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
             <Field label="Autor" value={processo.autor} />
             <Field label="Réu" value={processo.reu} />
             <Field label="Cliente do Escritório" value={`${getClienteName(processo)} (${processo.clienteEscritorio})`} />
@@ -107,24 +118,25 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
         </Card>
 
         <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-3"><CardTitle className="text-sm font-display tracking-tight">Tramitação</CardTitle></CardHeader>
-          <CardContent className="space-y-3 text-sm">
+          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">Tramitação</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
             <Field label="Vara / Câmara / Turma" value={processo.varaCamaraTurma} />
             <Field label="Sistema de Acesso" value={processo.sistemaAcesso} />
-            <Field label="Telefone Secretaria" value={processo.telefoneSecretaria} />
+            <Field label="Telefone da Secretaria" value={processo.telefoneSecretaria} />
+            <Field label="Telefone da Assessoria" value={processo.telefoneAssessoria} />
           </CardContent>
         </Card>
 
         <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-3"><CardTitle className="text-sm font-display tracking-tight">Controle Interno</CardTitle></CardHeader>
-          <CardContent className="space-y-3 text-sm">
+          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">Controle Interno</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-muted-foreground text-[11px]">Senha de Acesso</p>
-                <p className="font-medium">{showPassword ? (processo.senhaAcesso || '—') : '••••••••'}</p>
+                <p className="text-xs text-muted-foreground font-medium">Senha de Acesso</p>
+                <p className="font-medium text-base mt-0.5">{showPassword ? (processo.senhaAcesso || '—') : '••••••••'}</p>
               </div>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
             </div>
             <Field label="Status" value={processo.status} />
@@ -133,71 +145,93 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
         </Card>
 
         <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-3"><CardTitle className="text-sm font-display tracking-tight">Execução</CardTitle></CardHeader>
-          <CardContent className="space-y-3 text-sm">
+          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">Execução</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
             <Field label="Valor em Execução" value={processo.valorExecucao ? `R$ ${processo.valorExecucao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '—'} />
             <Field label="Data-base do Cálculo" value={processo.dataBaseCalculo ? new Date(processo.dataBaseCalculo).toLocaleDateString('pt-BR') : '—'} />
           </CardContent>
         </Card>
       </div>
 
-      {/* Documentos */}
+      {/* Documentos - Folder-based */}
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-display tracking-tight">Documentos</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight">Documentos</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5">
           {/* Upload area */}
           {onUploadDocumento && (
-            <div className="flex flex-col sm:flex-row gap-3 p-4 rounded-xl bg-muted/50 border border-border/40">
-              <div className="flex-1 space-y-2">
-                <input ref={fileRef} type="file" multiple className="text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 file:cursor-pointer" />
-                <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 p-5 rounded-xl bg-muted/50 border border-border/40">
+              <div className="flex-1 space-y-3">
+                <input ref={fileRef} type="file" multiple className="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 file:cursor-pointer" />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <Select value={docPasta} onValueChange={setDocPasta}>
+                    <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Pasta" /></SelectTrigger>
+                    <SelectContent>
+                      {PASTAS_DOCUMENTO.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                   <Select value={docTipo} onValueChange={setDocTipo}>
-                    <SelectTrigger className="h-8 text-xs w-44"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-9 text-sm"><SelectValue placeholder="Tipo" /></SelectTrigger>
                     <SelectContent>
                       {TIPOS_DOCUMENTO.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                     </SelectContent>
                   </Select>
-                  <Input value={docObs} onChange={e => setDocObs(e.target.value)} placeholder="Observação (opcional)" className="h-8 text-xs" />
+                  <Input value={docObs} onChange={e => setDocObs(e.target.value)} placeholder="Observação (opcional)" className="h-9 text-sm" />
                 </div>
               </div>
-              <Button type="button" size="sm" disabled={uploading} onClick={handleUpload} className="self-end">
-                <FileUp className="h-3.5 w-3.5 mr-1.5" />
+              <Button type="button" size="sm" disabled={uploading} onClick={handleUpload} className="self-end h-9">
+                <FileUp className="h-4 w-4 mr-1.5" />
                 {uploading ? 'Enviando...' : 'Enviar'}
               </Button>
             </div>
           )}
 
-          {/* Document list */}
+          {/* Folder-based document list */}
           {processo.documentos.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-6">Nenhum documento anexado</p>
+            <p className="text-sm text-muted-foreground text-center py-8">Nenhum documento anexado</p>
           ) : (
-            <div className="space-y-1.5">
-              {processo.documentos.map(doc => (
-                <div key={doc.id} className="flex items-center gap-3 p-2.5 rounded-lg bg-muted/30 border border-border/30">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-foreground truncate">{doc.nome}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <Badge variant="outline" className="text-[9px]">{doc.tipo}</Badge>
-                      <span className="text-[10px] text-muted-foreground">{new Date(doc.dataUpload).toLocaleDateString('pt-BR')}</span>
-                      {doc.observacao && <span className="text-[10px] text-muted-foreground truncate">· {doc.observacao}</span>}
-                    </div>
-                  </div>
-                  <div className="flex gap-1">
-                    {doc.arquivoUrl && (
-                      <a href={doc.arquivoUrl} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="h-7 w-7"><Download className="h-3 w-3" /></Button>
-                      </a>
-                    )}
-                    {onDeleteDocumento && (
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => onDeleteDocumento(doc.id, doc.arquivoPath)}>
-                        <X className="h-3 w-3" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
+            <div className="space-y-2">
+              {PASTAS_DOCUMENTO.map(pasta => {
+                const docs = docsByPasta[pasta];
+                if (!docs || docs.length === 0) return null;
+                return (
+                  <Collapsible key={pasta} defaultOpen>
+                    <CollapsibleTrigger className="flex items-center gap-2 w-full p-3 rounded-lg hover:bg-muted/50 transition-colors text-left">
+                      <FolderOpen className="h-4 w-4 text-primary/60" />
+                      <span className="text-sm font-semibold text-foreground flex-1">{pasta}</span>
+                      <span className="text-xs text-muted-foreground font-medium">{docs.length}</span>
+                      <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pl-6 space-y-1.5 mt-1">
+                      {docs.map(doc => (
+                        <div key={doc.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 border border-border/20">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-foreground truncate">{doc.nome}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge variant="outline" className="text-xs">{doc.tipo}</Badge>
+                              <span className="text-xs text-muted-foreground">{new Date(doc.dataUpload).toLocaleDateString('pt-BR')}</span>
+                              {doc.observacao && <span className="text-xs text-muted-foreground truncate">· {doc.observacao}</span>}
+                            </div>
+                          </div>
+                          <div className="flex gap-1">
+                            {doc.arquivoUrl && (
+                              <a href={doc.arquivoUrl} target="_blank" rel="noopener noreferrer">
+                                <Button variant="ghost" size="icon" className="h-8 w-8"><Download className="h-3.5 w-3.5" /></Button>
+                              </a>
+                            )}
+                            {onDeleteDocumento && (
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => onDeleteDocumento(doc.id, doc.arquivoPath)}>
+                                <X className="h-3.5 w-3.5" />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
             </div>
           )}
         </CardContent>
@@ -209,8 +243,8 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
 function Field({ label, value }: { label: string; value: string | undefined }) {
   return (
     <div>
-      <p className="text-muted-foreground text-[11px]">{label}</p>
-      <p className="font-medium text-foreground text-sm">{value || '—'}</p>
+      <p className="text-xs text-muted-foreground font-medium">{label}</p>
+      <p className="font-medium text-foreground text-base mt-0.5">{value || '—'}</p>
     </div>
   );
 }

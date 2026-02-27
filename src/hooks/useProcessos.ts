@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Processo, Documento } from '@/types/process';
 
-// Map DB row to app model
 function rowToProcesso(row: any): Processo {
   return {
     id: row.id,
@@ -17,6 +16,7 @@ function rowToProcesso(row: any): Processo {
     varaCamaraTurma: row.vara_camara_turma,
     sistemaAcesso: row.sistema_acesso,
     telefoneSecretaria: row.telefone_secretaria,
+    telefoneAssessoria: row.telefone_assessoria || '',
     senhaAcesso: row.senha_acesso,
     status: row.status,
     ultimaMovimentacao: row.ultima_movimentacao,
@@ -42,7 +42,6 @@ export function useProcessos() {
 
     if (!error && data) {
       const mapped = data.map(rowToProcesso);
-      // Fetch documentos for each
       const { data: docs } = await supabase.from('documentos').select('*');
       if (docs) {
         const docsByProcesso: Record<string, Documento[]> = {};
@@ -52,6 +51,7 @@ export function useProcessos() {
             id: d.id,
             nome: d.nome,
             tipo: d.tipo,
+            pasta: d.pasta || 'Outros',
             observacao: d.observacao || '',
             dataUpload: d.data_upload,
             arquivoUrl: d.arquivo_url,
@@ -84,6 +84,7 @@ export function useProcessos() {
       vara_camara_turma: data.varaCamaraTurma,
       sistema_acesso: data.sistemaAcesso,
       telefone_secretaria: data.telefoneSecretaria,
+      telefone_assessoria: data.telefoneAssessoria || '',
       senha_acesso: data.senhaAcesso,
       status: data.status,
       ultima_movimentacao: data.ultimaMovimentacao,
@@ -112,6 +113,7 @@ export function useProcessos() {
     if (data.varaCamaraTurma !== undefined) updates.vara_camara_turma = data.varaCamaraTurma;
     if (data.sistemaAcesso !== undefined) updates.sistema_acesso = data.sistemaAcesso;
     if (data.telefoneSecretaria !== undefined) updates.telefone_secretaria = data.telefoneSecretaria;
+    if (data.telefoneAssessoria !== undefined) updates.telefone_assessoria = data.telefoneAssessoria;
     if (data.senhaAcesso !== undefined) updates.senha_acesso = data.senhaAcesso;
     if (data.status !== undefined) updates.status = data.status;
     if (data.ultimaMovimentacao !== undefined) updates.ultima_movimentacao = data.ultimaMovimentacao;
@@ -128,7 +130,7 @@ export function useProcessos() {
     await fetchProcessos();
   }, [fetchProcessos]);
 
-  const uploadDocumento = useCallback(async (processoId: string, file: File, tipo: string, observacao?: string) => {
+  const uploadDocumento = useCallback(async (processoId: string, file: File, tipo: string, pasta: string, observacao?: string) => {
     const filePath = `${processoId}/${Date.now()}_${file.name}`;
     const { error: uploadError } = await supabase.storage.from('documentos').upload(filePath, file);
     if (uploadError) return null;
@@ -139,6 +141,7 @@ export function useProcessos() {
       processo_id: processoId,
       nome: file.name,
       tipo,
+      pasta,
       observacao: observacao || '',
       arquivo_url: publicUrl.publicUrl,
       arquivo_path: filePath,

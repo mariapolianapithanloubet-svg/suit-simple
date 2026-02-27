@@ -5,20 +5,38 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { useProcessos } from "@/hooks/useProcessos";
+import { useAuth } from "@/hooks/useAuth";
 import { DashboardStats } from "@/components/DashboardStats";
 import { ProcessList } from "@/components/ProcessList";
 import { ProcessForm } from "@/components/ProcessForm";
 import { ProcessDetail } from "@/components/ProcessDetail";
 import { ClientRanking } from "@/components/ClientRanking";
+import Auth from "@/pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 function AppContent() {
+  const { session, loading: authLoading, signOut } = useAuth();
   const { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento } = useProcessos();
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center space-y-3">
+          <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-sm text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <Auth />;
+  }
+
   return (
-    <AppLayout>
+    <AppLayout onSignOut={signOut} userEmail={session.user?.email}>
       <Routes>
         <Route path="/" element={<DashboardStats processos={processos} />} />
         <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} loading={loading} />} />
