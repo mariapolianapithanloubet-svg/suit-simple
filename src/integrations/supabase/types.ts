@@ -14,7 +14,116 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      documentos: {
+        Row: {
+          arquivo_path: string | null
+          arquivo_url: string | null
+          data_upload: string
+          id: string
+          nome: string
+          observacao: string | null
+          processo_id: string
+          tipo: string
+        }
+        Insert: {
+          arquivo_path?: string | null
+          arquivo_url?: string | null
+          data_upload?: string
+          id?: string
+          nome: string
+          observacao?: string | null
+          processo_id: string
+          tipo: string
+        }
+        Update: {
+          arquivo_path?: string | null
+          arquivo_url?: string | null
+          data_upload?: string
+          id?: string
+          nome?: string
+          observacao?: string | null
+          processo_id?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_processo_id_fkey"
+            columns: ["processo_id"]
+            isOneToOne: false
+            referencedRelation: "processos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processos: {
+        Row: {
+          atualizado_em: string
+          autor: string
+          categoria: string
+          cliente_escritorio: string
+          criado_em: string
+          data_base_calculo: string | null
+          data_ultimo_acompanhamento: string | null
+          esfera: string
+          estado: string
+          id: string
+          numero: string
+          reu: string
+          senha_acesso: string
+          sistema_acesso: string
+          status: string
+          telefone_secretaria: string
+          tipo_acao: string
+          ultima_movimentacao: string
+          valor_execucao: number | null
+          vara_camara_turma: string
+        }
+        Insert: {
+          atualizado_em?: string
+          autor: string
+          categoria: string
+          cliente_escritorio: string
+          criado_em?: string
+          data_base_calculo?: string | null
+          data_ultimo_acompanhamento?: string | null
+          esfera: string
+          estado?: string
+          id?: string
+          numero: string
+          reu: string
+          senha_acesso?: string
+          sistema_acesso?: string
+          status?: string
+          telefone_secretaria?: string
+          tipo_acao?: string
+          ultima_movimentacao?: string
+          valor_execucao?: number | null
+          vara_camara_turma?: string
+        }
+        Update: {
+          atualizado_em?: string
+          autor?: string
+          categoria?: string
+          cliente_escritorio?: string
+          criado_em?: string
+          data_base_calculo?: string | null
+          data_ultimo_acompanhamento?: string | null
+          esfera?: string
+          estado?: string
+          id?: string
+          numero?: string
+          reu?: string
+          senha_acesso?: string
+          sistema_acesso?: string
+          status?: string
+          telefone_secretaria?: string
+          tipo_acao?: string
+          ultima_movimentacao?: string
+          valor_execucao?: number | null
+          vara_camara_turma?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

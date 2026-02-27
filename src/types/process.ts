@@ -8,36 +8,31 @@ export interface Documento {
   tipo: 'Petição' | 'Decisão' | 'Sentença' | 'Acórdão' | 'Cálculo' | 'Documento Estratégico' | 'Outro';
   observacao?: string;
   dataUpload: string;
+  arquivoUrl?: string;
+  arquivoPath?: string;
   arquivo?: File;
 }
 
 export interface Processo {
   id: string;
-  // Identificação
   numero: string;
   tipoAcao: string;
   estado: string;
   esfera: Esfera;
   categoria: Categoria;
-  // Partes
   autor: string;
   reu: string;
   clienteEscritorio: 'Autor' | 'Réu';
-  // Tramitação
   varaCamaraTurma: string;
   sistemaAcesso: string;
   telefoneSecretaria: string;
-  // Controle Interno
   senhaAcesso: string;
   status: string;
   ultimaMovimentacao: string;
   dataUltimoAcompanhamento: string;
-  // Execução
   valorExecucao?: number;
   dataBaseCalculo?: string;
-  // Documentos
   documentos: Documento[];
-  // Meta
   criadoEm: string;
   atualizadoEm: string;
 }
