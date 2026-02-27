@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SemaphoreIndicator } from '@/components/SemaphoreIndicator';
 import { Link } from 'react-router-dom';
-import { Eye, Pencil, Trash2, Search, Plus } from 'lucide-react';
+import { Eye, Pencil, Trash2, Search, Plus, Upload } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface ProcessListProps {
@@ -62,12 +62,20 @@ export function ProcessList({ processos, onDelete, loading }: ProcessListProps) 
           <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">Processos</h2>
           <p className="text-sm text-muted-foreground mt-1">{filtered.length} processo(s) encontrado(s)</p>
         </div>
-        <Link to="/processos/novo">
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-10 px-5">
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Processo
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link to="/processos/importar">
+            <Button variant="outline" className="h-10 px-5">
+              <Upload className="h-4 w-4 mr-2" />
+              Importar
+            </Button>
+          </Link>
+          <Link to="/processos/novo">
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm h-10 px-5">
+              <Plus className="h-4 w-4 mr-2" />
+              Novo Processo
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}
