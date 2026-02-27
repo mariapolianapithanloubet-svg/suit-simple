@@ -11,6 +11,7 @@ import { ProcessList } from "@/components/ProcessList";
 import { ProcessForm } from "@/components/ProcessForm";
 import { ProcessDetail } from "@/components/ProcessDetail";
 import { ClientRanking } from "@/components/ClientRanking";
+import { ProcessImport } from "@/components/ProcessImport";
 import Auth from "@/pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -18,7 +19,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { session, loading: authLoading, signOut } = useAuth();
-  const { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento } = useProcessos();
+  const { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport } = useProcessos();
 
   if (authLoading) {
     return (
@@ -40,6 +41,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<DashboardStats processos={processos} />} />
         <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} loading={loading} />} />
+        <Route path="/processos/importar" element={<ProcessImport onImport={bulkImport} />} />
         <Route path="/processos/novo" element={
           <ProcessForm mode="create" onSubmit={addProcesso} />
         } />

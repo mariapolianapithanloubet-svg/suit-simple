@@ -159,5 +159,29 @@ export function useProcessos() {
     await fetchProcessos();
   }, [fetchProcessos]);
 
-  return { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, refetch: fetchProcessos };
+  const bulkImport = useCallback(async (rows: Omit<Processo, 'id' | 'criadoEm' | 'atualizadoEm' | 'documentos'>[]) => {
+    const inserts = rows.map(data => ({
+      numero: data.numero,
+      tipo_acao: data.tipoAcao,
+      estado: data.estado,
+      esfera: data.esfera,
+      categoria: data.categoria,
+      autor: data.autor,
+      reu: data.reu,
+      cliente_escritorio: data.clienteEscritorio,
+      vara_camara_turma: data.varaCamaraTurma,
+      sistema_acesso: data.sistemaAcesso,
+      telefone_secretaria: data.telefoneSecretaria,
+      telefone_assessoria: data.telefoneAssessoria || '',
+      senha_acesso: data.senhaAcesso,
+      status: data.status,
+      ultima_movimentacao: data.ultimaMovimentacao,
+      data_ultimo_acompanhamento: data.dataUltimoAcompanhamento || null,
+    }));
+    const { error } = await supabase.from('processos').insert(inserts);
+    if (error) throw error;
+    await fetchProcessos();
+  }, [fetchProcessos]);
+
+  return { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, refetch: fetchProcessos };
 }
