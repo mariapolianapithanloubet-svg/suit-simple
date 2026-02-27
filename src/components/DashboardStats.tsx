@@ -41,51 +41,38 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
   }, [processos]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div>
-        <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">Painel de Controle</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">Visão geral dos processos do escritório</p>
+        <h2 className="text-3xl font-display font-bold text-foreground tracking-tight">Painel de Controle</h2>
+        <p className="text-base text-muted-foreground mt-1">Visão geral dos processos do escritório</p>
       </div>
 
       {/* Main Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard icon={FileText} label="Total de Processos" value={stats.total} />
         <StatCard icon={Scale} label="Relevantes" value={stats.relevantes} />
         <StatCard icon={FolderOpen} label="Acompanhamento" value={stats.acompanhamento} />
         <StatCard icon={Users} label="Clientes" value={stats.totalClientes} />
       </div>
 
-      {/* Semaphore Overview */}
-      <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-display tracking-tight">Status de Acompanhamento</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-3">
-            <SemaphoreCard icon={CheckCircle} count={stats.semaphoreStats.green} label="Em dia" sublabel="≤15 dias" color="green" />
-            <SemaphoreCard icon={Clock} count={stats.semaphoreStats.yellow} label="Atenção" sublabel="15-45 dias" color="yellow" />
-            <SemaphoreCard icon={AlertTriangle} count={stats.semaphoreStats.red} label="Atrasado" sublabel=">45 dias" color="red" />
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Primary sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-display tracking-tight">Processos por Esfera</CardTitle>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-base font-display tracking-tight">Distribuição por Esfera de Tramitação</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             {stats.porEsfera.map(({ label, count }) => (
               <div key={label} className="flex items-center justify-between">
-                <span className="text-sm text-foreground/80">{label}</span>
+                <span className="text-sm font-medium text-foreground/80">{label}</span>
                 <div className="flex items-center gap-3">
-                  <div className="h-1.5 rounded-full bg-muted w-28">
+                  <div className="h-2 rounded-full bg-muted w-32">
                     <div
-                      className="h-1.5 rounded-full bg-primary/70 transition-all duration-500"
+                      className="h-2 rounded-full bg-primary/70 transition-all duration-500"
                       style={{ width: stats.total ? `${(count / stats.total) * 100}%` : '0%' }}
                     />
                   </div>
-                  <span className="text-sm font-semibold text-foreground w-6 text-right tabular-nums">{count}</span>
+                  <span className="text-sm font-semibold text-foreground w-7 text-right tabular-nums">{count}</span>
                 </div>
               </div>
             ))}
@@ -93,29 +80,39 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
         </Card>
 
         <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-4">
             <CardTitle className="text-base font-display tracking-tight">Processos por Estado</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             {stats.estadosOrdenados.length === 0 && (
               <p className="text-sm text-muted-foreground">Nenhum processo cadastrado</p>
             )}
             {stats.estadosOrdenados.slice(0, 8).map(([estado, count]) => (
               <div key={estado} className="flex items-center justify-between">
-                <span className="text-sm text-foreground/80">{estado}</span>
+                <span className="text-sm font-medium text-foreground/80">{estado}</span>
                 <div className="flex items-center gap-3">
-                  <div className="h-1.5 rounded-full bg-muted w-28">
+                  <div className="h-2 rounded-full bg-muted w-32">
                     <div
-                      className="h-1.5 rounded-full bg-primary/70 transition-all duration-500"
+                      className="h-2 rounded-full bg-primary/70 transition-all duration-500"
                       style={{ width: stats.total ? `${(count / stats.total) * 100}%` : '0%' }}
                     />
                   </div>
-                  <span className="text-sm font-semibold text-foreground w-6 text-right tabular-nums">{count}</span>
+                  <span className="text-sm font-semibold text-foreground w-7 text-right tabular-nums">{count}</span>
                 </div>
               </div>
             ))}
           </CardContent>
         </Card>
+      </div>
+
+      {/* Secondary: Semaphore - smaller, muted */}
+      <div className="pt-2">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-3">Status de Acompanhamento</p>
+        <div className="grid grid-cols-3 gap-3">
+          <SemaphoreCard icon={CheckCircle} count={stats.semaphoreStats.green} label="Em dia" sublabel="≤15 dias" color="green" />
+          <SemaphoreCard icon={Clock} count={stats.semaphoreStats.yellow} label="Atenção" sublabel="15-45 dias" color="yellow" />
+          <SemaphoreCard icon={AlertTriangle} count={stats.semaphoreStats.red} label="Atrasado" sublabel=">45 dias" color="red" />
+        </div>
       </div>
     </div>
   );
@@ -124,14 +121,14 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
 function StatCard({ icon: Icon, label, value }: { icon: any; label: string; value: number }) {
   return (
     <Card className="shadow-card border-border/60">
-      <CardContent className="pt-5 pb-4 px-5">
-        <div className="flex items-start gap-3">
-          <div className="p-2 rounded-lg bg-primary/8">
-            <Icon className="h-4 w-4 text-primary/70" />
+      <CardContent className="pt-6 pb-5 px-6">
+        <div className="flex items-start gap-4">
+          <div className="p-2.5 rounded-lg bg-primary/8">
+            <Icon className="h-5 w-5 text-primary/70" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-foreground tabular-nums leading-none">{value}</p>
-            <p className="text-xs text-muted-foreground mt-1">{label}</p>
+            <p className="text-3xl font-bold text-foreground tabular-nums leading-none">{value}</p>
+            <p className="text-sm text-muted-foreground mt-1.5 font-medium">{label}</p>
           </div>
         </div>
       </CardContent>
@@ -141,21 +138,21 @@ function StatCard({ icon: Icon, label, value }: { icon: any; label: string; valu
 
 function SemaphoreCard({ icon: Icon, count, label, sublabel, color }: { icon: any; count: number; label: string; sublabel: string; color: 'green' | 'yellow' | 'red' }) {
   return (
-    <div className={`flex items-center gap-3 p-3.5 rounded-xl border border-border/40 bg-card`}>
-      <div className={`flex items-center justify-center h-8 w-8 rounded-lg ${
+    <div className={`flex items-center gap-3 p-3 rounded-lg border border-border/30 bg-muted/30`}>
+      <div className={`flex items-center justify-center h-7 w-7 rounded-md ${
         color === 'green' ? 'bg-semaphore-green/10' :
         color === 'yellow' ? 'bg-semaphore-yellow/10' :
         'bg-semaphore-red/10'
       }`}>
-        <Icon className={`h-4 w-4 ${
+        <Icon className={`h-3.5 w-3.5 ${
           color === 'green' ? 'text-semaphore-green' :
           color === 'yellow' ? 'text-semaphore-yellow' :
           'text-semaphore-red'
         }`} />
       </div>
       <div>
-        <p className="text-xl font-bold text-foreground leading-none tabular-nums">{count}</p>
-        <p className="text-[11px] text-muted-foreground mt-0.5">{label} <span className="opacity-60">({sublabel})</span></p>
+        <p className="text-lg font-bold text-foreground leading-none tabular-nums">{count}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{label} <span className="opacity-50">({sublabel})</span></p>
       </div>
     </div>
   );

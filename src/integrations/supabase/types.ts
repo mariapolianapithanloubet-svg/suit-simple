@@ -22,6 +22,7 @@ export type Database = {
           id: string
           nome: string
           observacao: string | null
+          pasta: string
           processo_id: string
           tipo: string
         }
@@ -32,6 +33,7 @@ export type Database = {
           id?: string
           nome: string
           observacao?: string | null
+          pasta?: string
           processo_id: string
           tipo: string
         }
@@ -42,6 +44,7 @@ export type Database = {
           id?: string
           nome?: string
           observacao?: string | null
+          pasta?: string
           processo_id?: string
           tipo?: string
         }
@@ -72,6 +75,7 @@ export type Database = {
           senha_acesso: string
           sistema_acesso: string
           status: string
+          telefone_assessoria: string
           telefone_secretaria: string
           tipo_acao: string
           ultima_movimentacao: string
@@ -94,6 +98,7 @@ export type Database = {
           senha_acesso?: string
           sistema_acesso?: string
           status?: string
+          telefone_assessoria?: string
           telefone_secretaria?: string
           tipo_acao?: string
           ultima_movimentacao?: string
@@ -116,6 +121,7 @@ export type Database = {
           senha_acesso?: string
           sistema_acesso?: string
           status?: string
+          telefone_assessoria?: string
           telefone_secretaria?: string
           tipo_acao?: string
           ultima_movimentacao?: string
