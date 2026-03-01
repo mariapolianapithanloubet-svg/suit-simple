@@ -1,19 +1,22 @@
 
 
-## Fix: Bulk Import Default Values & Select Component Error
+## Fix: Resilient Column Matching for Bulk Import
 
-### Root Cause
-When processes are imported via Excel/CSV, fields like `esfera`, `categoria`, and `status` are left as empty strings. When these processes are later opened in `ProcessForm.tsx`, the `<Select>` components receive empty string values, which Radix UI rejects — causing the runtime crash.
+### Current State
+`normalizeHeader` in `ProcessImport.tsx` (lines 42-50) already normalizes accents and lowercases, but doesn't replace spaces/underscores, so `numero_processo` or `parte_contraria` won't match.
 
 ### Changes
 
-**1. `src/components/ProcessImport.tsx`** — Set default values in the `handleImport` mapped data:
-- `categoria` → `'Mero Acompanhamento'`
-- `esfera` → `'Estadual'` (matching the existing `ESFERAS` constant)
-- `status` → `'Sem movimentação'`
-- `clienteEscritorio` → `'Autor'` (already set, keep as-is)
+**`src/components/ProcessImport.tsx`** — Update `normalizeHeader` function:
 
-**2. `src/hooks/useProcessos.ts`** — In `bulkImport`, apply the same defaults so the database always receives valid values for required fields.
+1. Add: replace spaces, underscores, hyphens with empty string (so both `parte contraria` and `parte_contraria` collapse to `partecontraria`)
+2. Update matching logic to use collapsed strings:
+   - Contains `cliente` (but not `escritorio`) → `cliente`
+   - Contains `contraria` or `parte` (but not `cliente`) → `parteContraria`  
+   - Contains `numero` or `processo` → `numero`
+   - Contains `orgao` or `julgador` or `vara` → `orgaoJulgador`
+   - Contains `classe` or `tipo` or `acao` → `classe`
+3. Guard against missing columns: when accessing `row[mapping.xxx]`, if `mapping.xxx` is undefined, default to empty string (already done with `|| ''` but ensure no crash if key is `undefined`)
 
-**3. `src/components/ProcessForm.tsx`** — Defensive fix: when `form.estado`, `form.esfera`, `form.categoria`, `form.sistemaAcesso`, or `form.clienteEscritorio` is an empty string, pass `undefined` to the Select `value` prop instead. This shows the placeholder without crashing.
+Single file change, ~10 lines modified.
 
