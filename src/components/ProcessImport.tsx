@@ -41,9 +41,9 @@ interface ProcessImportProps {
 }
 
 function normalizeHeader(h: string): string {
-  const s = h.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  if (s.includes('cliente')) return 'cliente';
-  if (s.includes('contraria') || s.includes('parte')) return 'parteContraria';
+  const s = h.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\s_\-]/g, '');
+  if (s.includes('cliente') && !s.includes('escritorio')) return 'cliente';
+  if (s.includes('contraria') || (s.includes('parte') && !s.includes('cliente'))) return 'parteContraria';
   if (s.includes('numero') || s.includes('processo')) return 'numero';
   if (s.includes('orgao') || s.includes('julgador') || s.includes('vara')) return 'orgaoJulgador';
   if (s.includes('classe') || s.includes('tipo') || s.includes('acao')) return 'classe';
