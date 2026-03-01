@@ -37,7 +37,7 @@ interface ProcessImportProps {
     status: string;
     ultimaMovimentacao: string;
     dataUltimoAcompanhamento: string;
-  }>) => Promise<void>;
+  }>) => Promise<{ imported: number; skipped: number } | void>;
 }
 
 function normalizeHeader(h: string): string {
@@ -132,8 +132,11 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
         ultimaMovimentacao: '',
         dataUltimoAcompanhamento: '',
       }));
-      await onImport(mapped);
-      toast({ title: 'Importação concluída', description: `${validRows.length} processo(s) importado(s) com sucesso.` });
+      const result = await onImport(mapped);
+      const desc = result && typeof result === 'object'
+        ? `${result.imported} importado(s)${result.skipped > 0 ? `, ${result.skipped} duplicado(s) ignorado(s)` : ''}.`
+        : `${validRows.length} processo(s) importado(s) com sucesso.`;
+      toast({ title: 'Importação concluída', description: desc });
       navigate('/processos');
     } catch {
       toast({ title: 'Erro na importação', description: 'Ocorreu um erro ao salvar os processos.', variant: 'destructive' });

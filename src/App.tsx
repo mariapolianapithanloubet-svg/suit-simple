@@ -18,8 +18,8 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 function AppContent() {
-  const { session, loading: authLoading, signOut } = useAuth();
-  const { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport } = useProcessos();
+  const { session, loading: authLoading, signOut, isAdmin } = useAuth();
+  const { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported } = useProcessos();
 
   if (authLoading) {
     return (
@@ -40,7 +40,7 @@ function AppContent() {
     <AppLayout onSignOut={signOut} userEmail={session.user?.email}>
       <Routes>
         <Route path="/" element={<DashboardStats processos={processos} />} />
-        <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} loading={loading} />} />
+        <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} loading={loading} isAdmin={isAdmin} onClearImported={clearImported} />} />
         <Route path="/processos/importar" element={<ProcessImport onImport={bulkImport} />} />
         <Route path="/processos/novo" element={
           <ProcessForm mode="create" onSubmit={addProcesso} />
