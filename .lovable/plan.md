@@ -1,8 +1,15 @@
 
 
-## Plan: Assign Admin Role
+## Plan: Fix blank Process List by removing invalid processes
 
-Insert a record into `user_roles` for user `mariapoliana.pithanloubet@gmail.com` (ID: `9c2d9a27-bf72-4c3a-94e3-fb44bbba9435`) with `role = 'admin'`.
+Run a single SQL DELETE to remove any `processos` rows where `categoria`, `esfera`, or `status` is NULL, which may be causing rendering issues.
 
-Single SQL insert — no code changes needed.
+```sql
+DELETE FROM processos
+WHERE categoria IS NULL
+   OR esfera IS NULL
+   OR status IS NULL;
+```
+
+No code changes needed — data cleanup only.
 
