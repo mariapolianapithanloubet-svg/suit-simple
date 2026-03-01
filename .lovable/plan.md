@@ -1,14 +1,11 @@
 
 
-## Plan: Fix blank Process List by removing invalid processes
+## Plan: Delete processos with NULL origem
 
-Run a single SQL DELETE to remove any `processos` rows where `categoria`, `esfera`, or `status` is NULL, which may be causing rendering issues.
+Execute a single SQL DELETE to remove all rows from `processos` where `origem IS NULL`.
 
 ```sql
-DELETE FROM processos
-WHERE categoria IS NULL
-   OR esfera IS NULL
-   OR status IS NULL;
+DELETE FROM processos WHERE origem IS NULL;
 ```
 
 No code changes needed — data cleanup only.
