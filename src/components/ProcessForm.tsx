@@ -180,7 +180,7 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">Senha de Acesso</Label>
-            <Input type="password" value={form.senhaAcesso} onChange={e => update('senhaAcesso', e.target.value)} className="h-10" />
+            <Input type="text" value={form.senhaAcesso} onChange={e => update('senhaAcesso', e.target.value)} className="h-10" />
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">Data do último acompanhamento</Label>
