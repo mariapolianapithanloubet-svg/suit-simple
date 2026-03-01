@@ -160,28 +160,45 @@ export function useProcessos() {
   }, [fetchProcessos]);
 
   const bulkImport = useCallback(async (rows: Omit<Processo, 'id' | 'criadoEm' | 'atualizadoEm' | 'documentos'>[]) => {
-    const inserts = rows.map(data => ({
-      numero: data.numero,
-      tipo_acao: data.tipoAcao,
-      estado: data.estado,
-      esfera: data.esfera || 'Estadual',
-      categoria: data.categoria || 'Mero Acompanhamento',
-      autor: data.autor,
-      reu: data.reu,
-      cliente_escritorio: data.clienteEscritorio || 'Autor',
-      vara_camara_turma: data.varaCamaraTurma,
-      sistema_acesso: data.sistemaAcesso,
-      telefone_secretaria: data.telefoneSecretaria,
-      telefone_assessoria: data.telefoneAssessoria || '',
-      senha_acesso: data.senhaAcesso,
-      status: data.status || 'Sem movimentação',
-      ultima_movimentacao: data.ultimaMovimentacao,
-      data_ultimo_acompanhamento: data.dataUltimoAcompanhamento || null,
-    }));
-    const { error } = await supabase.from('processos').insert(inserts);
+    // Check for existing process numbers to prevent duplicates
+    const { data: existing } = await supabase.from('processos').select('numero');
+    const existingNumbers = new Set((existing || []).map((r: any) => r.numero));
+    const uniqueRows = rows.filter(r => !existingNumbers.has(r.numero));
+    const skipped = rows.length - uniqueRows.length;
+
+    if (uniqueRows.length > 0) {
+      const inserts = uniqueRows.map(data => ({
+        numero: data.numero,
+        tipo_acao: data.tipoAcao,
+        estado: data.estado,
+        esfera: data.esfera || 'Estadual',
+        categoria: data.categoria || 'Mero Acompanhamento',
+        autor: data.autor,
+        reu: data.reu,
+        cliente_escritorio: data.clienteEscritorio || 'Autor',
+        vara_camara_turma: data.varaCamaraTurma,
+        sistema_acesso: data.sistemaAcesso,
+        telefone_secretaria: data.telefoneSecretaria,
+        telefone_assessoria: data.telefoneAssessoria || '',
+        senha_acesso: data.senhaAcesso,
+        status: data.status || 'Sem movimentação',
+        ultima_movimentacao: data.ultimaMovimentacao,
+        data_ultimo_acompanhamento: data.dataUltimoAcompanhamento || null,
+        origem: 'importacao',
+      }));
+      const { error } = await supabase.from('processos').insert(inserts);
+      if (error) throw error;
+      await fetchProcessos();
+    }
+
+    return { imported: uniqueRows.length, skipped };
+  }, [fetchProcessos]);
+
+  const clearImported = useCallback(async () => {
+    const { error } = await supabase.from('processos').delete().eq('origem', 'importacao');
     if (error) throw error;
     await fetchProcessos();
   }, [fetchProcessos]);
 
-  return { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, refetch: fetchProcessos };
+  return { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, refetch: fetchProcessos };
 }

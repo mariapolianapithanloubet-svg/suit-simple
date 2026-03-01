@@ -7,16 +7,20 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SemaphoreIndicator } from '@/components/SemaphoreIndicator';
 import { Link } from 'react-router-dom';
-import { Eye, Pencil, Trash2, Search, Plus, Upload } from 'lucide-react';
+import { Eye, Pencil, Trash2, Search, Plus, Upload, AlertTriangle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { toast } from '@/hooks/use-toast';
 
 interface ProcessListProps {
   processos: Processo[];
   onDelete: (id: string) => void;
   loading?: boolean;
+  isAdmin?: boolean;
+  onClearImported?: () => Promise<void>;
 }
 
-export function ProcessList({ processos, onDelete, loading }: ProcessListProps) {
+export function ProcessList({ processos, onDelete, loading, isAdmin, onClearImported }: ProcessListProps) {
   const [busca, setBusca] = useState('');
   const [filtroEsfera, setFiltroEsfera] = useState<string>('all');
   const [filtroEstado, setFiltroEstado] = useState<string>('all');
@@ -62,7 +66,36 @@ export function ProcessList({ processos, onDelete, loading }: ProcessListProps) 
           <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">Processos</h2>
           <p className="text-sm text-muted-foreground mt-1">{filtered.length} processo(s) encontrado(s)</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          {isAdmin && onClearImported && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="h-10 px-5">
+                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  Limpar Importação
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Limpar processos importados?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta ação excluirá todos os processos criados via importação em lote. Processos criados manualmente não serão afetados. Esta ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={async () => {
+                    try {
+                      await onClearImported();
+                      toast({ title: 'Importação limpa', description: 'Todos os processos importados foram removidos.' });
+                    } catch {
+                      toast({ title: 'Erro', description: 'Não foi possível limpar os processos importados.', variant: 'destructive' });
+                    }
+                  }}>Confirmar exclusão</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
           <Link to="/processos/importar">
             <Button variant="outline" className="h-10 px-5">
               <Upload className="h-4 w-4 mr-2" />
