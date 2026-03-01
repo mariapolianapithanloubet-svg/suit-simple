@@ -1,11 +1,11 @@
 
 
-## Plan: Delete processos with NULL origem
+## Plan: Delete all processos where origem = 'manual'
 
-Execute a single SQL DELETE to remove all rows from `processos` where `origem IS NULL`.
+There are currently **770 rows** in the `processos` table with `origem = 'manual'`. This will permanently delete all of them.
 
 ```sql
-DELETE FROM processos WHERE origem IS NULL;
+DELETE FROM processos WHERE origem = 'manual';
 ```
 
 No code changes needed — data cleanup only.
