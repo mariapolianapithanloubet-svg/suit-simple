@@ -28,7 +28,7 @@ export function ProcessList({ processos, onDelete, loading, isAdmin, onClearImpo
   const [filtroCliente, setFiltroCliente] = useState<string>('all');
 
   const clientes = useMemo(() => {
-    const set = new Set(processos.map(getClienteName));
+    const set = new Set(processos.map(getClienteName).filter(name => name && name.trim() !== ''));
     return Array.from(set).sort();
   }, [processos]);
 
