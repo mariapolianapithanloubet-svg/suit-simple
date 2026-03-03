@@ -100,6 +100,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
         <Badge variant="secondary">{processo.categoria}</Badge>
         <Badge variant="outline">{processo.competencia}</Badge>
         <Badge variant="outline">{processo.estado}</Badge>
+        {processo.grupoNome && <Badge variant="outline">{processo.grupoNome}</Badge>}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">

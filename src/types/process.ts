@@ -1,6 +1,11 @@
 export type Competencia = 'Estadual' | 'Federal' | 'Trabalhista' | 'Administrativo';
 export type Categoria = 'Relevante' | 'Mero Acompanhamento';
 
+export interface Grupo {
+  id: string;
+  nome: string;
+}
+
 export interface Documento {
   id: string;
   nome: string;
@@ -30,6 +35,8 @@ export interface Processo {
   senhaAcesso: string;
   status: string;
   ultimaMovimentacao: string;
+  grupoId?: string;
+  grupoNome?: string;
   documentos: Documento[];
   criadoEm: string;
   atualizadoEm: string;
