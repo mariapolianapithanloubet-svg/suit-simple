@@ -51,7 +51,7 @@ function AppContent() {
         <Route path="/processos/:id/editar" element={
           <EditProcessPage processos={processos} onUpdate={updateProcesso} grupos={grupos} />
         } />
-        <Route path="/clientes" element={<ClientRanking processos={processos} />} />
+        <Route path="/clientes" element={<ClientRanking processos={processos} grupos={grupos} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>
