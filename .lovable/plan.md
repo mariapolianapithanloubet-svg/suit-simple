@@ -1,21 +1,52 @@
 
 
-## Plan: Make password, execution value, and execution date fields optional
+## Plan: Add "grupos" table, link to processos, update form and list
 
-### Changes
+### 1. Database Migration
 
-**1. `src/components/ProcessForm.tsx`**
-- Change the password field from `type="password"` to `type="text"` (line ~185)
-- Remove the `*` from password label if present (it's already without `*`, so no change needed)
-- Ensure `valorExecucao` and `dataBaseCalculo` are not required (they already are optional in the form state — no validation blocks them)
-- The form validation on submit (line ~51) only checks `numero`, `esfera`, `categoria`, `autor`, `reu`, `clienteEscritorio` — password and execution fields are already not in the required check, so no validation changes needed
+Create table `grupos` and add `grupo_id` column to `processos`:
 
-**2. `src/hooks/useProcessos.ts`**
-- In `addProcesso`, `senha_acesso` is already passed as-is. Ensure empty string is acceptable (it already is — column default is `''::text`)
-- `valor_execucao` and `data_base_calculo` already use `|| null` fallback, so they handle empty values
+```sql
+CREATE TABLE public.grupos (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  nome text NOT NULL UNIQUE
+);
 
-### Summary of actual code changes:
-- **Single change**: In `ProcessForm.tsx` line ~185, change `type="password"` to `type="text"` on the password input field
+ALTER TABLE public.grupos ENABLE ROW LEVEL SECURITY;
 
-Everything else is already optional — the form doesn't require these fields in validation, and the database columns have appropriate defaults/nullability.
+-- Same RLS pattern as processos: authenticated can read/insert/update
+CREATE POLICY "Authenticated users can read grupos" ON public.grupos FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Authenticated users can insert grupos" ON public.grupos FOR INSERT TO authenticated WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can update grupos" ON public.grupos FOR UPDATE TO authenticated USING (auth.role() = 'authenticated');
+
+ALTER TABLE public.processos ADD COLUMN grupo_id uuid REFERENCES public.grupos(id) ON DELETE SET NULL;
+```
+
+### 2. Type Updates (`src/types/process.ts`)
+
+- Add `Grupo` interface (`id`, `nome`)
+- Add optional `grupoId` and `grupoNome` fields to `Processo`
+
+### 3. Hook Updates (`src/hooks/useProcessos.ts`)
+
+- Add `grupos` state and `fetchGrupos` function querying `grupos` table
+- Update `rowToProcesso` to map `grupo_id`
+- Update `addProcesso` / `updateProcesso` to handle `grupo_id`
+- Expose `grupos` and an `addGrupo` function from the hook
+
+### 4. Form Updates (`src/components/ProcessForm.tsx`)
+
+- Accept `grupos` prop (list of available groups)
+- Add optional "GRUPO" select field in the IDENTIFICAÇÃO card
+- Add `grupoId` to form state, pass it through on submit
+
+### 5. Process List Updates (`src/components/ProcessList.tsx`)
+
+- Sort items within each competência group alphabetically by client name (`getClienteName`)
+- Rearrange each process card to show client name as the first/primary info, followed by process number
+
+### 6. Wire Up
+
+- Update pages that use `ProcessForm` to pass `grupos` from the hook
+- Update `ProcessDetail` to show grupo name if present
 
