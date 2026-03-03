@@ -1,40 +1,52 @@
 
 
-## Plan: Create GRUPOS management page
+## Plan: Refactor Tramitação to Multi-Instance Layout (adjusted migration)
 
 ### 1. Database Migration
 
-Add DELETE RLS policy for `grupos` table (currently missing):
-
 ```sql
-CREATE POLICY "Authenticated users can delete grupos"
-ON public.grupos FOR DELETE TO authenticated
-USING (auth.role() = 'authenticated');
+ALTER TABLE public.processos
+  ADD COLUMN primeira_instancia_numero text,
+  ADD COLUMN primeira_instancia_vara text,
+  ADD COLUMN primeira_instancia_comarca text,
+  ADD COLUMN segunda_instancia_tipo_recurso text,
+  ADD COLUMN segunda_instancia_numero text,
+  ADD COLUMN segunda_instancia_turma_camara text,
+  ADD COLUMN segunda_instancia_tribunal text,
+  ADD COLUMN tribunal_superior_nome text,
+  ADD COLUMN tribunal_superior_numero text,
+  ADD COLUMN tribunal_superior_turma text,
+  ADD COLUMN fase_atual text NOT NULL DEFAULT 'PRIMEIRA_INSTANCIA';
 ```
 
-### 2. New Component: `src/components/GrupoManager.tsx`
+All new text columns are nullable with no default. `fase_atual` is NOT NULL with default `'PRIMEIRA_INSTANCIA'`. No existing columns removed.
 
-- Full CRUD page for grupos
-- List all grupos in a table/card layout
-- Inline form to create new grupo (nome field, required)
-- Edit button per row: inline edit or dialog
-- Delete button with confirmation dialog
-- Uses `supabase` client directly for CRUD operations
-- On create/edit/delete, calls a `refetch` callback so the hook's `grupos` state stays in sync
+### 2. Type Updates (`src/types/process.ts`)
 
-### 3. Update `src/hooks/useProcessos.ts`
+- Add `FaseAtual` type: `'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR'`
+- Add new optional fields to `Processo` interface (all `string | null`)
+- Add `faseAtual: FaseAtual` (required)
+- Add constants: `TIPOS_RECURSO` (7 options) and `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`)
 
-- Add `deleteGrupo` and `updateGrupo` functions
-- Expose them from the hook
+### 3. Hook Updates (`src/hooks/useProcessos.ts`)
 
-### 4. Update `src/components/AppLayout.tsx`
+- `rowToProcesso`: map all new columns (nullable → `null`)
+- `addProcesso` / `updateProcesso`: persist new fields, sending `null` for empty values
 
-- Add nav item `{ label: 'Grupos', path: '/grupos', icon: Layers }` after "Clientes"
+### 4. Form Updates (`src/components/ProcessForm.tsx`)
 
-### 5. Update `src/App.tsx`
+Replace current TRAMITAÇÃO card with four cards:
 
-- Add route `/grupos` rendering `<GrupoManager>` with `grupos`, `addGrupo`, `updateGrupo`, `deleteGrupo`, and `refetch` props
-- The `addGrupo` already exists in the hook; after creating a grupo the hook updates state, so the `ProcessForm` select will reflect it immediately via shared state
+**PRIMEIRA INSTÂNCIA**: Número do Processo, Vara, Comarca (all text inputs, optional)
 
-### No changes to: existing data, authentication, RLS on other tables, database schema beyond the missing DELETE policy
+**SEGUNDA INSTÂNCIA**: Tipo de Recurso (dropdown, 7 options), Número do Processo, Turma/Câmara, Tribunal (all optional)
+
+**TRIBUNAIS SUPERIORES**: Tribunal Superior (dropdown: STJ/STF), Número do Processo, Turma (all optional)
+
+**FASE ATUAL**: Radio group with 3 options, required, validated on submit
+
+Move `sistema_acesso` and `telefone` fields to a separate "ACESSO E CONTATOS" card. All sections visible simultaneously.
+
+### No changes to
+Authentication, RLS, other pages, existing data/columns
 
