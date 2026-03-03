@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, SISTEMAS_ACESSO, Competencia, Categoria } from '@/types/process';
+import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, SISTEMAS_ACESSO, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, Competencia, Categoria, FaseAtual } from '@/types/process';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Save, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -37,13 +38,25 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
     status: initialData?.status || '',
     ultimaMovimentacao: initialData?.ultimaMovimentacao || '',
     grupoId: initialData?.grupoId || '',
+    // Multi-instance
+    primeiraInstanciaNumero: initialData?.primeiraInstanciaNumero || '',
+    primeiraInstanciaVara: initialData?.primeiraInstanciaVara || '',
+    primeiraInstanciaComarca: initialData?.primeiraInstanciaComarca || '',
+    segundaInstanciaTipoRecurso: initialData?.segundaInstanciaTipoRecurso || '',
+    segundaInstanciaNumero: initialData?.segundaInstanciaNumero || '',
+    segundaInstanciaTurmaCamara: initialData?.segundaInstanciaTurmaCamara || '',
+    segundaInstanciaTribunal: initialData?.segundaInstanciaTribunal || '',
+    tribunalSuperiorNome: initialData?.tribunalSuperiorNome || '',
+    tribunalSuperiorNumero: initialData?.tribunalSuperiorNumero || '',
+    tribunalSuperiorTurma: initialData?.tribunalSuperiorTurma || '',
+    faseAtual: (initialData?.faseAtual || 'PRIMEIRA_INSTANCIA') as FaseAtual,
   });
 
   const update = (field: string, value: any) => setForm(prev => ({ ...prev, [field]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.numero || !form.competencia || !form.categoria || !form.autor || !form.clienteEscritorio) {
+    if (!form.numero || !form.competencia || !form.categoria || !form.autor || !form.clienteEscritorio || !form.faseAtual) {
       toast.error('Preencha todos os campos obrigatórios');
       return;
     }
@@ -74,6 +87,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
         </Button>
       </div>
 
+      {/* IDENTIFICAÇÃO */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-4">
           <CardTitle className="text-base font-display tracking-tight">IDENTIFICAÇÃO</CardTitle>
@@ -127,6 +141,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
         </CardContent>
       </Card>
 
+      {/* PARTES */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-4">
           <CardTitle className="text-base font-display tracking-tight">PARTES</CardTitle>
@@ -153,9 +168,110 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
         </CardContent>
       </Card>
 
+      {/* PRIMEIRA INSTÂNCIA */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">TRAMITAÇÃO</CardTitle>
+          <CardTitle className="text-base font-display tracking-tight">PRIMEIRA INSTÂNCIA</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
+            <Input value={form.primeiraInstanciaNumero} onChange={e => update('primeiraInstanciaNumero', e.target.value)} className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">VARA</Label>
+            <Input value={form.primeiraInstanciaVara} onChange={e => update('primeiraInstanciaVara', e.target.value)} className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">COMARCA</Label>
+            <Input value={form.primeiraInstanciaComarca} onChange={e => update('primeiraInstanciaComarca', e.target.value)} className="h-10" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* SEGUNDA INSTÂNCIA */}
+      <Card className="shadow-card border-border/60">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight">SEGUNDA INSTÂNCIA</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">TIPO DE RECURSO</Label>
+            <Select value={form.segundaInstanciaTipoRecurso || undefined} onValueChange={v => update('segundaInstanciaTipoRecurso', v)}>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>
+                {TIPOS_RECURSO.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
+            <Input value={form.segundaInstanciaNumero} onChange={e => update('segundaInstanciaNumero', e.target.value)} className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">TURMA / CÂMARA</Label>
+            <Input value={form.segundaInstanciaTurmaCamara} onChange={e => update('segundaInstanciaTurmaCamara', e.target.value)} className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">TRIBUNAL</Label>
+            <Input value={form.segundaInstanciaTribunal} onChange={e => update('segundaInstanciaTribunal', e.target.value)} className="h-10" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* TRIBUNAIS SUPERIORES */}
+      <Card className="shadow-card border-border/60">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight">TRIBUNAIS SUPERIORES</CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">TRIBUNAL SUPERIOR</Label>
+            <Select value={form.tribunalSuperiorNome || undefined} onValueChange={v => update('tribunalSuperiorNome', v)}>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>
+                {TRIBUNAIS_SUPERIORES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
+            <Input value={form.tribunalSuperiorNumero} onChange={e => update('tribunalSuperiorNumero', e.target.value)} className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">TURMA</Label>
+            <Input value={form.tribunalSuperiorTurma} onChange={e => update('tribunalSuperiorTurma', e.target.value)} className="h-10" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* FASE ATUAL */}
+      <Card className="shadow-card border-border/60">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight">FASE ATUAL *</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <RadioGroup value={form.faseAtual} onValueChange={(v: FaseAtual) => update('faseAtual', v)} className="flex flex-col sm:flex-row gap-4">
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="PRIMEIRA_INSTANCIA" id="fase-1" />
+              <Label htmlFor="fase-1" className="text-sm font-medium cursor-pointer">Primeira Instância</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="SEGUNDA_INSTANCIA" id="fase-2" />
+              <Label htmlFor="fase-2" className="text-sm font-medium cursor-pointer">Segunda Instância</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="TRIBUNAL_SUPERIOR" id="fase-3" />
+              <Label htmlFor="fase-3" className="text-sm font-medium cursor-pointer">Tribunal Superior</Label>
+            </div>
+          </RadioGroup>
+        </CardContent>
+      </Card>
+
+      {/* ACESSO E CONTATOS */}
+      <Card className="shadow-card border-border/60">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight">ACESSO E CONTATOS</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <div className="space-y-2">
@@ -182,6 +298,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
         </CardContent>
       </Card>
 
+      {/* CONTROLE INTERNO */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-4">
           <CardTitle className="text-base font-display tracking-tight">CONTROLE INTERNO</CardTitle>

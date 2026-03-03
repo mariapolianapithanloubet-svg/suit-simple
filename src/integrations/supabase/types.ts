@@ -82,17 +82,28 @@ export type Database = {
           competencia: string
           criado_em: string
           estado: string
+          fase_atual: string
           grupo_id: string | null
           id: string
           numero: string
           origem: string
+          primeira_instancia_comarca: string | null
+          primeira_instancia_numero: string | null
+          primeira_instancia_vara: string | null
           reu: string | null
+          segunda_instancia_numero: string | null
+          segunda_instancia_tipo_recurso: string | null
+          segunda_instancia_tribunal: string | null
+          segunda_instancia_turma_camara: string | null
           senha_acesso: string
           sistema_acesso: string
           status: string
           telefone_assessoria: string
           telefone_secretaria: string
           tipo_acao: string
+          tribunal_superior_nome: string | null
+          tribunal_superior_numero: string | null
+          tribunal_superior_turma: string | null
           ultima_movimentacao: string
           vara_camara_turma: string
         }
@@ -104,17 +115,28 @@ export type Database = {
           competencia: string
           criado_em?: string
           estado?: string
+          fase_atual?: string
           grupo_id?: string | null
           id?: string
           numero: string
           origem?: string
+          primeira_instancia_comarca?: string | null
+          primeira_instancia_numero?: string | null
+          primeira_instancia_vara?: string | null
           reu?: string | null
+          segunda_instancia_numero?: string | null
+          segunda_instancia_tipo_recurso?: string | null
+          segunda_instancia_tribunal?: string | null
+          segunda_instancia_turma_camara?: string | null
           senha_acesso?: string
           sistema_acesso?: string
           status?: string
           telefone_assessoria?: string
           telefone_secretaria?: string
           tipo_acao?: string
+          tribunal_superior_nome?: string | null
+          tribunal_superior_numero?: string | null
+          tribunal_superior_turma?: string | null
           ultima_movimentacao?: string
           vara_camara_turma?: string
         }
@@ -126,17 +148,28 @@ export type Database = {
           competencia?: string
           criado_em?: string
           estado?: string
+          fase_atual?: string
           grupo_id?: string | null
           id?: string
           numero?: string
           origem?: string
+          primeira_instancia_comarca?: string | null
+          primeira_instancia_numero?: string | null
+          primeira_instancia_vara?: string | null
           reu?: string | null
+          segunda_instancia_numero?: string | null
+          segunda_instancia_tipo_recurso?: string | null
+          segunda_instancia_tribunal?: string | null
+          segunda_instancia_turma_camara?: string | null
           senha_acesso?: string
           sistema_acesso?: string
           status?: string
           telefone_assessoria?: string
           telefone_secretaria?: string
           tipo_acao?: string
+          tribunal_superior_nome?: string | null
+          tribunal_superior_numero?: string | null
+          tribunal_superior_turma?: string | null
           ultima_movimentacao?: string
           vara_camara_turma?: string
         }
