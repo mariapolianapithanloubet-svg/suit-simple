@@ -219,5 +219,17 @@ export function useProcessos() {
     await fetchProcessos();
   }, [fetchProcessos]);
 
-  return { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, addGrupo, refetch: fetchProcessos };
+  const updateGrupo = useCallback(async (id: string, nome: string) => {
+    const { error } = await supabase.from('grupos').update({ nome }).eq('id', id);
+    if (error) throw error;
+    setGrupos(prev => prev.map(g => g.id === id ? { ...g, nome } : g).sort((a, b) => a.nome.localeCompare(b.nome)));
+  }, []);
+
+  const deleteGrupo = useCallback(async (id: string) => {
+    const { error } = await supabase.from('grupos').delete().eq('id', id);
+    if (error) throw error;
+    setGrupos(prev => prev.filter(g => g.id !== id));
+  }, []);
+
+  return { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, addGrupo, updateGrupo, deleteGrupo, refetch: fetchProcessos };
 }

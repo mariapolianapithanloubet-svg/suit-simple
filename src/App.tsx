@@ -12,6 +12,7 @@ import { ProcessForm } from "@/components/ProcessForm";
 import { ProcessDetail } from "@/components/ProcessDetail";
 import { ClientRanking } from "@/components/ClientRanking";
 import { ProcessImport } from "@/components/ProcessImport";
+import { GrupoManager } from "@/components/GrupoManager";
 import Auth from "@/pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -19,7 +20,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { session, loading: authLoading, signOut, isAdmin } = useAuth();
-  const { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported } = useProcessos();
+  const { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, addGrupo, updateGrupo, deleteGrupo } = useProcessos();
 
   if (authLoading) {
     return (
@@ -52,6 +53,7 @@ function AppContent() {
           <EditProcessPage processos={processos} onUpdate={updateProcesso} grupos={grupos} />
         } />
         <Route path="/clientes" element={<ClientRanking processos={processos} grupos={grupos} />} />
+        <Route path="/grupos" element={<GrupoManager grupos={grupos} onAdd={addGrupo} onUpdate={updateGrupo} onDelete={deleteGrupo} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>
