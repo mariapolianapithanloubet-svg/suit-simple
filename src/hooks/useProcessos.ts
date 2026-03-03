@@ -8,10 +8,10 @@ function rowToProcesso(row: any): Processo {
     numero: row.numero,
     tipoAcao: row.tipo_acao,
     estado: row.estado,
-    esfera: row.esfera,
+    competencia: row.competencia,
     categoria: row.categoria,
     autor: row.autor,
-    reu: row.reu,
+    reu: row.reu || '',
     clienteEscritorio: row.cliente_escritorio,
     varaCamaraTurma: row.vara_camara_turma,
     sistemaAcesso: row.sistema_acesso,
@@ -20,9 +20,6 @@ function rowToProcesso(row: any): Processo {
     senhaAcesso: row.senha_acesso,
     status: row.status,
     ultimaMovimentacao: row.ultima_movimentacao,
-    dataUltimoAcompanhamento: row.data_ultimo_acompanhamento || '',
-    valorExecucao: row.valor_execucao ? Number(row.valor_execucao) : undefined,
-    dataBaseCalculo: row.data_base_calculo || '',
     documentos: [],
     criadoEm: row.criado_em,
     atualizadoEm: row.atualizado_em,
@@ -76,10 +73,10 @@ export function useProcessos() {
       numero: data.numero,
       tipo_acao: data.tipoAcao,
       estado: data.estado,
-      esfera: data.esfera,
+      competencia: data.competencia,
       categoria: data.categoria,
       autor: data.autor,
-      reu: data.reu,
+      reu: data.reu || null,
       cliente_escritorio: data.clienteEscritorio,
       vara_camara_turma: data.varaCamaraTurma,
       sistema_acesso: data.sistemaAcesso,
@@ -88,9 +85,6 @@ export function useProcessos() {
       senha_acesso: data.senhaAcesso,
       status: data.status,
       ultima_movimentacao: data.ultimaMovimentacao,
-      data_ultimo_acompanhamento: data.dataUltimoAcompanhamento || null,
-      valor_execucao: data.valorExecucao || null,
-      data_base_calculo: data.dataBaseCalculo || null,
     }).select().single();
 
     if (!error && row) {
@@ -105,10 +99,10 @@ export function useProcessos() {
     if (data.numero !== undefined) updates.numero = data.numero;
     if (data.tipoAcao !== undefined) updates.tipo_acao = data.tipoAcao;
     if (data.estado !== undefined) updates.estado = data.estado;
-    if (data.esfera !== undefined) updates.esfera = data.esfera;
+    if (data.competencia !== undefined) updates.competencia = data.competencia;
     if (data.categoria !== undefined) updates.categoria = data.categoria;
     if (data.autor !== undefined) updates.autor = data.autor;
-    if (data.reu !== undefined) updates.reu = data.reu;
+    if (data.reu !== undefined) updates.reu = data.reu || null;
     if (data.clienteEscritorio !== undefined) updates.cliente_escritorio = data.clienteEscritorio;
     if (data.varaCamaraTurma !== undefined) updates.vara_camara_turma = data.varaCamaraTurma;
     if (data.sistemaAcesso !== undefined) updates.sistema_acesso = data.sistemaAcesso;
@@ -117,9 +111,6 @@ export function useProcessos() {
     if (data.senhaAcesso !== undefined) updates.senha_acesso = data.senhaAcesso;
     if (data.status !== undefined) updates.status = data.status;
     if (data.ultimaMovimentacao !== undefined) updates.ultima_movimentacao = data.ultimaMovimentacao;
-    if (data.dataUltimoAcompanhamento !== undefined) updates.data_ultimo_acompanhamento = data.dataUltimoAcompanhamento || null;
-    if (data.valorExecucao !== undefined) updates.valor_execucao = data.valorExecucao || null;
-    if (data.dataBaseCalculo !== undefined) updates.data_base_calculo = data.dataBaseCalculo || null;
 
     await supabase.from('processos').update(updates).eq('id', id);
     await fetchProcessos();
@@ -160,7 +151,6 @@ export function useProcessos() {
   }, [fetchProcessos]);
 
   const bulkImport = useCallback(async (rows: Omit<Processo, 'id' | 'criadoEm' | 'atualizadoEm' | 'documentos'>[]) => {
-    // Check for existing process numbers to prevent duplicates
     const { data: existing } = await supabase.from('processos').select('numero');
     const existingNumbers = new Set((existing || []).map((r: any) => r.numero));
     const uniqueRows = rows.filter(r => !existingNumbers.has(r.numero));
@@ -171,19 +161,18 @@ export function useProcessos() {
         numero: data.numero,
         tipo_acao: data.tipoAcao,
         estado: data.estado,
-        esfera: data.esfera || 'Estadual',
+        competencia: data.competencia || 'Estadual',
         categoria: data.categoria || 'Mero Acompanhamento',
         autor: data.autor,
-        reu: data.reu,
+        reu: data.reu || null,
         cliente_escritorio: data.clienteEscritorio || 'Autor',
         vara_camara_turma: data.varaCamaraTurma,
         sistema_acesso: data.sistemaAcesso,
         telefone_secretaria: data.telefoneSecretaria,
         telefone_assessoria: data.telefoneAssessoria || '',
         senha_acesso: data.senhaAcesso,
-        status: data.status || 'Sem movimentação',
+        status: data.status || '',
         ultima_movimentacao: data.ultimaMovimentacao,
-        data_ultimo_acompanhamento: data.dataUltimoAcompanhamento || null,
         origem: 'importacao',
       }));
       const { error } = await supabase.from('processos').insert(inserts);

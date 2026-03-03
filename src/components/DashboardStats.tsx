@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { Processo, getClienteName, ESFERAS, getSemaphoreStatus } from '@/types/process';
+import { Processo, getClienteName, COMPETENCIAS } from '@/types/process';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Scale, FolderOpen, Users, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { FileText, Scale, FolderOpen, Users } from 'lucide-react';
 
 interface DashboardStatsProps {
   processos: Processo[];
@@ -13,9 +13,9 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
     const relevantes = processos.filter(p => p.categoria === 'Relevante').length;
     const acompanhamento = processos.filter(p => p.categoria === 'Mero Acompanhamento').length;
 
-    const porEsfera = ESFERAS.map(e => ({
-      label: e,
-      count: processos.filter(p => p.esfera === e).length,
+    const porCompetencia = COMPETENCIAS.map(c => ({
+      label: c,
+      count: processos.filter(p => p.competencia === c).length,
     }));
 
     const porEstado: Record<string, number> = {};
@@ -24,12 +24,6 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
     });
     const estadosOrdenados = Object.entries(porEstado).sort((a, b) => b[1] - a[1]);
 
-    const semaphoreStats = {
-      green: processos.filter(p => getSemaphoreStatus(p.dataUltimoAcompanhamento) === 'green').length,
-      yellow: processos.filter(p => getSemaphoreStatus(p.dataUltimoAcompanhamento) === 'yellow').length,
-      red: processos.filter(p => getSemaphoreStatus(p.dataUltimoAcompanhamento) === 'red').length,
-    };
-
     const clienteCount: Record<string, number> = {};
     processos.forEach(p => {
       const c = getClienteName(p);
@@ -37,32 +31,30 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
     });
     const totalClientes = Object.keys(clienteCount).length;
 
-    return { total, relevantes, acompanhamento, porEsfera, estadosOrdenados, semaphoreStats, totalClientes };
+    return { total, relevantes, acompanhamento, porCompetencia, estadosOrdenados, totalClientes };
   }, [processos]);
 
   return (
     <div className="space-y-10">
       <div>
-        <h2 className="text-3xl font-display font-bold text-foreground tracking-tight">Painel de Controle</h2>
+        <h2 className="text-3xl font-display font-bold text-foreground tracking-tight">PAINEL DE CONTROLE</h2>
         <p className="text-base text-muted-foreground mt-1">Visão geral dos processos do escritório</p>
       </div>
 
-      {/* Main Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-        <StatCard icon={FileText} label="Total de Processos" value={stats.total} />
-        <StatCard icon={Scale} label="Relevantes" value={stats.relevantes} />
-        <StatCard icon={FolderOpen} label="Acompanhamento" value={stats.acompanhamento} />
-        <StatCard icon={Users} label="Clientes" value={stats.totalClientes} />
+        <StatCard icon={FileText} label="TOTAL DE PROCESSOS" value={stats.total} />
+        <StatCard icon={Scale} label="RELEVANTES" value={stats.relevantes} />
+        <StatCard icon={FolderOpen} label="ACOMPANHAMENTO" value={stats.acompanhamento} />
+        <StatCard icon={Users} label="CLIENTES" value={stats.totalClientes} />
       </div>
 
-      {/* Primary sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card className="shadow-card border-border/60">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base font-display tracking-tight">Distribuição por Esfera de Tramitação</CardTitle>
+            <CardTitle className="text-base font-display tracking-tight">DISTRIBUIÇÃO POR COMPETÊNCIA</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {stats.porEsfera.map(({ label, count }) => (
+            {stats.porCompetencia.map(({ label, count }) => (
               <div key={label} className="flex items-center justify-between">
                 <span className="text-sm font-medium text-foreground/80">{label}</span>
                 <div className="flex items-center gap-3">
@@ -81,7 +73,7 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
 
         <Card className="shadow-card border-border/60">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base font-display tracking-tight">Processos por Estado</CardTitle>
+            <CardTitle className="text-base font-display tracking-tight">PROCESSOS POR ESTADO</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {stats.estadosOrdenados.length === 0 && (
@@ -104,16 +96,6 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
           </CardContent>
         </Card>
       </div>
-
-      {/* Secondary: Semaphore - smaller, muted */}
-      <div className="pt-2">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-3">Status de Acompanhamento</p>
-        <div className="grid grid-cols-3 gap-3">
-          <SemaphoreCard icon={CheckCircle} count={stats.semaphoreStats.green} label="Em dia" sublabel="≤15 dias" color="green" />
-          <SemaphoreCard icon={Clock} count={stats.semaphoreStats.yellow} label="Atenção" sublabel="15-45 dias" color="yellow" />
-          <SemaphoreCard icon={AlertTriangle} count={stats.semaphoreStats.red} label="Atrasado" sublabel=">45 dias" color="red" />
-        </div>
-      </div>
     </div>
   );
 }
@@ -133,27 +115,5 @@ function StatCard({ icon: Icon, label, value }: { icon: any; label: string; valu
         </div>
       </CardContent>
     </Card>
-  );
-}
-
-function SemaphoreCard({ icon: Icon, count, label, sublabel, color }: { icon: any; count: number; label: string; sublabel: string; color: 'green' | 'yellow' | 'red' }) {
-  return (
-    <div className={`flex items-center gap-3 p-3 rounded-lg border border-border/30 bg-muted/30`}>
-      <div className={`flex items-center justify-center h-7 w-7 rounded-md ${
-        color === 'green' ? 'bg-semaphore-green/10' :
-        color === 'yellow' ? 'bg-semaphore-yellow/10' :
-        'bg-semaphore-red/10'
-      }`}>
-        <Icon className={`h-3.5 w-3.5 ${
-          color === 'green' ? 'text-semaphore-green' :
-          color === 'yellow' ? 'text-semaphore-yellow' :
-          'text-semaphore-red'
-        }`} />
-      </div>
-      <div>
-        <p className="text-lg font-bold text-foreground leading-none tabular-nums">{count}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">{label} <span className="opacity-50">({sublabel})</span></p>
-      </div>
-    </div>
   );
 }
