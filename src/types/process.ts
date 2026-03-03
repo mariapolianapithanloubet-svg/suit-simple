@@ -1,5 +1,6 @@
 export type Competencia = 'Estadual' | 'Federal' | 'Trabalhista' | 'Administrativo';
 export type Categoria = 'Relevante' | 'Mero Acompanhamento';
+export type FaseAtual = 'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR';
 
 export interface Grupo {
   id: string;
@@ -40,6 +41,18 @@ export interface Processo {
   documentos: Documento[];
   criadoEm: string;
   atualizadoEm: string;
+  // Multi-instance fields
+  primeiraInstanciaNumero: string | null;
+  primeiraInstanciaVara: string | null;
+  primeiraInstanciaComarca: string | null;
+  segundaInstanciaTipoRecurso: string | null;
+  segundaInstanciaNumero: string | null;
+  segundaInstanciaTurmaCamara: string | null;
+  segundaInstanciaTribunal: string | null;
+  tribunalSuperiorNome: string | null;
+  tribunalSuperiorNumero: string | null;
+  tribunalSuperiorTurma: string | null;
+  faseAtual: FaseAtual;
 }
 
 export const COMPETENCIAS: Competencia[] = ['Estadual', 'Federal', 'Trabalhista', 'Administrativo'];
@@ -60,6 +73,18 @@ export const TIPOS_DOCUMENTO: Documento['tipo'][] = [
 export const PASTAS_DOCUMENTO = [
   'Petição Inicial', 'Contestação', 'Réplica', 'Decisões', 'Sentenças', 'Acórdãos', 'Cálculos', 'Outros'
 ];
+
+export const TIPOS_RECURSO = [
+  'Apelação Cível',
+  'Embargos de Declaração',
+  'Recurso Especial',
+  'Recurso Extraordinário',
+  'Agravo em Recurso Especial',
+  'Agravo em Recurso Extraordinário',
+  'Agravo Interno',
+];
+
+export const TRIBUNAIS_SUPERIORES = ['STJ', 'STF'];
 
 export function getClienteName(p: Processo): string {
   return p.clienteEscritorio === 'Autor' ? p.autor : (p.reu || '');

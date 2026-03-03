@@ -24,6 +24,17 @@ function rowToProcesso(row: any): Processo {
     documentos: [],
     criadoEm: row.criado_em,
     atualizadoEm: row.atualizado_em,
+    primeiraInstanciaNumero: row.primeira_instancia_numero ?? null,
+    primeiraInstanciaVara: row.primeira_instancia_vara ?? null,
+    primeiraInstanciaComarca: row.primeira_instancia_comarca ?? null,
+    segundaInstanciaTipoRecurso: row.segunda_instancia_tipo_recurso ?? null,
+    segundaInstanciaNumero: row.segunda_instancia_numero ?? null,
+    segundaInstanciaTurmaCamara: row.segunda_instancia_turma_camara ?? null,
+    segundaInstanciaTribunal: row.segunda_instancia_tribunal ?? null,
+    tribunalSuperiorNome: row.tribunal_superior_nome ?? null,
+    tribunalSuperiorNumero: row.tribunal_superior_numero ?? null,
+    tribunalSuperiorTurma: row.tribunal_superior_turma ?? null,
+    faseAtual: row.fase_atual || 'PRIMEIRA_INSTANCIA',
   };
 }
 
@@ -67,7 +78,6 @@ export function useProcessos() {
         });
       }
 
-      // Enrich with grupo names
       if (grupos.length > 0) {
         const grupoMap = new Map(grupos.map(g => [g.id, g.nome]));
         mapped.forEach(p => {
@@ -114,6 +124,17 @@ export function useProcessos() {
       status: data.status,
       ultima_movimentacao: data.ultimaMovimentacao,
       grupo_id: data.grupoId || null,
+      primeira_instancia_numero: data.primeiraInstanciaNumero || null,
+      primeira_instancia_vara: data.primeiraInstanciaVara || null,
+      primeira_instancia_comarca: data.primeiraInstanciaComarca || null,
+      segunda_instancia_tipo_recurso: data.segundaInstanciaTipoRecurso || null,
+      segunda_instancia_numero: data.segundaInstanciaNumero || null,
+      segunda_instancia_turma_camara: data.segundaInstanciaTurmaCamara || null,
+      segunda_instancia_tribunal: data.segundaInstanciaTribunal || null,
+      tribunal_superior_nome: data.tribunalSuperiorNome || null,
+      tribunal_superior_numero: data.tribunalSuperiorNumero || null,
+      tribunal_superior_turma: data.tribunalSuperiorTurma || null,
+      fase_atual: data.faseAtual,
     }).select().single();
 
     if (!error && row) {
@@ -141,6 +162,17 @@ export function useProcessos() {
     if (data.status !== undefined) updates.status = data.status;
     if (data.ultimaMovimentacao !== undefined) updates.ultima_movimentacao = data.ultimaMovimentacao;
     if (data.grupoId !== undefined) updates.grupo_id = data.grupoId || null;
+    if (data.primeiraInstanciaNumero !== undefined) updates.primeira_instancia_numero = data.primeiraInstanciaNumero || null;
+    if (data.primeiraInstanciaVara !== undefined) updates.primeira_instancia_vara = data.primeiraInstanciaVara || null;
+    if (data.primeiraInstanciaComarca !== undefined) updates.primeira_instancia_comarca = data.primeiraInstanciaComarca || null;
+    if (data.segundaInstanciaTipoRecurso !== undefined) updates.segunda_instancia_tipo_recurso = data.segundaInstanciaTipoRecurso || null;
+    if (data.segundaInstanciaNumero !== undefined) updates.segunda_instancia_numero = data.segundaInstanciaNumero || null;
+    if (data.segundaInstanciaTurmaCamara !== undefined) updates.segunda_instancia_turma_camara = data.segundaInstanciaTurmaCamara || null;
+    if (data.segundaInstanciaTribunal !== undefined) updates.segunda_instancia_tribunal = data.segundaInstanciaTribunal || null;
+    if (data.tribunalSuperiorNome !== undefined) updates.tribunal_superior_nome = data.tribunalSuperiorNome || null;
+    if (data.tribunalSuperiorNumero !== undefined) updates.tribunal_superior_numero = data.tribunalSuperiorNumero || null;
+    if (data.tribunalSuperiorTurma !== undefined) updates.tribunal_superior_turma = data.tribunalSuperiorTurma || null;
+    if (data.faseAtual !== undefined) updates.fase_atual = data.faseAtual;
 
     await supabase.from('processos').update(updates).eq('id', id);
     await fetchProcessos();
@@ -180,7 +212,7 @@ export function useProcessos() {
     await fetchProcessos();
   }, [fetchProcessos]);
 
-  const bulkImport = useCallback(async (rows: Omit<Processo, 'id' | 'criadoEm' | 'atualizadoEm' | 'documentos'>[]) => {
+  const bulkImport = useCallback(async (rows: Array<Record<string, any>>) => {
     const { data: existing } = await supabase.from('processos').select('numero');
     const existingNumbers = new Set((existing || []).map((r: any) => r.numero));
     const uniqueRows = rows.filter(r => !existingNumbers.has(r.numero));

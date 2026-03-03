@@ -37,6 +37,7 @@ interface ProcessImportProps {
     senhaAcesso: string;
     status: string;
     ultimaMovimentacao: string;
+    [key: string]: any;
   }>) => Promise<{ imported: number; skipped: number } | void>;
 }
 
