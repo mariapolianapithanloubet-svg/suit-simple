@@ -64,15 +64,13 @@ export type Database = {
           autor: string
           categoria: string
           cliente_escritorio: string
+          competencia: string
           criado_em: string
-          data_base_calculo: string | null
-          data_ultimo_acompanhamento: string | null
-          esfera: string
           estado: string
           id: string
           numero: string
           origem: string
-          reu: string
+          reu: string | null
           senha_acesso: string
           sistema_acesso: string
           status: string
@@ -80,7 +78,6 @@ export type Database = {
           telefone_secretaria: string
           tipo_acao: string
           ultima_movimentacao: string
-          valor_execucao: number | null
           vara_camara_turma: string
         }
         Insert: {
@@ -88,15 +85,13 @@ export type Database = {
           autor: string
           categoria: string
           cliente_escritorio: string
+          competencia: string
           criado_em?: string
-          data_base_calculo?: string | null
-          data_ultimo_acompanhamento?: string | null
-          esfera: string
           estado?: string
           id?: string
           numero: string
           origem?: string
-          reu: string
+          reu?: string | null
           senha_acesso?: string
           sistema_acesso?: string
           status?: string
@@ -104,7 +99,6 @@ export type Database = {
           telefone_secretaria?: string
           tipo_acao?: string
           ultima_movimentacao?: string
-          valor_execucao?: number | null
           vara_camara_turma?: string
         }
         Update: {
@@ -112,15 +106,13 @@ export type Database = {
           autor?: string
           categoria?: string
           cliente_escritorio?: string
+          competencia?: string
           criado_em?: string
-          data_base_calculo?: string | null
-          data_ultimo_acompanhamento?: string | null
-          esfera?: string
           estado?: string
           id?: string
           numero?: string
           origem?: string
-          reu?: string
+          reu?: string | null
           senha_acesso?: string
           sistema_acesso?: string
           status?: string
@@ -128,7 +120,6 @@ export type Database = {
           telefone_secretaria?: string
           tipo_acao?: string
           ultima_movimentacao?: string
-          valor_execucao?: number | null
           vara_camara_turma?: string
         }
         Relationships: []

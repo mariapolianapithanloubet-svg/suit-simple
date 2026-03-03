@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { Competencia, Categoria } from '@/types/process';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,8 +25,8 @@ interface ProcessImportProps {
     numero: string;
     tipoAcao: string;
     estado: string;
-    esfera: string;
-    categoria: string;
+    competencia: Competencia;
+    categoria: Categoria;
     autor: string;
     reu: string;
     clienteEscritorio: 'Autor' | 'Réu';
@@ -36,7 +37,6 @@ interface ProcessImportProps {
     senhaAcesso: string;
     status: string;
     ultimaMovimentacao: string;
-    dataUltimoAcompanhamento: string;
   }>) => Promise<{ imported: number; skipped: number } | void>;
 }
 
@@ -118,7 +118,7 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
         numero: r.numero,
         tipoAcao: r.classe || '',
         estado: '',
-        esfera: 'Estadual' as const,
+        competencia: 'Estadual' as const,
         categoria: 'Mero Acompanhamento' as const,
         autor: r.cliente,
         reu: r.parteContraria,
@@ -128,9 +128,8 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
         telefoneSecretaria: '',
         telefoneAssessoria: '',
         senhaAcesso: '',
-        status: 'Sem movimentação',
+        status: '',
         ultimaMovimentacao: '',
-        dataUltimoAcompanhamento: '',
       }));
       const result = await onImport(mapped);
       const desc = result && typeof result === 'object'
@@ -154,7 +153,7 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
           </Button>
         </Link>
         <div>
-          <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">Importar Processos</h2>
+          <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">IMPORTAR PROCESSOS</h2>
           <p className="text-sm text-muted-foreground mt-1">Importe processos em lote a partir de uma planilha Excel ou CSV</p>
         </div>
       </div>
@@ -178,7 +177,7 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
                   className="hidden"
                 />
                 <Button asChild variant="default" className="cursor-pointer">
-                  <span><Upload className="h-4 w-4 mr-2" />Selecionar Arquivo</span>
+                  <span><Upload className="h-4 w-4 mr-2" />SELECIONAR ARQUIVO</span>
                 </Button>
               </label>
             </div>
@@ -200,11 +199,11 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
                   <label>
                     <Input type="file" accept=".xlsx,.xls,.csv" onChange={handleFile} className="hidden" />
                     <Button asChild variant="outline" size="sm" className="cursor-pointer">
-                      <span>Trocar arquivo</span>
+                      <span>TROCAR ARQUIVO</span>
                     </Button>
                   </label>
                   <Button onClick={handleImport} disabled={importing || validRows.length === 0} size="sm">
-                    {importing ? 'Importando...' : `Importar ${validRows.length} processo(s)`}
+                    {importing ? 'Importando...' : `IMPORTAR ${validRows.length} PROCESSO(S)`}
                   </Button>
                 </div>
               </div>
@@ -215,12 +214,12 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-10">#</TableHead>
-                      <TableHead>Número</TableHead>
-                      <TableHead>Cliente</TableHead>
-                      <TableHead>Parte Contrária</TableHead>
-                      <TableHead>Órgão Julgador</TableHead>
-                      <TableHead>Classe</TableHead>
-                      <TableHead className="w-24">Status</TableHead>
+                      <TableHead>NÚMERO</TableHead>
+                      <TableHead>CLIENTE</TableHead>
+                      <TableHead>PARTE CONTRÁRIA</TableHead>
+                      <TableHead>ÓRGÃO JULGADOR</TableHead>
+                      <TableHead>CLASSE</TableHead>
+                      <TableHead className="w-24">STATUS</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -240,8 +239,7 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
                           )}
                         </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
+                    ))}</TableBody>
                 </Table>
               </div>
             </CardContent>

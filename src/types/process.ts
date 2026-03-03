@@ -1,6 +1,5 @@
-export type Esfera = 'Estadual' | 'Federal' | 'Trabalhista' | 'Administrativo';
+export type Competencia = 'Estadual' | 'Federal' | 'Trabalhista' | 'Administrativo';
 export type Categoria = 'Relevante' | 'Mero Acompanhamento';
-export type SemaphoreStatus = 'green' | 'yellow' | 'red';
 
 export interface Documento {
   id: string;
@@ -19,10 +18,10 @@ export interface Processo {
   numero: string;
   tipoAcao: string;
   estado: string;
-  esfera: Esfera;
+  competencia: Competencia;
   categoria: Categoria;
   autor: string;
-  reu: string;
+  reu?: string;
   clienteEscritorio: 'Autor' | 'Réu';
   varaCamaraTurma: string;
   sistemaAcesso: string;
@@ -31,15 +30,12 @@ export interface Processo {
   senhaAcesso: string;
   status: string;
   ultimaMovimentacao: string;
-  dataUltimoAcompanhamento: string;
-  valorExecucao?: number;
-  dataBaseCalculo?: string;
   documentos: Documento[];
   criadoEm: string;
   atualizadoEm: string;
 }
 
-export const ESFERAS: Esfera[] = ['Estadual', 'Federal', 'Trabalhista', 'Administrativo'];
+export const COMPETENCIAS: Competencia[] = ['Estadual', 'Federal', 'Trabalhista', 'Administrativo'];
 export const CATEGORIAS: Categoria[] = ['Relevante', 'Mero Acompanhamento'];
 
 export const ESTADOS_BRASIL = [
@@ -58,16 +54,6 @@ export const PASTAS_DOCUMENTO = [
   'Petição Inicial', 'Contestação', 'Réplica', 'Decisões', 'Sentenças', 'Acórdãos', 'Cálculos', 'Outros'
 ];
 
-export function getSemaphoreStatus(dataUltimoAcompanhamento: string): SemaphoreStatus {
-  if (!dataUltimoAcompanhamento) return 'red';
-  const last = new Date(dataUltimoAcompanhamento);
-  const now = new Date();
-  const diffDays = Math.floor((now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24));
-  if (diffDays <= 15) return 'green';
-  if (diffDays <= 45) return 'yellow';
-  return 'red';
-}
-
 export function getClienteName(p: Processo): string {
-  return p.clienteEscritorio === 'Autor' ? p.autor : p.reu;
+  return p.clienteEscritorio === 'Autor' ? p.autor : (p.reu || '');
 }

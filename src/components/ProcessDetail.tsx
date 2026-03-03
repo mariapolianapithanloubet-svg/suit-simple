@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { SemaphoreIndicator } from '@/components/SemaphoreIndicator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ArrowLeft, Pencil, Trash2, FileUp, Eye, EyeOff, Download, X, FolderOpen, ChevronDown } from 'lucide-react';
 import { useState, useRef } from 'react';
@@ -36,7 +35,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
         <p className="text-muted-foreground text-base">Processo não encontrado</p>
         <Button variant="ghost" size="sm" className="mt-4" onClick={() => navigate('/processos')}>
           <ArrowLeft className="h-4 w-4 mr-1.5" />
-          Voltar
+          VOLTAR
         </Button>
       </div>
     );
@@ -62,7 +61,6 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
     toast.success('Documento(s) enviado(s)!');
   };
 
-  // Group documents by pasta
   const docsByPasta: Record<string, typeof processo.documentos> = {};
   PASTAS_DOCUMENTO.forEach(p => { docsByPasta[p] = []; });
   processo.documentos.forEach(doc => {
@@ -77,13 +75,10 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={() => navigate('/processos')}>
             <ArrowLeft className="h-4 w-4 mr-1.5" />
-            Voltar
+            VOLTAR
           </Button>
           <div>
-            <div className="flex items-center gap-3">
-              <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">{processo.numero}</h2>
-              <SemaphoreIndicator date={processo.dataUltimoAcompanhamento} size="md" />
-            </div>
+            <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">{processo.numero}</h2>
             <p className="text-sm text-muted-foreground">{processo.tipoAcao}</p>
           </div>
         </div>
@@ -91,75 +86,65 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
           <Link to={`/processos/${processo.id}/editar`}>
             <Button variant="outline" size="sm">
               <Pencil className="h-3.5 w-3.5 mr-1.5" />
-              Editar
+              EDITAR
             </Button>
           </Link>
           <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={handleDelete}>
             <Trash2 className="h-3.5 w-3.5 mr-1.5" />
-            Excluir
+            EXCLUIR
           </Button>
         </div>
       </div>
 
       <div className="flex gap-2 flex-wrap">
         <Badge variant="secondary">{processo.categoria}</Badge>
-        <Badge variant="outline">{processo.esfera}</Badge>
+        <Badge variant="outline">{processo.competencia}</Badge>
         <Badge variant="outline">{processo.estado}</Badge>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">Partes</CardTitle></CardHeader>
+          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">PARTES</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <Field label="Autor" value={processo.autor} />
-            <Field label="Réu" value={processo.reu} />
-            <Field label="Cliente do Escritório" value={`${getClienteName(processo)} (${processo.clienteEscritorio})`} />
+            <Field label="AUTOR" value={processo.autor} />
+            <Field label="RÉU" value={processo.reu} />
+            <Field label="CLIENTE DO ESCRITÓRIO" value={`${getClienteName(processo)} (${processo.clienteEscritorio})`} />
           </CardContent>
         </Card>
 
         <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">Tramitação</CardTitle></CardHeader>
+          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">TRAMITAÇÃO</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <Field label="Vara / Câmara / Turma" value={processo.varaCamaraTurma} />
-            <Field label="Sistema de Acesso" value={processo.sistemaAcesso} />
-            <Field label="Telefone da Secretaria" value={processo.telefoneSecretaria} />
-            <Field label="Telefone da Assessoria" value={processo.telefoneAssessoria} />
+            <Field label="VARA / CÂMARA / TURMA" value={processo.varaCamaraTurma} />
+            <Field label="SISTEMA DE ACESSO" value={processo.sistemaAcesso} />
+            <Field label="TELEFONE DA SECRETARIA" value={processo.telefoneSecretaria} />
+            <Field label="TELEFONE DA ASSESSORIA" value={processo.telefoneAssessoria} />
           </CardContent>
         </Card>
 
-        <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">Controle Interno</CardTitle></CardHeader>
+        <Card className="shadow-card border-border/60 lg:col-span-2">
+          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">CONTROLE INTERNO</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground font-medium">Senha de Acesso</p>
+                <p className="text-xs text-muted-foreground font-medium">SENHA DE ACESSO</p>
                 <p className="font-medium text-base mt-0.5">{showPassword ? (processo.senhaAcesso || '—') : '••••••••'}</p>
               </div>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowPassword(!showPassword)}>
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
             </div>
-            <Field label="Status" value={processo.status} />
-            <Field label="Último Acompanhamento" value={processo.dataUltimoAcompanhamento ? new Date(processo.dataUltimoAcompanhamento).toLocaleDateString('pt-BR') : '—'} />
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">Execução</CardTitle></CardHeader>
-          <CardContent className="space-y-4">
-            <Field label="Valor em Execução" value={processo.valorExecucao ? `R$ ${processo.valorExecucao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '—'} />
-            <Field label="Data-base do Cálculo" value={processo.dataBaseCalculo ? new Date(processo.dataBaseCalculo).toLocaleDateString('pt-BR') : '—'} />
+            <Field label="INFORMAÇÕES IMPORTANTES" value={processo.status} />
           </CardContent>
         </Card>
       </div>
 
-      {/* Documentos - Folder-based */}
+      {/* Documentos */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">Documentos</CardTitle>
+          <CardTitle className="text-base font-display tracking-tight">DOCUMENTOS</CardTitle>
         </CardHeader>
         <CardContent className="space-y-5">
-          {/* Upload area */}
           {onUploadDocumento && (
             <div className="flex flex-col sm:flex-row gap-3 p-5 rounded-xl bg-muted/50 border border-border/40">
               <div className="flex-1 space-y-3">
@@ -182,12 +167,11 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
               </div>
               <Button type="button" size="sm" disabled={uploading} onClick={handleUpload} className="self-end h-9">
                 <FileUp className="h-4 w-4 mr-1.5" />
-                {uploading ? 'Enviando...' : 'Enviar'}
+                {uploading ? 'Enviando...' : 'ENVIAR'}
               </Button>
             </div>
           )}
 
-          {/* Folder-based document list */}
           {processo.documentos.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">Nenhum documento anexado</p>
           ) : (
