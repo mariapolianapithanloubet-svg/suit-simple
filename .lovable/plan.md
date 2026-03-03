@@ -1,26 +1,40 @@
 
 
-## Plan: Group clients by "grupo" on the CLIENTES page
+## Plan: Create GRUPOS management page
 
-### Changes: `src/components/ClientRanking.tsx` and `src/App.tsx`
+### 1. Database Migration
 
-**1. Pass `grupos` to `ClientRanking`**
-- In `App.tsx` line 54, pass `grupos` prop: `<ClientRanking processos={processos} grupos={grupos} />`
+Add DELETE RLS policy for `grupos` table (currently missing):
 
-**2. Rewrite `ClientRanking.tsx` grouping logic**
-- Accept `grupos` prop (type `Grupo[]`)
-- Build client ranking as today, but also track each client's `grupoId` by looking up the processos
-- Group clients into sections:
-  - One collapsible section per grupo (sorted alphabetically by grupo name)
-  - One "CLIENTES INDIVIDUAIS" section for clients whose processes have no `grupoId`
-- Within each section, sort clients alphabetically by name
-- Each client card shows: name, process count, relevantes/acompanhamento badges (same as current)
+```sql
+CREATE POLICY "Authenticated users can delete grupos"
+ON public.grupos FOR DELETE TO authenticated
+USING (auth.role() = 'authenticated');
+```
 
-**3. UI Structure**
-- Use `Collapsible` / `CollapsibleTrigger` / `CollapsibleContent` from Radix
-- Each section header: grupo name (uppercase) + client count badge + chevron
-- Sections open by default
-- "CLIENTES INDIVIDUAIS" section rendered last
+### 2. New Component: `src/components/GrupoManager.tsx`
 
-**No changes to**: PROCESSOS page, database schema, authentication, RLS
+- Full CRUD page for grupos
+- List all grupos in a table/card layout
+- Inline form to create new grupo (nome field, required)
+- Edit button per row: inline edit or dialog
+- Delete button with confirmation dialog
+- Uses `supabase` client directly for CRUD operations
+- On create/edit/delete, calls a `refetch` callback so the hook's `grupos` state stays in sync
+
+### 3. Update `src/hooks/useProcessos.ts`
+
+- Add `deleteGrupo` and `updateGrupo` functions
+- Expose them from the hook
+
+### 4. Update `src/components/AppLayout.tsx`
+
+- Add nav item `{ label: 'Grupos', path: '/grupos', icon: Layers }` after "Clientes"
+
+### 5. Update `src/App.tsx`
+
+- Add route `/grupos` rendering `<GrupoManager>` with `grupos`, `addGrupo`, `updateGrupo`, `deleteGrupo`, and `refetch` props
+- The `addGrupo` already exists in the hook; after creating a grupo the hook updates state, so the `ProcessForm` select will reflect it immediately via shared state
+
+### No changes to: existing data, authentication, RLS on other tables, database schema beyond the missing DELETE policy
 
