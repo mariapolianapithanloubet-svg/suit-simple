@@ -5,6 +5,7 @@ import {
   FolderOpen,
   Plus,
   Users,
+  Layers,
   Scale,
   ChevronRight,
   Menu,
@@ -19,6 +20,7 @@ const navItems = [
   { label: 'Processos', path: '/processos', icon: FolderOpen },
   { label: 'Novo Processo', path: '/processos/novo', icon: Plus },
   { label: 'Clientes', path: '/clientes', icon: Users },
+  { label: 'Grupos', path: '/grupos', icon: Layers },
 ];
 
 interface AppLayoutProps {
