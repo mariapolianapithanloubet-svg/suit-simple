@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Processo, Documento } from '@/types/process';
+import { Processo, Documento, Grupo } from '@/types/process';
 
 function rowToProcesso(row: any): Processo {
   return {
@@ -20,6 +20,7 @@ function rowToProcesso(row: any): Processo {
     senhaAcesso: row.senha_acesso,
     status: row.status,
     ultimaMovimentacao: row.ultima_movimentacao,
+    grupoId: row.grupo_id || undefined,
     documentos: [],
     criadoEm: row.criado_em,
     atualizadoEm: row.atualizado_em,
@@ -28,7 +29,13 @@ function rowToProcesso(row: any): Processo {
 
 export function useProcessos() {
   const [processos, setProcessos] = useState<Processo[]>([]);
+  const [grupos, setGrupos] = useState<Grupo[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const fetchGrupos = useCallback(async () => {
+    const { data } = await supabase.from('grupos').select('*').order('nome');
+    if (data) setGrupos(data.map((g: any) => ({ id: g.id, nome: g.nome })));
+  }, []);
 
   const fetchProcessos = useCallback(async () => {
     setLoading(true);
@@ -59,14 +66,35 @@ export function useProcessos() {
           p.documentos = docsByProcesso[p.id] || [];
         });
       }
+
+      // Enrich with grupo names
+      if (grupos.length > 0) {
+        const grupoMap = new Map(grupos.map(g => [g.id, g.nome]));
+        mapped.forEach(p => {
+          if (p.grupoId) p.grupoNome = grupoMap.get(p.grupoId);
+        });
+      }
+
       setProcessos(mapped);
     }
     setLoading(false);
-  }, []);
+  }, [grupos]);
+
+  useEffect(() => {
+    fetchGrupos();
+  }, [fetchGrupos]);
 
   useEffect(() => {
     fetchProcessos();
   }, [fetchProcessos]);
+
+  const addGrupo = useCallback(async (nome: string) => {
+    const { data, error } = await supabase.from('grupos').insert({ nome }).select().single();
+    if (error) throw error;
+    const grupo: Grupo = { id: data.id, nome: data.nome };
+    setGrupos(prev => [...prev, grupo].sort((a, b) => a.nome.localeCompare(b.nome)));
+    return grupo;
+  }, []);
 
   const addProcesso = useCallback(async (data: Omit<Processo, 'id' | 'criadoEm' | 'atualizadoEm' | 'documentos'>) => {
     const { data: row, error } = await supabase.from('processos').insert({
@@ -85,6 +113,7 @@ export function useProcessos() {
       senha_acesso: data.senhaAcesso,
       status: data.status,
       ultima_movimentacao: data.ultimaMovimentacao,
+      grupo_id: data.grupoId || null,
     }).select().single();
 
     if (!error && row) {
@@ -111,6 +140,7 @@ export function useProcessos() {
     if (data.senhaAcesso !== undefined) updates.senha_acesso = data.senhaAcesso;
     if (data.status !== undefined) updates.status = data.status;
     if (data.ultimaMovimentacao !== undefined) updates.ultima_movimentacao = data.ultimaMovimentacao;
+    if (data.grupoId !== undefined) updates.grupo_id = data.grupoId || null;
 
     await supabase.from('processos').update(updates).eq('id', id);
     await fetchProcessos();
@@ -189,5 +219,5 @@ export function useProcessos() {
     await fetchProcessos();
   }, [fetchProcessos]);
 
-  return { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, refetch: fetchProcessos };
+  return { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, addGrupo, refetch: fetchProcessos };
 }

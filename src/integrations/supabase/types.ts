@@ -58,6 +58,21 @@ export type Database = {
           },
         ]
       }
+      grupos: {
+        Row: {
+          id: string
+          nome: string
+        }
+        Insert: {
+          id?: string
+          nome: string
+        }
+        Update: {
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
       processos: {
         Row: {
           atualizado_em: string
@@ -67,6 +82,7 @@ export type Database = {
           competencia: string
           criado_em: string
           estado: string
+          grupo_id: string | null
           id: string
           numero: string
           origem: string
@@ -88,6 +104,7 @@ export type Database = {
           competencia: string
           criado_em?: string
           estado?: string
+          grupo_id?: string | null
           id?: string
           numero: string
           origem?: string
@@ -109,6 +126,7 @@ export type Database = {
           competencia?: string
           criado_em?: string
           estado?: string
+          grupo_id?: string | null
           id?: string
           numero?: string
           origem?: string
@@ -122,7 +140,15 @@ export type Database = {
           ultima_movimentacao?: string
           vara_camara_turma?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "processos_grupo_id_fkey"
+            columns: ["grupo_id"]
+            isOneToOne: false
+            referencedRelation: "grupos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

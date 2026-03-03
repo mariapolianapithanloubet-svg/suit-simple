@@ -171,7 +171,9 @@ function ProcessSection({ title, processos, onDelete }: { title: string; process
   if (processos.length === 0) return null;
 
   const grouped = COMPETENCIAS.reduce((acc, comp) => {
-    const items = processos.filter(p => p.competencia === comp);
+    const items = processos
+      .filter(p => p.competencia === comp)
+      .sort((a, b) => getClienteName(a).localeCompare(getClienteName(b)));
     if (items.length > 0) acc[comp] = items;
     return acc;
   }, {} as Record<string, Processo[]>);
@@ -198,13 +200,13 @@ function ProcessSection({ title, processos, onDelete }: { title: string; process
                   <div className="flex items-center gap-4 flex-wrap">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-mono text-sm font-semibold text-foreground">{p.numero}</span>
+                        <span className="text-sm font-semibold text-foreground">{getClienteName(p)}</span>
+                        <span className="font-mono text-xs text-muted-foreground">{p.numero}</span>
                         <Badge variant="secondary" className="text-xs font-medium">{p.tipoAcao}</Badge>
                         <Badge variant="outline" className="text-xs font-medium">{p.estado}</Badge>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
                         {p.autor} {p.reu ? <><span className="opacity-40">vs</span> {p.reu}</> : ''}
-                        <span className="ml-2 text-primary/80 font-medium">(cliente: {getClienteName(p)})</span>
                       </p>
                     </div>
                     <div className="text-right text-sm text-muted-foreground hidden sm:block">

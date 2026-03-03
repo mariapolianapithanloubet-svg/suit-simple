@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Processo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, SISTEMAS_ACESSO, Competencia, Categoria } from '@/types/process';
+import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, SISTEMAS_ACESSO, Competencia, Categoria } from '@/types/process';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,9 +14,10 @@ interface ProcessFormProps {
   initialData?: Processo;
   onSubmit: (data: Omit<Processo, 'id' | 'criadoEm' | 'atualizadoEm' | 'documentos'>) => void | Promise<any>;
   mode: 'create' | 'edit';
+  grupos?: Grupo[];
 }
 
-export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
+export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: ProcessFormProps) {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -35,6 +36,7 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
     senhaAcesso: initialData?.senhaAcesso || '',
     status: initialData?.status || '',
     ultimaMovimentacao: initialData?.ultimaMovimentacao || '',
+    grupoId: initialData?.grupoId || '',
   });
 
   const update = (field: string, value: any) => setForm(prev => ({ ...prev, [field]: value }));
@@ -109,6 +111,16 @@ export function ProcessForm({ initialData, onSubmit, mode }: ProcessFormProps) {
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
                 {CATEGORIAS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">GRUPO</Label>
+            <Select value={form.grupoId || 'none'} onValueChange={v => update('grupoId', v === 'none' ? '' : v)}>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Nenhum" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Nenhum</SelectItem>
+                {grupos.map(g => <SelectItem key={g.id} value={g.id}>{g.nome}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>

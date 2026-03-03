@@ -19,7 +19,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { session, loading: authLoading, signOut, isAdmin } = useAuth();
-  const { processos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported } = useProcessos();
+  const { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported } = useProcessos();
 
   if (authLoading) {
     return (
@@ -43,13 +43,13 @@ function AppContent() {
         <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} loading={loading} isAdmin={isAdmin} onClearImported={clearImported} />} />
         <Route path="/processos/importar" element={<ProcessImport onImport={bulkImport} />} />
         <Route path="/processos/novo" element={
-          <ProcessForm mode="create" onSubmit={addProcesso} />
+          <ProcessForm mode="create" onSubmit={addProcesso} grupos={grupos} />
         } />
         <Route path="/processos/:id" element={
           <ProcessDetail processos={processos} onDelete={deleteProcesso} onUploadDocumento={uploadDocumento} onDeleteDocumento={deleteDocumento} />
         } />
         <Route path="/processos/:id/editar" element={
-          <EditProcessPage processos={processos} onUpdate={updateProcesso} />
+          <EditProcessPage processos={processos} onUpdate={updateProcesso} grupos={grupos} />
         } />
         <Route path="/clientes" element={<ClientRanking processos={processos} />} />
         <Route path="*" element={<NotFound />} />
@@ -58,7 +58,7 @@ function AppContent() {
   );
 }
 
-function EditProcessPage({ processos, onUpdate }: { processos: any[]; onUpdate: (id: string, data: any) => void }) {
+function EditProcessPage({ processos, onUpdate, grupos }: { processos: any[]; onUpdate: (id: string, data: any) => void; grupos: any[] }) {
   const { id } = useParams();
   const processo = processos.find((p: any) => p.id === id);
   if (!processo) return <div className="text-center py-20 text-muted-foreground text-sm">Processo não encontrado</div>;
@@ -67,6 +67,7 @@ function EditProcessPage({ processos, onUpdate }: { processos: any[]; onUpdate: 
       mode="edit"
       initialData={processo}
       onSubmit={(data) => onUpdate(processo.id, data)}
+      grupos={grupos}
     />
   );
 }
