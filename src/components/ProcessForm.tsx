@@ -260,6 +260,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
+            <Label className="text-sm font-medium">TRIBUNAL</Label>
+            <Input value={form.tribunalPrimeiraInstancia} onChange={e => update('tribunalPrimeiraInstancia', e.target.value)} placeholder="Ex: TJMS, TRF3, TRT24" className="h-10" />
+          </div>
+          <div className="space-y-2">
             <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
             <Input value={form.primeiraInstanciaNumero} onChange={e => update('primeiraInstanciaNumero', e.target.value)} className="h-10" />
           </div>

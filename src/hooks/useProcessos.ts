@@ -164,6 +164,7 @@ export function useProcessos() {
     if (data.status !== undefined) updates.status = data.status;
     if (data.ultimaMovimentacao !== undefined) updates.ultima_movimentacao = data.ultimaMovimentacao;
     if (data.grupoId !== undefined) updates.grupo_id = data.grupoId || null;
+    if (data.tribunalPrimeiraInstancia !== undefined) updates.tribunal_primeira_instancia = data.tribunalPrimeiraInstancia || null;
     if (data.primeiraInstanciaNumero !== undefined) updates.primeira_instancia_numero = data.primeiraInstanciaNumero || null;
     if (data.primeiraInstanciaVara !== undefined) updates.primeira_instancia_vara = data.primeiraInstanciaVara || null;
     if (data.primeiraInstanciaComarca !== undefined) updates.primeira_instancia_comarca = data.primeiraInstanciaComarca || null;
