@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, SISTEMAS_ACESSO, Competencia, Categoria, FaseAtual } from '@/types/process';
+import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, SISTEMAS_ACESSO, Competencia, Categoria, FaseAtual, TIPOS_VINCULO } from '@/types/process';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,14 +8,25 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Save, ArrowLeft } from 'lucide-react';
+import { Save, ArrowLeft, Plus, Trash2, Link } from 'lucide-react';
 import { toast } from 'sonner';
+import { useProcessosVinculados, ProcessoVinculado } from '@/hooks/useProcessosVinculados';
+import { Badge } from '@/components/ui/badge';
+
+interface VinculoEntry {
+  id?: string; // existing DB id
+  processoVinculadoId: string | null;
+  numeroManual: string;
+  tipoVinculo: string;
+  isExisting: boolean; // true = select from system, false = manual
+}
 
 interface ProcessFormProps {
   initialData?: Processo;
   onSubmit: (data: Omit<Processo, 'id' | 'criadoEm' | 'atualizadoEm' | 'documentos'>) => void | Promise<any>;
   mode: 'create' | 'edit';
   grupos?: Grupo[];
+  processos?: Processo[];
 }
 
 export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: ProcessFormProps) {
