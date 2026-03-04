@@ -24,6 +24,7 @@ function rowToProcesso(row: any): Processo {
     documentos: [],
     criadoEm: row.criado_em,
     atualizadoEm: row.atualizado_em,
+    tribunalPrimeiraInstancia: row.tribunal_primeira_instancia ?? null,
     primeiraInstanciaNumero: row.primeira_instancia_numero ?? null,
     primeiraInstanciaVara: row.primeira_instancia_vara ?? null,
     primeiraInstanciaComarca: row.primeira_instancia_comarca ?? null,
