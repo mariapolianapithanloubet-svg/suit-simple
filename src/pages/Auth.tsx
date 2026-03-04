@@ -13,10 +13,16 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const ALLOWED_DOMAIN = '@pithan-loubet.com.br';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast.error('Preencha todos os campos');
+      return;
+    }
+    if (mode === 'signup' && !email.toLowerCase().endsWith(ALLOWED_DOMAIN)) {
+      toast.error('Apenas e-mails @pithan-loubet.com.br são permitidos.');
       return;
     }
     setLoading(true);
@@ -69,9 +75,14 @@ export default function Auth() {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="seu@email.com"
+                    placeholder="seu@pithan-loubet.com.br"
                     className="pl-10 h-11"
                   />
+                  {mode === 'signup' && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Apenas e-mails @pithan-loubet.com.br são permitidos.
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="space-y-2">

@@ -1,39 +1,52 @@
 
 
-## Restrict Signups to @pithan-loubet.com.br — Server-Side
+## Plan: Refactor Tramitação to Multi-Instance Layout (adjusted migration)
 
-### Situation
+### 1. Database Migration
 
-You want to use Supabase Auth's built-in "allowed email domains" setting to restrict signups. However, I do not have a tool to configure Auth settings (like allowed email domains) directly from here. The `supabase/config.toml` file is auto-managed and should not be edited manually.
+```sql
+ALTER TABLE public.processos
+  ADD COLUMN primeira_instancia_numero text,
+  ADD COLUMN primeira_instancia_vara text,
+  ADD COLUMN primeira_instancia_comarca text,
+  ADD COLUMN segunda_instancia_tipo_recurso text,
+  ADD COLUMN segunda_instancia_numero text,
+  ADD COLUMN segunda_instancia_turma_camara text,
+  ADD COLUMN segunda_instancia_tribunal text,
+  ADD COLUMN tribunal_superior_nome text,
+  ADD COLUMN tribunal_superior_numero text,
+  ADD COLUMN tribunal_superior_turma text,
+  ADD COLUMN fase_atual text NOT NULL DEFAULT 'PRIMEIRA_INSTANCIA';
+```
 
-### Available Server-Side Options (Without Edge Function)
+All new text columns are nullable with no default. `fase_atual` is NOT NULL with default `'PRIMEIRA_INSTANCIA'`. No existing columns removed.
 
-Since an edge function is off the table, here are the viable approaches:
+### 2. Type Updates (`src/types/process.ts`)
 
-**Option A — Client-side validation + existing DB function (recommended given constraints)**
-- The `check_email_domain()` function already exists in the database
-- We cannot attach a trigger to `auth.users` (reserved schema), so it can't auto-enforce on signup
-- Add robust client-side validation in `Auth.tsx` that blocks non-`@pithan-loubet.com.br` emails before the signup call
-- This is a UX gate, not a true server-side block
+- Add `FaseAtual` type: `'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR'`
+- Add new optional fields to `Processo` interface (all `string | null`)
+- Add `faseAtual: FaseAtual` (required)
+- Add constants: `TIPOS_RECURSO` (7 options) and `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`)
 
-**Option B — Manual backend configuration**
-- You can configure the allowed email domain restriction directly in the backend settings
-- Navigate to the Cloud panel → Authentication settings and set the allowed domain to `pithan-loubet.com.br`
+### 3. Hook Updates (`src/hooks/useProcessos.ts`)
 
-### Recommended Plan
+- `rowToProcesso`: map all new columns (nullable → `null`)
+- `addProcesso` / `updateProcesso`: persist new fields, sending `null` for empty values
 
-Since I cannot configure the Auth allowed-domains setting programmatically, I recommend:
+### 4. Form Updates (`src/components/ProcessForm.tsx`)
 
-1. **You manually set the allowed domain** in the backend Auth settings (Cloud panel → Auth)
-2. **I update `Auth.tsx`** to add client-side domain validation as a UX convenience:
-   - Block signup if email doesn't end with `@pithan-loubet.com.br`
-   - Show error: "Apenas e-mails @pithan-loubet.com.br são permitidos"
-   - Update placeholder to `seu@pithan-loubet.com.br`
-   - Add helper text noting the restriction
+Replace current TRAMITAÇÃO card with four cards:
 
-| File | Change |
-|------|--------|
-| `src/pages/Auth.tsx` | Domain validation, updated placeholder, helper text |
+**PRIMEIRA INSTÂNCIA**: Número do Processo, Vara, Comarca (all text inputs, optional)
 
-This gives you both server-side enforcement (via Auth config) and a good user experience (immediate client feedback).
+**SEGUNDA INSTÂNCIA**: Tipo de Recurso (dropdown, 7 options), Número do Processo, Turma/Câmara, Tribunal (all optional)
+
+**TRIBUNAIS SUPERIORES**: Tribunal Superior (dropdown: STJ/STF), Número do Processo, Turma (all optional)
+
+**FASE ATUAL**: Radio group with 3 options, required, validated on submit
+
+Move `sistema_acesso` and `telefone` fields to a separate "ACESSO E CONTATOS" card. All sections visible simultaneously.
+
+### No changes to
+Authentication, RLS, other pages, existing data/columns
 
