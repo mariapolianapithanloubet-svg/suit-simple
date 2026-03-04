@@ -33,7 +33,6 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
     varaCamaraTurma: initialData?.varaCamaraTurma || '',
     sistemaAcesso: initialData?.sistemaAcesso || '',
     telefoneSecretaria: initialData?.telefoneSecretaria || '',
-    telefoneAssessoria: initialData?.telefoneAssessoria || '',
     senhaAcesso: initialData?.senhaAcesso || '',
     status: initialData?.status || '',
     ultimaMovimentacao: initialData?.ultimaMovimentacao || '',
