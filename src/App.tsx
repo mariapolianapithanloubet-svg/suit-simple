@@ -13,6 +13,8 @@ import { ProcessDetail } from "@/components/ProcessDetail";
 import { ClientRanking } from "@/components/ClientRanking";
 import { ProcessImport } from "@/components/ProcessImport";
 import { GrupoManager } from "@/components/GrupoManager";
+import ConsultarProcessos from "@/pages/ConsultarProcessos";
+import ProcessoView from "@/pages/ProcessoView";
 import Auth from "@/pages/Auth";
 import NotFound from "./pages/NotFound";
 
