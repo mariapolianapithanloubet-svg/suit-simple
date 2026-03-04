@@ -64,7 +64,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
     tipoAcao: initialData?.tipoAcao || '',
     estado: initialData?.estado || '',
     competencia: (initialData?.competencia || '') as Competencia | '',
-    categoria: (initialData?.categoria || '') as Categoria | '',
+    categoria: (initialData?.categoria || '') as string,
     autor: initialData?.autor || '',
     reu: initialData?.reu || '',
     clienteEscritorio: (initialData?.clienteEscritorio || '') as 'Autor' | 'Réu' | '',
