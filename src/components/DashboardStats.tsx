@@ -37,7 +37,7 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
   return (
     <div className="space-y-10">
       <div>
-        <h2 className="text-3xl font-display font-bold text-foreground tracking-tight">PAINEL DE CONTROLE</h2>
+        <h2 className="text-[28px] font-semibold text-foreground tracking-tight">PAINEL DE CONTROLE</h2>
         <p className="text-base text-muted-foreground mt-1">Visão geral dos processos do escritório</p>
       </div>
 
