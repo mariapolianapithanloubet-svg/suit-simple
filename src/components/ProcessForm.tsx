@@ -157,7 +157,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
   const availableProcessos = processos.filter(p => p.id !== initialData?.id);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
+    <form onSubmit={handleSubmit} className="space-y-10 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">
