@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Processo, getClienteName } from '@/types/process';
+import { Processo, getClienteName, COMPETENCIAS } from '@/types/process';
+import { CategoriaRow } from '@/hooks/useAdminTables';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
