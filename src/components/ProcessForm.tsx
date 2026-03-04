@@ -275,35 +275,6 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
         </CardContent>
       </Card>
 
-      {/* ACESSO E CONTATOS */}
-      <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">ACESSO E CONTATOS</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">VARA / CÂMARA / TURMA</Label>
-            <Input value={form.varaCamaraTurma} onChange={e => update('varaCamaraTurma', e.target.value)} className="h-10" />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">SISTEMA DE ACESSO</Label>
-            <Select value={form.sistemaAcesso || undefined} onValueChange={v => update('sistemaAcesso', v)}>
-              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
-              <SelectContent>
-                {SISTEMAS_ACESSO.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">TELEFONE DA SECRETARIA</Label>
-            <Input value={form.telefoneSecretaria} onChange={e => update('telefoneSecretaria', e.target.value)} placeholder="(00) 0000-0000" className="h-10" />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">TELEFONE DA ASSESSORIA</Label>
-            <Input value={form.telefoneAssessoria} onChange={e => update('telefoneAssessoria', e.target.value)} placeholder="(00) 0000-0000" className="h-10" />
-          </div>
-        </CardContent>
-      </Card>
 
       {/* CONTROLE INTERNO */}
       <Card className="shadow-card border-border/60">
