@@ -142,21 +142,30 @@ export function AppLayout({ children, onSignOut, userEmail }: AppLayoutProps) {
         {/* Mobile nav dropdown */}
         {mobileOpen && (
           <div className="md:hidden bg-sidebar border-b border-sidebar-border px-3 py-2 space-y-0.5">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  'flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                  location.pathname === item.path
-                    ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                    : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/40'
+            {navGroups.map((group, gi) => (
+              <div key={gi} className="space-y-0.5">
+                {group.label && (
+                  <p className="px-3 text-[10px] tracking-[0.15em] uppercase text-sidebar-foreground/40 font-semibold mt-2 mb-1">
+                    {group.label}
+                  </p>
                 )}
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </Link>
+                {group.items.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setMobileOpen(false)}
+                    className={cn(
+                      'flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                      location.pathname === item.path
+                        ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                        : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/40'
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
             ))}
           </div>
         )}
