@@ -75,9 +75,14 @@ export default function Auth() {
                     type="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    placeholder="seu@email.com"
+                    placeholder="seu@pithan-loubet.com.br"
                     className="pl-10 h-11"
                   />
+                  {mode === 'signup' && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Apenas e-mails @pithan-loubet.com.br são permitidos.
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="space-y-2">
