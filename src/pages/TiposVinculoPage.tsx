@@ -64,7 +64,7 @@ export default function TiposVinculoPage({ tiposVinculo, onAdd, onUpdate, onDele
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">Tipos de Vínculo</h2>
+        <h2 className="text-[28px] font-semibold text-foreground tracking-tight">Tipos de Vínculo</h2>
         <p className="text-sm text-muted-foreground mt-1">Gerencie os tipos de vínculo entre processos.</p>
       </div>
 

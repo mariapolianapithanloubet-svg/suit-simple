@@ -117,7 +117,7 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">Consultar Processos</h2>
+        <h2 className="text-[28px] font-semibold text-foreground tracking-tight">Consultar Processos</h2>
         <p className="text-sm text-muted-foreground mt-1">Pesquise por número, cliente, parte contrária ou grupo</p>
       </div>
 
@@ -183,22 +183,22 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
           <Table>
             <TableHeader className="sticky top-0 z-10 bg-muted/80 backdrop-blur-sm">
               <TableRow className="border-b-2 border-border/60">
-                <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('numero')}>
+                <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors text-[13px] font-semibold uppercase tracking-[0.03em]" onClick={() => toggleSort('numero')}>
                   <span className="inline-flex items-center">Número do Processo<SortIcon col="numero" /></span>
                 </TableHead>
-                <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('cliente')}>
+                <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors text-[13px] font-semibold uppercase tracking-[0.03em]" onClick={() => toggleSort('cliente')}>
                   <span className="inline-flex items-center">Cliente<SortIcon col="cliente" /></span>
                 </TableHead>
-                <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('grupo')}>
+                <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors text-[13px] font-semibold uppercase tracking-[0.03em]" onClick={() => toggleSort('grupo')}>
                   <span className="inline-flex items-center">Grupo<SortIcon col="grupo" /></span>
                 </TableHead>
-                <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('fase')}>
+                <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors text-[13px] font-semibold uppercase tracking-[0.03em]" onClick={() => toggleSort('fase')}>
                   <span className="inline-flex items-center">Fase Atual<SortIcon col="fase" /></span>
                 </TableHead>
-                <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('competencia')}>
+                <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors text-[13px] font-semibold uppercase tracking-[0.03em]" onClick={() => toggleSort('competencia')}>
                   <span className="inline-flex items-center">Competência<SortIcon col="competencia" /></span>
                 </TableHead>
-                <TableHead className="text-right">Ações</TableHead>
+                <TableHead className="text-right text-[13px] font-semibold uppercase tracking-[0.03em]">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

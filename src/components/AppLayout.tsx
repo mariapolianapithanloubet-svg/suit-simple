@@ -68,7 +68,7 @@ export function AppLayout({ children, onSignOut, userEmail }: AppLayoutProps) {
             <Scale className="h-4.5 w-4.5 text-gold" />
           </div>
           <div>
-            <h1 className="font-display text-lg font-bold text-sidebar-primary tracking-tight">
+            <h1 className="text-lg font-bold text-sidebar-primary tracking-tight">
               JuriControl
             </h1>
             <p className="text-[10px] tracking-[0.2em] uppercase text-sidebar-foreground/40 font-medium">
@@ -141,7 +141,7 @@ export function AppLayout({ children, onSignOut, userEmail }: AppLayoutProps) {
             </button>
             <div className="flex items-center gap-2">
               <Scale className="h-4 w-4 text-gold" />
-              <h1 className="font-display text-sm font-bold text-sidebar-primary">JuriControl</h1>
+              <h1 className="text-sm font-bold text-sidebar-primary">JuriControl</h1>
             </div>
           </div>
           {onSignOut && (

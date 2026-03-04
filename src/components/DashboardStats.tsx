@@ -37,7 +37,7 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
   return (
     <div className="space-y-10">
       <div>
-        <h2 className="text-3xl font-display font-bold text-foreground tracking-tight">PAINEL DE CONTROLE</h2>
+        <h2 className="text-[28px] font-semibold text-foreground tracking-tight">PAINEL DE CONTROLE</h2>
         <p className="text-base text-muted-foreground mt-1">Visão geral dos processos do escritório</p>
       </div>
 
@@ -51,7 +51,7 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card className="shadow-card border-border/60">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base font-display tracking-tight">DISTRIBUIÇÃO POR COMPETÊNCIA</CardTitle>
+            <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">DISTRIBUIÇÃO POR COMPETÊNCIA</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {stats.porCompetencia.map(({ label, count }) => (
@@ -73,7 +73,7 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
 
         <Card className="shadow-card border-border/60">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base font-display tracking-tight">PROCESSOS POR ESTADO</CardTitle>
+            <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">PROCESSOS POR ESTADO</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {stats.estadosOrdenados.length === 0 && (

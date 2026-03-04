@@ -158,10 +158,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
   const availableProcessos = processos.filter(p => p.id !== initialData?.id);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-10 max-w-4xl">
+    <form onSubmit={handleSubmit} className="space-y-12 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">
+          <h2 className="text-[28px] font-semibold text-foreground tracking-tight">
             {mode === 'create' ? 'Novo Processo' : 'Editar Processo'}
           </h2>
           <p className="text-sm text-muted-foreground mt-1">Preencha os dados do processo</p>
@@ -175,7 +175,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* IDENTIFICAÇÃO */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight">IDENTIFICAÇÃO</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">IDENTIFICAÇÃO</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
@@ -229,7 +229,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* PARTES */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight">PARTES</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">PARTES</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
@@ -256,7 +256,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* PRIMEIRA INSTÂNCIA */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight">PRIMEIRA INSTÂNCIA</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">PRIMEIRA INSTÂNCIA</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
@@ -294,7 +294,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* SEGUNDA INSTÂNCIA */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight">SEGUNDA INSTÂNCIA</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">SEGUNDA INSTÂNCIA</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 pt-5">
           <div className="space-y-2">
@@ -329,7 +329,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* TRIBUNAIS SUPERIORES */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight">TRIBUNAIS SUPERIORES</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">TRIBUNAIS SUPERIORES</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
@@ -355,7 +355,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* FASE ATUAL */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight">FASE ATUAL *</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">FASE ATUAL *</CardTitle>
         </CardHeader>
         <CardContent className="pt-5">
           <RadioGroup value={form.faseAtual} onValueChange={(v: FaseAtual) => update('faseAtual', v)} className="flex flex-col sm:flex-row gap-4">
@@ -378,7 +378,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* PROCESSOS VINCULADOS */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight flex items-center gap-2">
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em] flex items-center gap-2">
             <Link className="h-4.5 w-4.5" />
             PROCESSOS VINCULADOS
           </CardTitle>
@@ -449,7 +449,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* CONTROLE INTERNO */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight">CONTROLE INTERNO</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">CONTROLE INTERNO</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-5">
           <div className="space-y-2">

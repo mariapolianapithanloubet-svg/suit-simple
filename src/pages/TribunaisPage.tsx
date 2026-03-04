@@ -78,7 +78,7 @@ export default function TribunaisPage({ tribunais, onAdd, onUpdate, onDelete }: 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">Tribunais</h2>
+        <h2 className="text-[28px] font-semibold text-foreground tracking-tight">Tribunais</h2>
         <p className="text-sm text-muted-foreground mt-1">Gerencie os tribunais disponíveis no sistema.</p>
       </div>
 

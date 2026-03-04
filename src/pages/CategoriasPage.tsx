@@ -64,7 +64,7 @@ export default function CategoriasPage({ categorias, onAdd, onUpdate, onDelete }
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">Categorias</h2>
+        <h2 className="text-[28px] font-semibold text-foreground tracking-tight">Categorias</h2>
         <p className="text-sm text-muted-foreground mt-1">Gerencie as categorias de processos.</p>
       </div>
 

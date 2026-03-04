@@ -78,7 +78,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
             VOLTAR
           </Button>
           <div>
-            <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">{processo.numero}</h2>
+            <h2 className="text-[28px] font-semibold text-foreground tracking-tight">{processo.numero}</h2>
             <p className="text-sm text-muted-foreground">{processo.tipoAcao}</p>
           </div>
         </div>
@@ -105,7 +105,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">PARTES</CardTitle></CardHeader>
+          <CardHeader className="pb-4"><CardTitle className="text-[18px] font-semibold tracking-[0.02em]">PARTES</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <Field label="AUTOR" value={processo.autor} />
             <Field label="RÉU" value={processo.reu} />
@@ -114,7 +114,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
         </Card>
 
         <Card className="shadow-card border-border/60">
-          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">TRAMITAÇÃO</CardTitle></CardHeader>
+          <CardHeader className="pb-4"><CardTitle className="text-[18px] font-semibold tracking-[0.02em]">TRAMITAÇÃO</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <Field label="VARA / CÂMARA / TURMA" value={processo.varaCamaraTurma} />
             <Field label="SISTEMA DE ACESSO" value={processo.sistemaAcesso} />
@@ -124,7 +124,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
         </Card>
 
         <Card className="shadow-card border-border/60 lg:col-span-2">
-          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">CONTROLE INTERNO</CardTitle></CardHeader>
+          <CardHeader className="pb-4"><CardTitle className="text-[18px] font-semibold tracking-[0.02em]">CONTROLE INTERNO</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -143,7 +143,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
       {/* Documentos */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">DOCUMENTOS</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">DOCUMENTOS</CardTitle>
         </CardHeader>
         <CardContent className="space-y-5">
           {onUploadDocumento && (
