@@ -23,7 +23,14 @@ export default function ProcessoView({ processos, grupos }: Props) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const { fetchVinculados } = useProcessosVinculados();
+  const [vinculados, setVinculados] = useState<ProcessoVinculado[]>([]);
 
+  useEffect(() => {
+    if (id) {
+      fetchVinculados(id).then(setVinculados);
+    }
+  }, [id, fetchVinculados]);
   const processo = processos.find(p => p.id === id);
   if (!processo) {
     return (
