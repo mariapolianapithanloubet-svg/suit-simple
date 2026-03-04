@@ -88,6 +88,43 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [] 
         />
       </div>
 
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 items-center">
+        <Select value={filtroCompetencia} onValueChange={setFiltroCompetencia}>
+          <SelectTrigger className="h-9 w-40"><SelectValue placeholder="Competência" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas competências</SelectItem>
+            {COMPETENCIAS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={filtroFase} onValueChange={setFiltroFase}>
+          <SelectTrigger className="h-9 w-40"><SelectValue placeholder="Fase" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas fases</SelectItem>
+            {Object.entries(FASE_LABELS).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
+          <SelectTrigger className="h-9 w-44"><SelectValue placeholder="Categoria" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas categorias</SelectItem>
+            {categorias.map(c => <SelectItem key={c.id} value={c.nome}>{c.nome}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Select value={filtroGrupo} onValueChange={setFiltroGrupo}>
+          <SelectTrigger className="h-9 w-40"><SelectValue placeholder="Grupo" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos grupos</SelectItem>
+            {grupos.map(g => <SelectItem key={g.id} value={g.id}>{g.nome}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        {hasFilters && (
+          <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1 text-xs">
+            <X className="h-3.5 w-3.5" />Limpar filtros
+          </Button>
+        )}
+      </div>
+
       {filtered.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-12">
           {search ? 'Nenhum processo encontrado para esta pesquisa.' : 'Nenhum processo cadastrado.'}
