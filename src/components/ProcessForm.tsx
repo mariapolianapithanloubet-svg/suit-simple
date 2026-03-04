@@ -122,7 +122,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       }
       
       toast.success(mode === 'create' ? 'Processo cadastrado!' : 'Processo atualizado!');
-      navigate('/processos');
+      navigate(mode === 'edit' ? '/consultar' : '/processos');
     } catch {
       toast.error('Erro ao salvar processo');
     } finally {
