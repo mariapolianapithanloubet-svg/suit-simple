@@ -232,6 +232,7 @@ export function useProcessos() {
         reu: data.reu || null,
         cliente_escritorio: data.clienteEscritorio || 'Autor',
         vara_camara_turma: data.varaCamaraTurma,
+        tribunal_primeira_instancia: data.tribunalPrimeiraInstancia || null,
         sistema_acesso: data.sistemaAcesso,
         telefone_secretaria: data.telefoneSecretaria,
         telefone_assessoria: data.telefoneAssessoria || '',
