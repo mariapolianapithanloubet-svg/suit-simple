@@ -257,7 +257,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
         <CardHeader className="pb-2 border-b border-border/40">
           <CardTitle className="text-lg font-display font-semibold tracking-tight">PRIMEIRA INSTÂNCIA</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
             <Input value={form.primeiraInstanciaNumero} onChange={e => update('primeiraInstanciaNumero', e.target.value)} className="h-10" />
