@@ -208,7 +208,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             <Select value={form.categoria || undefined} onValueChange={v => update('categoria', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
-                {CATEGORIAS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                {categorias.map(c => <SelectItem key={c.id} value={c.nome}>{c.nome}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
