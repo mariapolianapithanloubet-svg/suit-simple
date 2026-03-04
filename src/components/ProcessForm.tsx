@@ -76,6 +76,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
     ultimaMovimentacao: initialData?.ultimaMovimentacao || '',
     grupoId: initialData?.grupoId || '',
     // Multi-instance
+    tribunalPrimeiraInstancia: initialData?.tribunalPrimeiraInstancia || '',
     primeiraInstanciaNumero: initialData?.primeiraInstanciaNumero || '',
     primeiraInstanciaVara: initialData?.primeiraInstanciaVara || '',
     primeiraInstanciaComarca: initialData?.primeiraInstanciaComarca || '',
