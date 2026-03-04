@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, Competencia, Categoria, FaseAtual } from '@/types/process';
+import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, SISTEMAS_ACESSO, Competencia, Categoria, FaseAtual } from '@/types/process';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -187,7 +187,12 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">SISTEMA DE ACESSO</Label>
-            <Input value={form.sistemaAcesso} onChange={e => update('sistemaAcesso', e.target.value)} placeholder="Ex: PJe, PROJUDI, E-SAJ" className="h-10" />
+            <Select value={form.sistemaAcesso || undefined} onValueChange={v => update('sistemaAcesso', v)}>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>
+                {SISTEMAS_ACESSO.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">TELEFONES DO JUÍZO</Label>
