@@ -77,7 +77,7 @@ export function AppLayout({ children, onSignOut, userEmail }: AppLayoutProps) {
           </div>
         </div>
 
-        <nav className="flex-1 px-3 py-3 space-y-4">
+        <nav className="flex-1 px-3 py-3 space-y-6">
           {navGroups.map((group, gi) => (
             <div key={gi} className="space-y-1">
               {group.label && (
