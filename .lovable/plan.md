@@ -1,52 +1,76 @@
 
 
-## Plan: Refactor Tramitação to Multi-Instance Layout (adjusted migration)
+## Plan: Linked Processes + Consultation Filters
 
-### 1. Database Migration
+### PART 1 — Database Migration
+
+Create `processos_vinculados` table with **NO CASCADE** on foreign keys (ON DELETE RESTRICT):
 
 ```sql
-ALTER TABLE public.processos
-  ADD COLUMN primeira_instancia_numero text,
-  ADD COLUMN primeira_instancia_vara text,
-  ADD COLUMN primeira_instancia_comarca text,
-  ADD COLUMN segunda_instancia_tipo_recurso text,
-  ADD COLUMN segunda_instancia_numero text,
-  ADD COLUMN segunda_instancia_turma_camara text,
-  ADD COLUMN segunda_instancia_tribunal text,
-  ADD COLUMN tribunal_superior_nome text,
-  ADD COLUMN tribunal_superior_numero text,
-  ADD COLUMN tribunal_superior_turma text,
-  ADD COLUMN fase_atual text NOT NULL DEFAULT 'PRIMEIRA_INSTANCIA';
+CREATE TABLE public.processos_vinculados (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  processo_origem_id uuid NOT NULL REFERENCES public.processos(id) ON DELETE RESTRICT,
+  processo_vinculado_id uuid REFERENCES public.processos(id) ON DELETE RESTRICT,
+  numero_processo_vinculado text,
+  tipo_vinculo text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.processos_vinculados ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Authenticated users can read vinculados" ON public.processos_vinculados FOR SELECT TO authenticated USING (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can insert vinculados" ON public.processos_vinculados FOR INSERT TO authenticated WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can delete vinculados" ON public.processos_vinculados FOR DELETE TO authenticated USING (auth.role() = 'authenticated');
 ```
 
-All new text columns are nullable with no default. `fase_atual` is NOT NULL with default `'PRIMEIRA_INSTANCIA'`. No existing columns removed.
+### PART 1 — Type & Constants
 
-### 2. Type Updates (`src/types/process.ts`)
+Add to `src/types/process.ts`:
+```ts
+export const TIPOS_VINCULO = [
+  'Embargos à Execução',
+  'Execução Principal',
+  'Apenso',
+  'Conexo',
+  'Incidente',
+  'Outro',
+];
+```
 
-- Add `FaseAtual` type: `'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR'`
-- Add new optional fields to `Processo` interface (all `string | null`)
-- Add `faseAtual: FaseAtual` (required)
-- Add constants: `TIPOS_RECURSO` (7 options) and `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`)
+### PART 1 — Hook: `src/hooks/useProcessosVinculados.ts` (new)
 
-### 3. Hook Updates (`src/hooks/useProcessos.ts`)
+- `fetchVinculados(processoId)` — fetches links where origem OR vinculado matches
+- `addVinculo(origemId, vinculadoId | null, numeroManual, tipoVinculo)` — inserts row; if `vinculadoId` provided, also inserts reverse link
+- `removeVinculo(id)` — deletes link and its reverse if bidirectional
 
-- `rowToProcesso`: map all new columns (nullable → `null`)
-- `addProcesso` / `updateProcesso`: persist new fields, sending `null` for empty values
+### PART 1 — ProcessForm: "PROCESSOS VINCULADOS" section
 
-### 4. Form Updates (`src/components/ProcessForm.tsx`)
+New card with:
+- List of added links (tipo + número)
+- "Adicionar vínculo" button showing:
+  - `tipo_vinculo` as a **Select dropdown** with options: Embargos à Execução, Execução Principal, Apenso, Conexo, Incidente, Outro
+  - Toggle: existing process (searchable select) vs manual number (text input)
+- Links saved on form submit; in edit mode, load existing and allow add/remove
 
-Replace current TRAMITAÇÃO card with four cards:
+### PART 1 — ProcessoView: "PROCESSOS VINCULADOS" section
 
-**PRIMEIRA INSTÂNCIA**: Número do Processo, Vara, Comarca (all text inputs, optional)
+Read-only card showing each link's tipo + número. If linked process exists in system, show "Abrir processo" button navigating to `/consultar/:id`.
 
-**SEGUNDA INSTÂNCIA**: Tipo de Recurso (dropdown, 7 options), Número do Processo, Turma/Câmara, Tribunal (all optional)
+### PART 2 — Consultation Filters (`src/pages/ConsultarProcessos.tsx`)
 
-**TRIBUNAIS SUPERIORES**: Tribunal Superior (dropdown: STJ/STF), Número do Processo, Turma (all optional)
+Add filter dropdowns between search bar and table:
+- Competência, Fase Atual, Categoria, Grupo
+- Each with "Todos" default option
+- "Limpar filtros" button to reset all
+- Filters combine with text search via AND logic
 
-**FASE ATUAL**: Radio group with 3 options, required, validated on submit
+### Files to create
+- `src/hooks/useProcessosVinculados.ts`
 
-Move `sistema_acesso` and `telefone` fields to a separate "ACESSO E CONTATOS" card. All sections visible simultaneously.
-
-### No changes to
-Authentication, RLS, other pages, existing data/columns
+### Files to edit
+- `src/types/process.ts` — add `TIPOS_VINCULO`
+- `src/components/ProcessForm.tsx` — add vinculados section with dropdown
+- `src/pages/ProcessoView.tsx` — add vinculados display
+- `src/pages/ConsultarProcessos.tsx` — add filter dropdowns
+- `src/App.tsx` — pass processos to ProcessForm
 
