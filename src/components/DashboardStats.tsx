@@ -51,7 +51,7 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <Card className="shadow-card border-border/60">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base font-display tracking-tight">DISTRIBUIÇÃO POR COMPETÊNCIA</CardTitle>
+            <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">DISTRIBUIÇÃO POR COMPETÊNCIA</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {stats.porCompetencia.map(({ label, count }) => (
