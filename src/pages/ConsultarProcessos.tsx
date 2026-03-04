@@ -7,12 +7,18 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
-import { Search, X, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Search, X, ArrowUpDown, ArrowUp, ArrowDown, Pencil, Trash2 } from 'lucide-react';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface Props {
   processos: Processo[];
   grupos: { id: string; nome: string }[];
   categorias?: CategoriaRow[];
+  onDelete: (id: string) => void;
+  isAdmin: boolean;
 }
 
 function getNumeroFaseAtual(p: Processo): string {
@@ -35,7 +41,7 @@ const FASE_LABELS: Record<string, string> = {
 type SortKey = 'numero' | 'cliente' | 'grupo' | 'fase' | 'competencia';
 type SortDir = 'asc' | 'desc';
 
-export default function ConsultarProcessos({ processos, grupos, categorias = [] }: Props) {
+export default function ConsultarProcessos({ processos, grupos, categorias = [], onDelete, isAdmin }: Props) {
   const [search, setSearch] = useState('');
   const [filtroCompetencia, setFiltroCompetencia] = useState('all');
   const [filtroFase, setFiltroFase] = useState('all');
@@ -192,6 +198,7 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [] 
                 <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('competencia')}>
                   <span className="inline-flex items-center">Competência<SortIcon col="competencia" /></span>
                 </TableHead>
+                <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -210,6 +217,32 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [] 
                     </Badge>
                   </TableCell>
                   <TableCell>{p.competencia}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="inline-flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(`/processos/${p.id}/editar`)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      {isAdmin && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Excluir processo</AlertDialogTitle>
+                              <AlertDialogDescription>Tem certeza que deseja excluir este processo? Esta ação não pode ser desfeita.</AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => onDelete(p.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Excluir</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
