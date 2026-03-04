@@ -59,7 +59,7 @@ function AppContent() {
           <ProcessDetail processos={processos} onDelete={deleteProcesso} onUploadDocumento={uploadDocumento} onDeleteDocumento={deleteDocumento} />
         } />
         <Route path="/processos/:id/editar" element={
-          <EditProcessPage processos={processos} onUpdate={updateProcesso} grupos={grupos} />
+          <EditProcessPage processos={processos} onUpdate={updateProcesso} grupos={grupos} categorias={admin.categorias} tiposVinculo={admin.tiposVinculo} tribunais={admin.tribunais} />
         } />
         <Route path="/clientes" element={<ClientRanking processos={processos} grupos={grupos} />} />
         <Route path="/grupos" element={<GrupoManager grupos={grupos} onAdd={addGrupo} onUpdate={updateGrupo} onDelete={deleteGrupo} />} />
