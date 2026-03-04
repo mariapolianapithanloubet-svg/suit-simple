@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, SISTEMAS_ACESSO, Competencia, Categoria, FaseAtual } from '@/types/process';
+import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, SISTEMAS_ACESSO, Competencia, Categoria, FaseAtual, TIPOS_VINCULO } from '@/types/process';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,19 +8,53 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Save, ArrowLeft } from 'lucide-react';
+import { Save, ArrowLeft, Plus, Trash2, Link } from 'lucide-react';
 import { toast } from 'sonner';
+import { useProcessosVinculados, ProcessoVinculado } from '@/hooks/useProcessosVinculados';
+import { Badge } from '@/components/ui/badge';
+
+interface VinculoEntry {
+  id?: string; // existing DB id
+  processoVinculadoId: string | null;
+  numeroManual: string;
+  tipoVinculo: string;
+  isExisting: boolean; // true = select from system, false = manual
+}
 
 interface ProcessFormProps {
   initialData?: Processo;
   onSubmit: (data: Omit<Processo, 'id' | 'criadoEm' | 'atualizadoEm' | 'documentos'>) => void | Promise<any>;
   mode: 'create' | 'edit';
   grupos?: Grupo[];
+  processos?: Processo[];
 }
 
-export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: ProcessFormProps) {
+export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processos = [] }: ProcessFormProps) {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
+  const { fetchVinculados, addVinculo, removeVinculo } = useProcessosVinculados();
+  const [vinculos, setVinculos] = useState<VinculoEntry[]>([]);
+  const [existingVinculoIds, setExistingVinculoIds] = useState<Set<string>>(new Set());
+  const [removedVinculos, setRemovedVinculos] = useState<ProcessoVinculado[]>([]);
+
+  // Load existing vinculos in edit mode
+  useEffect(() => {
+    if (mode === 'edit' && initialData?.id) {
+      fetchVinculados(initialData.id).then(data => {
+        const entries: VinculoEntry[] = data
+          .filter(v => v.processo_origem_id === initialData.id)
+          .map(v => ({
+            id: v.id,
+            processoVinculadoId: v.processo_vinculado_id,
+            numeroManual: v.numero_processo_vinculado || '',
+            tipoVinculo: v.tipo_vinculo,
+            isExisting: !!v.processo_vinculado_id,
+          }));
+        setVinculos(entries);
+        setExistingVinculoIds(new Set(entries.filter(e => e.id).map(e => e.id!)));
+      });
+    }
+  }, [mode, initialData?.id, fetchVinculados]);
   const [form, setForm] = useState({
     numero: initialData?.numero || '',
     tipoAcao: initialData?.tipoAcao || '',
@@ -61,7 +95,28 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
     }
     setSaving(true);
     try {
-      await onSubmit(form as any);
+      const result = await onSubmit(form as any);
+      
+      // Save vinculos
+      const processoId = initialData?.id || (result as any)?.id;
+      if (processoId) {
+        // Remove deleted vinculos
+        for (const removed of removedVinculos) {
+          await removeVinculo(removed.id, removed.processo_origem_id, removed.processo_vinculado_id);
+        }
+        // Add new vinculos (ones without an existing DB id)
+        for (const v of vinculos) {
+          if (!v.id && v.tipoVinculo) {
+            await addVinculo(
+              processoId,
+              v.isExisting ? v.processoVinculadoId : null,
+              v.isExisting ? null : v.numeroManual,
+              v.tipoVinculo,
+            );
+          }
+        }
+      }
+      
       toast.success(mode === 'create' ? 'Processo cadastrado!' : 'Processo atualizado!');
       navigate('/processos');
     } catch {
@@ -70,6 +125,32 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
       setSaving(false);
     }
   };
+
+  const addVinculoEntry = () => {
+    setVinculos(prev => [...prev, { processoVinculadoId: null, numeroManual: '', tipoVinculo: '', isExisting: false }]);
+  };
+
+  const updateVinculoEntry = (index: number, field: keyof VinculoEntry, value: any) => {
+    setVinculos(prev => prev.map((v, i) => i === index ? { ...v, [field]: value } : v));
+  };
+
+  const removeVinculoEntry = (index: number) => {
+    const entry = vinculos[index];
+    if (entry.id) {
+      // Track removed existing vinculos for deletion on save
+      setRemovedVinculos(prev => [...prev, {
+        id: entry.id!,
+        processo_origem_id: initialData?.id || '',
+        processo_vinculado_id: entry.processoVinculadoId,
+        numero_processo_vinculado: entry.numeroManual || null,
+        tipo_vinculo: entry.tipoVinculo,
+        created_at: '',
+      }]);
+    }
+    setVinculos(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const availableProcessos = processos.filter(p => p.id !== initialData?.id);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
@@ -277,6 +358,76 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
               <Label htmlFor="fase-3" className="text-sm font-medium cursor-pointer">Tribunal Superior</Label>
             </div>
           </RadioGroup>
+        </CardContent>
+      </Card>
+
+      {/* PROCESSOS VINCULADOS */}
+      <Card className="shadow-card border-border/60">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight flex items-center gap-2">
+            <Link className="h-4 w-4" />
+            PROCESSOS VINCULADOS
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {vinculos.map((v, index) => (
+            <div key={index} className="flex flex-col gap-3 p-4 rounded-lg border border-border/40 bg-muted/10">
+              <div className="flex items-start gap-3">
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">TIPO DE VÍNCULO</Label>
+                    <Select value={v.tipoVinculo || undefined} onValueChange={val => updateVinculoEntry(index, 'tipoVinculo', val)}>
+                      <SelectTrigger className="h-9"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                      <SelectContent>
+                        {TIPOS_VINCULO.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">ORIGEM</Label>
+                    <Select value={v.isExisting ? 'existing' : 'manual'} onValueChange={val => {
+                      updateVinculoEntry(index, 'isExisting', val === 'existing');
+                      if (val === 'manual') updateVinculoEntry(index, 'processoVinculadoId', null);
+                      if (val === 'existing') updateVinculoEntry(index, 'numeroManual', '');
+                    }}>
+                      <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="existing">Processo existente</SelectItem>
+                        <SelectItem value="manual">Número manual</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    {v.isExisting ? (
+                      <>
+                        <Label className="text-xs font-medium">PROCESSO</Label>
+                        <Select value={v.processoVinculadoId || undefined} onValueChange={val => updateVinculoEntry(index, 'processoVinculadoId', val)}>
+                          <SelectTrigger className="h-9"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                          <SelectContent>
+                            {availableProcessos.map(p => (
+                              <SelectItem key={p.id} value={p.id}>{p.numero}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </>
+                    ) : (
+                      <>
+                        <Label className="text-xs font-medium">NÚMERO DO PROCESSO</Label>
+                        <Input value={v.numeroManual} onChange={e => updateVinculoEntry(index, 'numeroManual', e.target.value)} placeholder="0000000-00.0000.0.00.0000" className="h-9" />
+                      </>
+                    )}
+                  </div>
+                </div>
+                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 mt-5 text-destructive hover:text-destructive" onClick={() => removeVinculoEntry(index)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
+          <Button type="button" variant="outline" size="sm" onClick={addVinculoEntry} className="gap-1.5">
+            <Plus className="h-3.5 w-3.5" />
+            Adicionar vínculo
+          </Button>
         </CardContent>
       </Card>
 

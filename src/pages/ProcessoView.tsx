@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ArrowLeft, Eye, EyeOff, Download, FolderOpen, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowLeft, Eye, EyeOff, Download, FolderOpen, ChevronDown, Link, ExternalLink } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useProcessosVinculados, ProcessoVinculado } from '@/hooks/useProcessosVinculados';
 
 interface Props {
   processos: Processo[];
@@ -22,7 +23,14 @@ export default function ProcessoView({ processos, grupos }: Props) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const { fetchVinculados } = useProcessosVinculados();
+  const [vinculados, setVinculados] = useState<ProcessoVinculado[]>([]);
 
+  useEffect(() => {
+    if (id) {
+      fetchVinculados(id).then(setVinculados);
+    }
+  }, [id, fetchVinculados]);
   const processo = processos.find(p => p.id === id);
   if (!processo) {
     return (
@@ -131,6 +139,46 @@ export default function ProcessoView({ processos, grupos }: Props) {
             </Button>
           </div>
           <Field label="INFORMAÇÕES IMPORTANTES" value={processo.status} />
+        </CardContent>
+      </Card>
+
+      {/* PROCESSOS VINCULADOS */}
+      <Card className="shadow-card border-border/60">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight flex items-center gap-2">
+            <Link className="h-4 w-4" />
+            PROCESSOS VINCULADOS
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {vinculados.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-8">Nenhum processo vinculado</p>
+          ) : (
+            <div className="space-y-2">
+              {vinculados.map(v => {
+                const linkedProcessoId = v.processo_origem_id === id ? v.processo_vinculado_id : v.processo_origem_id;
+                const linkedProcesso = linkedProcessoId ? processos.find(p => p.id === linkedProcessoId) : null;
+                const displayNumero = linkedProcesso?.numero || v.numero_processo_vinculado || '—';
+
+                return (
+                  <div key={v.id} className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 border border-border/20">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-xs">{v.tipo_vinculo}</Badge>
+                        <span className="text-sm font-medium text-foreground">{displayNumero}</span>
+                      </div>
+                    </div>
+                    {linkedProcesso && (
+                      <Button variant="ghost" size="sm" className="gap-1.5 text-xs" onClick={() => navigate(`/consultar/${linkedProcesso.id}`)}>
+                        <ExternalLink className="h-3.5 w-3.5" />
+                        Abrir processo
+                      </Button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </CardContent>
       </Card>
 

@@ -86,6 +86,15 @@ export const TIPOS_RECURSO = [
 
 export const TRIBUNAIS_SUPERIORES = ['STJ', 'STF'];
 
+export const TIPOS_VINCULO = [
+  'Embargos à Execução',
+  'Execução Principal',
+  'Apenso',
+  'Conexo',
+  'Incidente',
+  'Outro',
+];
+
 export function getClienteName(p: Processo): string {
   return p.clienteEscritorio === 'Autor' ? p.autor : (p.reu || '');
 }
