@@ -158,10 +158,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
   const availableProcessos = processos.filter(p => p.id !== initialData?.id);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-10 max-w-4xl">
+    <form onSubmit={handleSubmit} className="space-y-12 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">
+          <h2 className="text-[28px] font-semibold text-foreground tracking-tight">
             {mode === 'create' ? 'Novo Processo' : 'Editar Processo'}
           </h2>
           <p className="text-sm text-muted-foreground mt-1">Preencha os dados do processo</p>
