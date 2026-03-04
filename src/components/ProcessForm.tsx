@@ -28,9 +28,12 @@ interface ProcessFormProps {
   mode: 'create' | 'edit';
   grupos?: Grupo[];
   processos?: Processo[];
+  categorias?: CategoriaRow[];
+  tiposVinculo?: TipoVinculoRow[];
+  tribunais?: TribunalRow[];
 }
 
-export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processos = [] }: ProcessFormProps) {
+export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processos = [], categorias = [], tiposVinculo = [], tribunais = [] }: ProcessFormProps) {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const { fetchVinculados, addVinculo, removeVinculo } = useProcessosVinculados();
