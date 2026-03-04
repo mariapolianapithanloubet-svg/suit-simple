@@ -254,8 +254,8 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
 
       {/* PRIMEIRA INSTÂNCIA */}
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">PRIMEIRA INSTÂNCIA</CardTitle>
+        <CardHeader className="pb-2 border-b border-border/40">
+          <CardTitle className="text-lg font-display font-semibold tracking-tight">PRIMEIRA INSTÂNCIA</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <div className="space-y-2">
