@@ -74,6 +74,7 @@ function EditProcessPage({ processos, onUpdate, grupos }: { processos: any[]; on
       initialData={processo}
       onSubmit={(data) => onUpdate(processo.id, data)}
       grupos={grupos}
+      processos={processos}
     />
   );
 }

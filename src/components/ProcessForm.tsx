@@ -361,6 +361,76 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
         </CardContent>
       </Card>
 
+      {/* PROCESSOS VINCULADOS */}
+      <Card className="shadow-card border-border/60">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base font-display tracking-tight flex items-center gap-2">
+            <Link className="h-4 w-4" />
+            PROCESSOS VINCULADOS
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {vinculos.map((v, index) => (
+            <div key={index} className="flex flex-col gap-3 p-4 rounded-lg border border-border/40 bg-muted/10">
+              <div className="flex items-start gap-3">
+                <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">TIPO DE VÍNCULO</Label>
+                    <Select value={v.tipoVinculo || undefined} onValueChange={val => updateVinculoEntry(index, 'tipoVinculo', val)}>
+                      <SelectTrigger className="h-9"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                      <SelectContent>
+                        {TIPOS_VINCULO.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">ORIGEM</Label>
+                    <Select value={v.isExisting ? 'existing' : 'manual'} onValueChange={val => {
+                      updateVinculoEntry(index, 'isExisting', val === 'existing');
+                      if (val === 'manual') updateVinculoEntry(index, 'processoVinculadoId', null);
+                      if (val === 'existing') updateVinculoEntry(index, 'numeroManual', '');
+                    }}>
+                      <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="existing">Processo existente</SelectItem>
+                        <SelectItem value="manual">Número manual</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    {v.isExisting ? (
+                      <>
+                        <Label className="text-xs font-medium">PROCESSO</Label>
+                        <Select value={v.processoVinculadoId || undefined} onValueChange={val => updateVinculoEntry(index, 'processoVinculadoId', val)}>
+                          <SelectTrigger className="h-9"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                          <SelectContent>
+                            {availableProcessos.map(p => (
+                              <SelectItem key={p.id} value={p.id}>{p.numero}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </>
+                    ) : (
+                      <>
+                        <Label className="text-xs font-medium">NÚMERO DO PROCESSO</Label>
+                        <Input value={v.numeroManual} onChange={e => updateVinculoEntry(index, 'numeroManual', e.target.value)} placeholder="0000000-00.0000.0.00.0000" className="h-9" />
+                      </>
+                    )}
+                  </div>
+                </div>
+                <Button type="button" variant="ghost" size="icon" className="h-9 w-9 mt-5 text-destructive hover:text-destructive" onClick={() => removeVinculoEntry(index)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
+          <Button type="button" variant="outline" size="sm" onClick={addVinculoEntry} className="gap-1.5">
+            <Plus className="h-3.5 w-3.5" />
+            Adicionar vínculo
+          </Button>
+        </CardContent>
+      </Card>
+
 
       {/* CONTROLE INTERNO */}
       <Card className="shadow-card border-border/60">
