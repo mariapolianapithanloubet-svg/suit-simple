@@ -15,12 +15,26 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
-const navItems = [
-  { label: 'Painel', path: '/', icon: LayoutDashboard },
-  { label: 'Processos', path: '/processos', icon: FolderOpen },
-  { label: 'Novo Processo', path: '/processos/novo', icon: Plus },
-  { label: 'Clientes', path: '/clientes', icon: Users },
-  { label: 'Grupos', path: '/grupos', icon: Layers },
+import { Search } from 'lucide-react';
+
+const navGroups = [
+  {
+    items: [{ label: 'Painel', path: '/', icon: LayoutDashboard }],
+  },
+  {
+    label: 'PROCESSOS',
+    items: [
+      { label: 'Consultar Processos', path: '/consultar', icon: Search },
+      { label: 'Novo Processo', path: '/processos/novo', icon: Plus },
+    ],
+  },
+  {
+    label: 'CLIENTES',
+    items: [
+      { label: 'Clientes', path: '/clientes', icon: Users },
+      { label: 'Grupos', path: '/grupos', icon: Layers },
+    ],
+  },
 ];
 
 interface AppLayoutProps {
