@@ -48,7 +48,7 @@ function AppContent() {
         <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} loading={loading} isAdmin={isAdmin} onClearImported={clearImported} />} />
         <Route path="/processos/importar" element={<ProcessImport onImport={bulkImport} />} />
         <Route path="/processos/novo" element={
-          <ProcessForm mode="create" onSubmit={addProcesso} grupos={grupos} />
+          <ProcessForm mode="create" onSubmit={addProcesso} grupos={grupos} processos={processos} />
         } />
         <Route path="/processos/:id" element={
           <ProcessDetail processos={processos} onDelete={deleteProcesso} onUploadDocumento={uploadDocumento} onDeleteDocumento={deleteDocumento} />
