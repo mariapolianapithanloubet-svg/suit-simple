@@ -63,6 +63,9 @@ function AppContent() {
         } />
         <Route path="/clientes" element={<ClientRanking processos={processos} grupos={grupos} />} />
         <Route path="/grupos" element={<GrupoManager grupos={grupos} onAdd={addGrupo} onUpdate={updateGrupo} onDelete={deleteGrupo} />} />
+        <Route path="/admin/categorias" element={<CategoriasPage categorias={admin.categorias} onAdd={admin.addCategoria} onUpdate={admin.updateCategoria} onDelete={admin.deleteCategoria} />} />
+        <Route path="/admin/tipos-vinculo" element={<TiposVinculoPage tiposVinculo={admin.tiposVinculo} onAdd={admin.addTipoVinculo} onUpdate={admin.updateTipoVinculo} onDelete={admin.deleteTipoVinculo} />} />
+        <Route path="/admin/tribunais" element={<TribunaisPage tribunais={admin.tribunais} onAdd={admin.addTribunal} onUpdate={admin.updateTribunal} onDelete={admin.deleteTribunal} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>
