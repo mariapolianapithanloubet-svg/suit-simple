@@ -75,7 +75,7 @@ export default function ProcessoView({ processos, grupos }: Props) {
             <Field label="VARA" value={processo.primeiraInstanciaVara} />
             <Field label="COMARCA" value={processo.primeiraInstanciaComarca} />
             <Field label="SISTEMA DE ACESSO" value={processo.sistemaAcesso} />
-            <Field label="TELEFONES DO JUÍZO" value={processo.telefoneSecretaria} />
+            <Field label="TELEFONES" value={processo.telefoneSecretaria} />
           </CardContent>
         </Card>
 
