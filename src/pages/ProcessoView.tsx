@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ArrowLeft, Eye, EyeOff, Download, FolderOpen, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowLeft, Eye, EyeOff, Download, FolderOpen, ChevronDown, Link, ExternalLink } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useProcessosVinculados, ProcessoVinculado } from '@/hooks/useProcessosVinculados';
 
 interface Props {
   processos: Processo[];
