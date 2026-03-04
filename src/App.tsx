@@ -13,6 +13,8 @@ import { ProcessDetail } from "@/components/ProcessDetail";
 import { ClientRanking } from "@/components/ClientRanking";
 import { ProcessImport } from "@/components/ProcessImport";
 import { GrupoManager } from "@/components/GrupoManager";
+import ConsultarProcessos from "@/pages/ConsultarProcessos";
+import ProcessoView from "@/pages/ProcessoView";
 import Auth from "@/pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -41,6 +43,8 @@ function AppContent() {
     <AppLayout onSignOut={signOut} userEmail={session.user?.email}>
       <Routes>
         <Route path="/" element={<DashboardStats processos={processos} />} />
+        <Route path="/consultar" element={<ConsultarProcessos processos={processos} grupos={grupos} />} />
+        <Route path="/consultar/:id" element={<ProcessoView processos={processos} grupos={grupos} />} />
         <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} loading={loading} isAdmin={isAdmin} onClearImported={clearImported} />} />
         <Route path="/processos/importar" element={<ProcessImport onImport={bulkImport} />} />
         <Route path="/processos/novo" element={
