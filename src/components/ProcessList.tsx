@@ -127,7 +127,7 @@ export function ProcessList({ processos, onDelete, loading, isAdmin, onClearImpo
               <SelectTrigger className="h-10"><SelectValue placeholder="Categoria" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas categorias</SelectItem>
-                {CATEGORIAS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                {[...new Set(processos.map(p => p.categoria))].sort().map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={filtroCompetencia} onValueChange={setFiltroCompetencia}>
