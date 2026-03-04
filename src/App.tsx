@@ -48,7 +48,7 @@ function AppContent() {
     <AppLayout onSignOut={signOut} userEmail={session.user?.email}>
       <Routes>
         <Route path="/" element={<DashboardStats processos={processos} />} />
-        <Route path="/consultar" element={<ConsultarProcessos processos={processos} grupos={grupos} />} />
+        <Route path="/consultar" element={<ConsultarProcessos processos={processos} grupos={grupos} categorias={admin.categorias} />} />
         <Route path="/consultar/:id" element={<ProcessoView processos={processos} grupos={grupos} />} />
         <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} loading={loading} isAdmin={isAdmin} onClearImported={clearImported} />} />
         <Route path="/processos/importar" element={<ProcessImport onImport={bulkImport} />} />
