@@ -314,7 +314,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             <Select value={form.segundaInstanciaTribunal || undefined} onValueChange={v => update('segundaInstanciaTribunal', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
-                {tribunais.map(t => <SelectItem key={t.id} value={t.sigla}>{t.sigla} — {t.nome}</SelectItem>)}
+                {[...tribunais].sort((a, b) => a.sigla.localeCompare(b.sigla)).map(t => <SelectItem key={t.id} value={t.sigla}>{t.sigla} — {t.nome}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
