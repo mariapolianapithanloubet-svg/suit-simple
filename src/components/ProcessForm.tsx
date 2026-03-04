@@ -311,7 +311,12 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">TRIBUNAL</Label>
-            <Input value={form.segundaInstanciaTribunal} onChange={e => update('segundaInstanciaTribunal', e.target.value)} className="h-10" />
+            <Select value={form.segundaInstanciaTribunal || undefined} onValueChange={v => update('segundaInstanciaTribunal', v)}>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>
+                {tribunais.map(t => <SelectItem key={t.id} value={t.sigla}>{t.sigla} — {t.nome}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
