@@ -29,9 +29,32 @@ interface ProcessFormProps {
   processos?: Processo[];
 }
 
-export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: ProcessFormProps) {
+export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processos = [] }: ProcessFormProps) {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
+  const { fetchVinculados, addVinculo, removeVinculo } = useProcessosVinculados();
+  const [vinculos, setVinculos] = useState<VinculoEntry[]>([]);
+  const [existingVinculoIds, setExistingVinculoIds] = useState<Set<string>>(new Set());
+  const [removedVinculos, setRemovedVinculos] = useState<ProcessoVinculado[]>([]);
+
+  // Load existing vinculos in edit mode
+  useEffect(() => {
+    if (mode === 'edit' && initialData?.id) {
+      fetchVinculados(initialData.id).then(data => {
+        const entries: VinculoEntry[] = data
+          .filter(v => v.processo_origem_id === initialData.id)
+          .map(v => ({
+            id: v.id,
+            processoVinculadoId: v.processo_vinculado_id,
+            numeroManual: v.numero_processo_vinculado || '',
+            tipoVinculo: v.tipo_vinculo,
+            isExisting: !!v.processo_vinculado_id,
+          }));
+        setVinculos(entries);
+        setExistingVinculoIds(new Set(entries.filter(e => e.id).map(e => e.id!)));
+      });
+    }
+  }, [mode, initialData?.id, fetchVinculados]);
   const [form, setForm] = useState({
     numero: initialData?.numero || '',
     tipoAcao: initialData?.tipoAcao || '',
