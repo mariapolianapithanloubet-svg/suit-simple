@@ -78,7 +78,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
             VOLTAR
           </Button>
           <div>
-            <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">{processo.numero}</h2>
+            <h2 className="text-[28px] font-semibold text-foreground tracking-tight">{processo.numero}</h2>
             <p className="text-sm text-muted-foreground">{processo.tipoAcao}</p>
           </div>
         </div>
