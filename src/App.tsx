@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
 import { useProcessos } from "@/hooks/useProcessos";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdminTables } from "@/hooks/useAdminTables";
 import { DashboardStats } from "@/components/DashboardStats";
 import { ProcessList } from "@/components/ProcessList";
 import { ProcessForm } from "@/components/ProcessForm";
