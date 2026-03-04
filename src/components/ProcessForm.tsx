@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, SISTEMAS_ACESSO, Competencia, Categoria, FaseAtual, TIPOS_VINCULO } from '@/types/process';
+import { Processo, Grupo, COMPETENCIAS, ESTADOS_BRASIL, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, SISTEMAS_ACESSO, Competencia, FaseAtual } from '@/types/process';
+import { CategoriaRow, TipoVinculoRow, TribunalRow } from '@/hooks/useAdminTables';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,9 +28,12 @@ interface ProcessFormProps {
   mode: 'create' | 'edit';
   grupos?: Grupo[];
   processos?: Processo[];
+  categorias?: CategoriaRow[];
+  tiposVinculo?: TipoVinculoRow[];
+  tribunais?: TribunalRow[];
 }
 
-export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processos = [] }: ProcessFormProps) {
+export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processos = [], categorias = [], tiposVinculo = [], tribunais = [] }: ProcessFormProps) {
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const { fetchVinculados, addVinculo, removeVinculo } = useProcessosVinculados();
@@ -60,7 +64,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
     tipoAcao: initialData?.tipoAcao || '',
     estado: initialData?.estado || '',
     competencia: (initialData?.competencia || '') as Competencia | '',
-    categoria: (initialData?.categoria || '') as Categoria | '',
+    categoria: (initialData?.categoria || '') as string,
     autor: initialData?.autor || '',
     reu: initialData?.reu || '',
     clienteEscritorio: (initialData?.clienteEscritorio || '') as 'Autor' | 'Réu' | '',
@@ -204,7 +208,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             <Select value={form.categoria || undefined} onValueChange={v => update('categoria', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
-                {CATEGORIAS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                {categorias.map(c => <SelectItem key={c.id} value={c.nome}>{c.nome}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -307,7 +311,12 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">TRIBUNAL</Label>
-            <Input value={form.segundaInstanciaTribunal} onChange={e => update('segundaInstanciaTribunal', e.target.value)} className="h-10" />
+            <Select value={form.segundaInstanciaTribunal || undefined} onValueChange={v => update('segundaInstanciaTribunal', v)}>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>
+                {tribunais.map(t => <SelectItem key={t.id} value={t.sigla}>{t.sigla} — {t.nome}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
@@ -379,7 +388,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
                     <Select value={v.tipoVinculo || undefined} onValueChange={val => updateVinculoEntry(index, 'tipoVinculo', val)}>
                       <SelectTrigger className="h-9"><SelectValue placeholder="Selecione" /></SelectTrigger>
                       <SelectContent>
-                        {TIPOS_VINCULO.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                        {tiposVinculo.map(t => <SelectItem key={t.id} value={t.nome}>{t.nome}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>

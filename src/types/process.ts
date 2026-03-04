@@ -56,7 +56,7 @@ export interface Processo {
 }
 
 export const COMPETENCIAS: Competencia[] = ['Estadual', 'Federal', 'Trabalhista', 'Administrativo'];
-export const CATEGORIAS: Categoria[] = ['Relevante', 'Mero Acompanhamento'];
+// CATEGORIAS now loaded from DB via useAdminTables
 
 export const ESTADOS_BRASIL = [
   'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
@@ -86,14 +86,7 @@ export const TIPOS_RECURSO = [
 
 export const TRIBUNAIS_SUPERIORES = ['STJ', 'STF'];
 
-export const TIPOS_VINCULO = [
-  'Embargos à Execução',
-  'Execução Principal',
-  'Apenso',
-  'Conexo',
-  'Incidente',
-  'Outro',
-];
+// TIPOS_VINCULO now loaded from DB via useAdminTables
 
 export function getClienteName(p: Processo): string {
   return p.clienteEscritorio === 'Autor' ? p.autor : (p.reu || '');

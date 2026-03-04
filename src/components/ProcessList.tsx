@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Processo, getClienteName, COMPETENCIAS, ESTADOS_BRASIL, CATEGORIAS } from '@/types/process';
+import { Processo, getClienteName, COMPETENCIAS, ESTADOS_BRASIL } from '@/types/process';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -127,7 +127,7 @@ export function ProcessList({ processos, onDelete, loading, isAdmin, onClearImpo
               <SelectTrigger className="h-10"><SelectValue placeholder="Categoria" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas categorias</SelectItem>
-                {CATEGORIAS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                {[...new Set(processos.map(p => p.categoria))].sort().map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={filtroCompetencia} onValueChange={setFiltroCompetencia}>

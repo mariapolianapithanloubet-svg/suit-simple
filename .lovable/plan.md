@@ -1,74 +1,52 @@
 
 
-## Plan: Configurable Administrative Tables (adjusted)
+## Plan: Refactor Tramitação to Multi-Instance Layout (adjusted migration)
 
 ### 1. Database Migration
 
 ```sql
-CREATE TABLE public.categorias (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  nome text UNIQUE NOT NULL
-);
-
-CREATE TABLE public.tipos_vinculo (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  nome text UNIQUE NOT NULL
-);
-
-CREATE TABLE public.tribunais (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  nome text NOT NULL,
-  sigla text UNIQUE NOT NULL,
-  estado text  -- nullable, no NOT NULL
-);
+ALTER TABLE public.processos
+  ADD COLUMN primeira_instancia_numero text,
+  ADD COLUMN primeira_instancia_vara text,
+  ADD COLUMN primeira_instancia_comarca text,
+  ADD COLUMN segunda_instancia_tipo_recurso text,
+  ADD COLUMN segunda_instancia_numero text,
+  ADD COLUMN segunda_instancia_turma_camara text,
+  ADD COLUMN segunda_instancia_tribunal text,
+  ADD COLUMN tribunal_superior_nome text,
+  ADD COLUMN tribunal_superior_numero text,
+  ADD COLUMN tribunal_superior_turma text,
+  ADD COLUMN fase_atual text NOT NULL DEFAULT 'PRIMEIRA_INSTANCIA';
 ```
 
-Enable RLS on all three with authenticated read/insert/update/delete policies.
+All new text columns are nullable with no default. `fase_atual` is NOT NULL with default `'PRIMEIRA_INSTANCIA'`. No existing columns removed.
 
-Seed default data:
-- `categorias`: "Relevante", "Mero Acompanhamento"
-- `tipos_vinculo`: "Embargos à Execução", "Execução Principal", "Apenso", "Conexo", "Incidente", "Outro"
+### 2. Type Updates (`src/types/process.ts`)
 
-### 2. New Hook: `src/hooks/useAdminTables.ts`
+- Add `FaseAtual` type: `'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR'`
+- Add new optional fields to `Processo` interface (all `string | null`)
+- Add `faseAtual: FaseAtual` (required)
+- Add constants: `TIPOS_RECURSO` (7 options) and `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`)
 
-CRUD operations for categorias, tipos_vinculo, tribunais via Supabase queries.
+### 3. Hook Updates (`src/hooks/useProcessos.ts`)
 
-### 3. New CRUD Pages
+- `rowToProcesso`: map all new columns (nullable → `null`)
+- `addProcesso` / `updateProcesso`: persist new fields, sending `null` for empty values
 
-- `src/pages/CategoriasPage.tsx` — manage categorias (field: nome)
-- `src/pages/TiposVinculoPage.tsx` — manage tipos_vinculo (field: nome)
-- `src/pages/TribunaisPage.tsx` — manage tribunais (fields: nome, sigla, estado optional)
+### 4. Form Updates (`src/components/ProcessForm.tsx`)
 
-### 4. Sidebar (`src/components/AppLayout.tsx`)
+Replace current TRAMITAÇÃO card with four cards:
 
-Add "ADMINISTRAÇÃO" nav group with links to the three admin pages.
+**PRIMEIRA INSTÂNCIA**: Número do Processo, Vara, Comarca (all text inputs, optional)
 
-### 5. Routing (`src/App.tsx`)
+**SEGUNDA INSTÂNCIA**: Tipo de Recurso (dropdown, 7 options), Número do Processo, Turma/Câmara, Tribunal (all optional)
 
-Add routes, fetch admin data, pass to components.
+**TRIBUNAIS SUPERIORES**: Tribunal Superior (dropdown: STJ/STF), Número do Processo, Turma (all optional)
 
-### 6. Update Dropdowns
+**FASE ATUAL**: Radio group with 3 options, required, validated on submit
 
-- **Categoria** dropdown in ProcessForm and ConsultarProcessos: load from `categorias` table
-- **Tipo de Vínculo** dropdown in ProcessForm: load from `tipos_vinculo` table
-- **Tribunal** fields (2ª instância, tribunal superior): load from `tribunais` table
+Move `sistema_acesso` and `telefone` fields to a separate "ACESSO E CONTATOS" card. All sections visible simultaneously.
 
-### 7. Types (`src/types/process.ts`)
-
-- **Remove** `CATEGORIAS` and `TIPOS_VINCULO` constants (replaced by DB)
-- **Keep** `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`) — unchanged, hardcoded
-- **Keep** `COMPETENCIAS` — unchanged, hardcoded
-
-### Files to create
-- `src/hooks/useAdminTables.ts`
-- `src/pages/CategoriasPage.tsx`
-- `src/pages/TiposVinculoPage.tsx`
-- `src/pages/TribunaisPage.tsx`
-
-### Files to edit
-- `src/components/AppLayout.tsx`
-- `src/App.tsx`
-- `src/components/ProcessForm.tsx`
-- `src/pages/ConsultarProcessos.tsx`
-- `src/types/process.ts`
+### No changes to
+Authentication, RLS, other pages, existing data/columns
 

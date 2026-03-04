@@ -10,6 +10,10 @@ import {
   ChevronRight,
   Menu,
   LogOut,
+  Settings,
+  Tag,
+  Link2,
+  Building2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -33,6 +37,14 @@ const navGroups = [
     items: [
       { label: 'Clientes', path: '/clientes', icon: Users },
       { label: 'Grupos', path: '/grupos', icon: Layers },
+    ],
+  },
+  {
+    label: 'ADMINISTRAÇÃO',
+    items: [
+      { label: 'Categorias', path: '/admin/categorias', icon: Tag },
+      { label: 'Tipos de Vínculo', path: '/admin/tipos-vinculo', icon: Link2 },
+      { label: 'Tribunais', path: '/admin/tribunais', icon: Building2 },
     ],
   },
 ];

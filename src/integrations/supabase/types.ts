@@ -14,6 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      categorias: {
+        Row: {
+          id: string
+          nome: string
+        }
+        Insert: {
+          id?: string
+          nome: string
+        }
+        Update: {
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
       documentos: {
         Row: {
           arquivo_path: string | null
@@ -224,6 +239,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tipos_vinculo: {
+        Row: {
+          id: string
+          nome: string
+        }
+        Insert: {
+          id?: string
+          nome: string
+        }
+        Update: {
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      tribunais: {
+        Row: {
+          estado: string | null
+          id: string
+          nome: string
+          sigla: string
+        }
+        Insert: {
+          estado?: string | null
+          id?: string
+          nome: string
+          sigla: string
+        }
+        Update: {
+          estado?: string | null
+          id?: string
+          nome?: string
+          sigla?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
