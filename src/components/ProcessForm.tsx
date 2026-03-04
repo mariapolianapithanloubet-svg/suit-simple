@@ -355,7 +355,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* FASE ATUAL */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight">FASE ATUAL *</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">FASE ATUAL *</CardTitle>
         </CardHeader>
         <CardContent className="pt-5">
           <RadioGroup value={form.faseAtual} onValueChange={(v: FaseAtual) => update('faseAtual', v)} className="flex flex-col sm:flex-row gap-4">
