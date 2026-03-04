@@ -388,7 +388,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
                     <Select value={v.tipoVinculo || undefined} onValueChange={val => updateVinculoEntry(index, 'tipoVinculo', val)}>
                       <SelectTrigger className="h-9"><SelectValue placeholder="Selecione" /></SelectTrigger>
                       <SelectContent>
-                        {tiposVinculo.map(t => <SelectItem key={t.id} value={t.nome}>{t.nome}</SelectItem>)}
+                        {[...tiposVinculo].sort((a, b) => a.nome.localeCompare(b.nome)).map(t => <SelectItem key={t.id} value={t.nome}>{t.nome}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
