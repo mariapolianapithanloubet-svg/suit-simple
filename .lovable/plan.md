@@ -1,44 +1,52 @@
 
 
-## Fix Admin Role Detection — Infinite Recursion in RLS
+## Plan: Refactor Tramitação to Multi-Instance Layout (adjusted migration)
 
-### Root Cause
-
-The `user_roles` table has an "Only admin can manage roles" policy with command `ALL` that checks `user_roles` itself, causing infinite recursion on SELECT. The 500 error confirms this: `"infinite recursion detected in policy for relation "user_roles""`.
-
-### Solution
-
-Two changes needed:
-
-**1. `src/hooks/useAuth.ts`** — Use the existing `has_role` RPC function (which is `SECURITY DEFINER` and bypasses RLS) instead of querying `user_roles` directly:
-
-```typescript
-const { data } = await supabase.rpc('has_role', { _user_id: userId, _role: 'admin' });
-setIsAdmin(!!data);
-```
-
-**2. Database migration** — Fix the RLS policy to prevent future issues. Drop the `ALL` policy and replace with separate INSERT/UPDATE/DELETE policies that use `has_role()`:
+### 1. Database Migration
 
 ```sql
-DROP POLICY "Only admin can manage roles" ON public.user_roles;
-
-CREATE POLICY "Only admin can insert roles" ON public.user_roles
-  FOR INSERT TO authenticated
-  WITH CHECK (public.has_role(auth.uid(), 'admin'));
-
-CREATE POLICY "Only admin can update roles" ON public.user_roles
-  FOR UPDATE TO authenticated
-  USING (public.has_role(auth.uid(), 'admin'));
-
-CREATE POLICY "Only admin can delete roles" ON public.user_roles
-  FOR DELETE TO authenticated
-  USING (public.has_role(auth.uid(), 'admin'));
+ALTER TABLE public.processos
+  ADD COLUMN primeira_instancia_numero text,
+  ADD COLUMN primeira_instancia_vara text,
+  ADD COLUMN primeira_instancia_comarca text,
+  ADD COLUMN segunda_instancia_tipo_recurso text,
+  ADD COLUMN segunda_instancia_numero text,
+  ADD COLUMN segunda_instancia_turma_camara text,
+  ADD COLUMN segunda_instancia_tribunal text,
+  ADD COLUMN tribunal_superior_nome text,
+  ADD COLUMN tribunal_superior_numero text,
+  ADD COLUMN tribunal_superior_turma text,
+  ADD COLUMN fase_atual text NOT NULL DEFAULT 'PRIMEIRA_INSTANCIA';
 ```
 
-This eliminates the recursion entirely — both in the immediate client call and in the RLS policies themselves.
+All new text columns are nullable with no default. `fase_atual` is NOT NULL with default `'PRIMEIRA_INSTANCIA'`. No existing columns removed.
 
-| File / Target | Change |
-|---|---|
-| `src/hooks/useAuth.ts` | Replace direct query with `supabase.rpc('has_role', ...)` |
-| DB migration | Replace ALL policy with per-command policies using `has_role()` |
+### 2. Type Updates (`src/types/process.ts`)
+
+- Add `FaseAtual` type: `'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR'`
+- Add new optional fields to `Processo` interface (all `string | null`)
+- Add `faseAtual: FaseAtual` (required)
+- Add constants: `TIPOS_RECURSO` (7 options) and `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`)
+
+### 3. Hook Updates (`src/hooks/useProcessos.ts`)
+
+- `rowToProcesso`: map all new columns (nullable → `null`)
+- `addProcesso` / `updateProcesso`: persist new fields, sending `null` for empty values
+
+### 4. Form Updates (`src/components/ProcessForm.tsx`)
+
+Replace current TRAMITAÇÃO card with four cards:
+
+**PRIMEIRA INSTÂNCIA**: Número do Processo, Vara, Comarca (all text inputs, optional)
+
+**SEGUNDA INSTÂNCIA**: Tipo de Recurso (dropdown, 7 options), Número do Processo, Turma/Câmara, Tribunal (all optional)
+
+**TRIBUNAIS SUPERIORES**: Tribunal Superior (dropdown: STJ/STF), Número do Processo, Turma (all optional)
+
+**FASE ATUAL**: Radio group with 3 options, required, validated on submit
+
+Move `sistema_acesso` and `telefone` fields to a separate "ACESSO E CONTATOS" card. All sections visible simultaneously.
+
+### No changes to
+Authentication, RLS, other pages, existing data/columns
 
