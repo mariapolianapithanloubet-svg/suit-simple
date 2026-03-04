@@ -65,27 +65,36 @@ export function AppLayout({ children, onSignOut, userEmail }: AppLayoutProps) {
           </div>
         </div>
 
-        <nav className="flex-1 px-3 py-3 space-y-1">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path ||
-              (item.path !== '/' && location.pathname.startsWith(item.path));
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  'flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
-                  isActive
-                    ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                    : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/40 hover:text-sidebar-accent-foreground'
-                )}
-              >
-                <item.icon className="h-4.5 w-4.5 flex-shrink-0" />
-                {item.label}
-                {isActive && <ChevronRight className="ml-auto h-3.5 w-3.5 opacity-50" />}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 px-3 py-3 space-y-4">
+          {navGroups.map((group, gi) => (
+            <div key={gi} className="space-y-1">
+              {group.label && (
+                <p className="px-3.5 text-[10px] tracking-[0.15em] uppercase text-sidebar-foreground/40 font-semibold mb-1">
+                  {group.label}
+                </p>
+              )}
+              {group.items.map((item) => {
+                const isActive = location.pathname === item.path ||
+                  (item.path !== '/' && location.pathname.startsWith(item.path));
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      'flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                      isActive
+                        ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                        : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/40 hover:text-sidebar-accent-foreground'
+                    )}
+                  >
+                    <item.icon className="h-4.5 w-4.5 flex-shrink-0" />
+                    {item.label}
+                    {isActive && <ChevronRight className="ml-auto h-3.5 w-3.5 opacity-50" />}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
         {/* User section */}
