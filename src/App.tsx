@@ -72,7 +72,7 @@ function AppContent() {
   );
 }
 
-function EditProcessPage({ processos, onUpdate, grupos }: { processos: any[]; onUpdate: (id: string, data: any) => void; grupos: any[] }) {
+function EditProcessPage({ processos, onUpdate, grupos, categorias, tiposVinculo, tribunais }: { processos: any[]; onUpdate: (id: string, data: any) => void; grupos: any[]; categorias: any[]; tiposVinculo: any[]; tribunais: any[] }) {
   const { id } = useParams();
   const processo = processos.find((p: any) => p.id === id);
   if (!processo) return <div className="text-center py-20 text-muted-foreground text-sm">Processo não encontrado</div>;
@@ -83,6 +83,9 @@ function EditProcessPage({ processos, onUpdate, grupos }: { processos: any[]; on
       onSubmit={(data) => onUpdate(processo.id, data)}
       grupos={grupos}
       processos={processos}
+      categorias={categorias}
+      tiposVinculo={tiposVinculo}
+      tribunais={tribunais}
     />
   );
 }

@@ -10,6 +10,7 @@ import { Search } from 'lucide-react';
 interface Props {
   processos: Processo[];
   grupos: { id: string; nome: string }[];
+  categorias?: CategoriaRow[];
 }
 
 function getNumeroFaseAtual(p: Processo): string {
