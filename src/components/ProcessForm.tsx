@@ -378,7 +378,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* PROCESSOS VINCULADOS */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight flex items-center gap-2">
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em] flex items-center gap-2">
             <Link className="h-4.5 w-4.5" />
             PROCESSOS VINCULADOS
           </CardTitle>
