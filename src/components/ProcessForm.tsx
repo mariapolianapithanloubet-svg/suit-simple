@@ -218,7 +218,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
               <SelectTrigger className="h-10"><SelectValue placeholder="Nenhum" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">Nenhum</SelectItem>
-                {grupos.map(g => <SelectItem key={g.id} value={g.id}>{g.nome}</SelectItem>)}
+                {[...grupos].sort((a, b) => a.nome.localeCompare(b.nome)).map(g => <SelectItem key={g.id} value={g.id}>{g.nome}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
