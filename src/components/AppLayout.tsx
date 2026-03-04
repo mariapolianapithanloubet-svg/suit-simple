@@ -141,7 +141,7 @@ export function AppLayout({ children, onSignOut, userEmail }: AppLayoutProps) {
             </button>
             <div className="flex items-center gap-2">
               <Scale className="h-4 w-4 text-gold" />
-              <h1 className="font-display text-sm font-bold text-sidebar-primary">JuriControl</h1>
+              <h1 className="text-sm font-bold text-sidebar-primary">JuriControl</h1>
             </div>
           </div>
           {onSignOut && (

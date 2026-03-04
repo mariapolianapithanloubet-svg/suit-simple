@@ -73,7 +73,7 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
 
         <Card className="shadow-card border-border/60">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base font-display tracking-tight">PROCESSOS POR ESTADO</CardTitle>
+            <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">PROCESSOS POR ESTADO</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {stats.estadosOrdenados.length === 0 && (

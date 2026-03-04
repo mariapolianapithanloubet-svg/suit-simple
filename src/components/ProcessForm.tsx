@@ -449,7 +449,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       {/* CONTROLE INTERNO */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-lg font-display font-semibold tracking-tight">CONTROLE INTERNO</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">CONTROLE INTERNO</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-5">
           <div className="space-y-2">

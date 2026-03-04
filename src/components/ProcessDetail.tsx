@@ -143,7 +143,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
       {/* Documentos */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">DOCUMENTOS</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">DOCUMENTOS</CardTitle>
         </CardHeader>
         <CardContent className="space-y-5">
           {onUploadDocumento && (

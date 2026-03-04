@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -59,9 +59,12 @@
     --gold: 38 60% 56%;
     --gold-foreground: 222 47% 11%;
 
+    /* Label color */
+    --label: 220 13% 26%;
+
     /* Typography */
-    --font-display: 'DM Serif Display', Georgia, serif;
-    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-display: 'Inter', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
   }
 
   .dark {
@@ -84,6 +87,7 @@
     --border: 222 22% 18%;
     --input: 222 22% 18%;
     --ring: 215 60% 50%;
+    --label: 215 16% 72%;
     --sidebar-background: 222 40% 6%;
     --sidebar-foreground: 215 16% 68%;
     --sidebar-primary: 215 60% 50%;
@@ -102,10 +106,11 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-body);
+    font-size: 14px;
   }
   h1, h2, h3 {
-    font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    font-family: var(--font-body);
+    font-weight: 600;
   }
 }
 
