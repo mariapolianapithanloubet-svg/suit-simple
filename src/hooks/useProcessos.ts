@@ -125,6 +125,7 @@ export function useProcessos() {
       status: data.status,
       ultima_movimentacao: data.ultimaMovimentacao,
       grupo_id: data.grupoId || null,
+      tribunal_primeira_instancia: data.tribunalPrimeiraInstancia || null,
       primeira_instancia_numero: data.primeiraInstanciaNumero || null,
       primeira_instancia_vara: data.primeiraInstanciaVara || null,
       primeira_instancia_comarca: data.primeiraInstanciaComarca || null,
