@@ -157,7 +157,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
   const availableProcessos = processos.filter(p => p.id !== initialData?.id);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
+    <form onSubmit={handleSubmit} className="space-y-10 max-w-4xl">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-display font-bold text-foreground tracking-tight">
@@ -173,10 +173,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
 
       {/* IDENTIFICAÇÃO */}
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">IDENTIFICAÇÃO</CardTitle>
+        <CardHeader className="pb-2 border-b border-border/40">
+          <CardTitle className="text-lg font-display font-semibold tracking-tight">IDENTIFICAÇÃO</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">NÚMERO DO PROCESSO *</Label>
             <Input value={form.numero} onChange={e => update('numero', e.target.value)} placeholder="0000000-00.0000.0.00.0000" className="h-10" />
@@ -208,7 +208,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             <Select value={form.categoria || undefined} onValueChange={v => update('categoria', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
-                {categorias.map(c => <SelectItem key={c.id} value={c.nome}>{c.nome}</SelectItem>)}
+                {[...categorias].sort((a, b) => a.nome.localeCompare(b.nome)).map(c => <SelectItem key={c.id} value={c.nome}>{c.nome}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -218,7 +218,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
               <SelectTrigger className="h-10"><SelectValue placeholder="Nenhum" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">Nenhum</SelectItem>
-                {grupos.map(g => <SelectItem key={g.id} value={g.id}>{g.nome}</SelectItem>)}
+                {[...grupos].sort((a, b) => a.nome.localeCompare(b.nome)).map(g => <SelectItem key={g.id} value={g.id}>{g.nome}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -227,10 +227,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
 
       {/* PARTES */}
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">PARTES</CardTitle>
+        <CardHeader className="pb-2 border-b border-border/40">
+          <CardTitle className="text-lg font-display font-semibold tracking-tight">PARTES</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">AUTOR *</Label>
             <Input value={form.autor} onChange={e => update('autor', e.target.value)} className="h-10" />
@@ -254,10 +254,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
 
       {/* PRIMEIRA INSTÂNCIA */}
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">PRIMEIRA INSTÂNCIA</CardTitle>
+        <CardHeader className="pb-2 border-b border-border/40">
+          <CardTitle className="text-lg font-display font-semibold tracking-tight">PRIMEIRA INSTÂNCIA</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
             <Input value={form.primeiraInstanciaNumero} onChange={e => update('primeiraInstanciaNumero', e.target.value)} className="h-10" />
@@ -288,10 +288,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
 
       {/* SEGUNDA INSTÂNCIA */}
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">SEGUNDA INSTÂNCIA</CardTitle>
+        <CardHeader className="pb-2 border-b border-border/40">
+          <CardTitle className="text-lg font-display font-semibold tracking-tight">SEGUNDA INSTÂNCIA</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">TIPO DE RECURSO</Label>
             <Select value={form.segundaInstanciaTipoRecurso || undefined} onValueChange={v => update('segundaInstanciaTipoRecurso', v)}>
@@ -314,7 +314,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             <Select value={form.segundaInstanciaTribunal || undefined} onValueChange={v => update('segundaInstanciaTribunal', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
               <SelectContent>
-                {tribunais.map(t => <SelectItem key={t.id} value={t.sigla}>{t.sigla} — {t.nome}</SelectItem>)}
+                {[...tribunais].sort((a, b) => a.sigla.localeCompare(b.sigla)).map(t => <SelectItem key={t.id} value={t.sigla}>{t.sigla} — {t.nome}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -323,10 +323,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
 
       {/* TRIBUNAIS SUPERIORES */}
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">TRIBUNAIS SUPERIORES</CardTitle>
+        <CardHeader className="pb-2 border-b border-border/40">
+          <CardTitle className="text-lg font-display font-semibold tracking-tight">TRIBUNAIS SUPERIORES</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">TRIBUNAL SUPERIOR</Label>
             <Select value={form.tribunalSuperiorNome || undefined} onValueChange={v => update('tribunalSuperiorNome', v)}>
@@ -349,10 +349,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
 
       {/* FASE ATUAL */}
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">FASE ATUAL *</CardTitle>
+        <CardHeader className="pb-2 border-b border-border/40">
+          <CardTitle className="text-lg font-display font-semibold tracking-tight">FASE ATUAL *</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-5">
           <RadioGroup value={form.faseAtual} onValueChange={(v: FaseAtual) => update('faseAtual', v)} className="flex flex-col sm:flex-row gap-4">
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="PRIMEIRA_INSTANCIA" id="fase-1" />
@@ -372,13 +372,13 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
 
       {/* PROCESSOS VINCULADOS */}
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight flex items-center gap-2">
-            <Link className="h-4 w-4" />
+        <CardHeader className="pb-2 border-b border-border/40">
+          <CardTitle className="text-lg font-display font-semibold tracking-tight flex items-center gap-2">
+            <Link className="h-4.5 w-4.5" />
             PROCESSOS VINCULADOS
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-5">
           {vinculos.map((v, index) => (
             <div key={index} className="flex flex-col gap-3 p-4 rounded-lg border border-border/40 bg-muted/10">
               <div className="flex items-start gap-3">
@@ -388,7 +388,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
                     <Select value={v.tipoVinculo || undefined} onValueChange={val => updateVinculoEntry(index, 'tipoVinculo', val)}>
                       <SelectTrigger className="h-9"><SelectValue placeholder="Selecione" /></SelectTrigger>
                       <SelectContent>
-                        {tiposVinculo.map(t => <SelectItem key={t.id} value={t.nome}>{t.nome}</SelectItem>)}
+                        {[...tiposVinculo].sort((a, b) => a.nome.localeCompare(b.nome)).map(t => <SelectItem key={t.id} value={t.nome}>{t.nome}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
@@ -443,10 +443,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
 
       {/* CONTROLE INTERNO */}
       <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">CONTROLE INTERNO</CardTitle>
+        <CardHeader className="pb-2 border-b border-border/40">
+          <CardTitle className="text-lg font-display font-semibold tracking-tight">CONTROLE INTERNO</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">SENHA DE ACESSO</Label>
             <Input type="text" value={form.senhaAcesso} onChange={e => update('senhaAcesso', e.target.value)} className="h-10" />
