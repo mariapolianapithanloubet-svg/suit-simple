@@ -125,6 +125,7 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
         reu: r.parteContraria,
         clienteEscritorio: 'Autor' as const,
         varaCamaraTurma: r.orgaoJulgador,
+        tribunalPrimeiraInstancia: (r as any).tribunalPrimeiraInstancia || '',
         sistemaAcesso: '',
         telefoneSecretaria: '',
         telefoneAssessoria: '',
