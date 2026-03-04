@@ -378,7 +378,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             PROCESSOS VINCULADOS
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-5">
           {vinculos.map((v, index) => (
             <div key={index} className="flex flex-col gap-3 p-4 rounded-lg border border-border/40 bg-muted/10">
               <div className="flex items-start gap-3">
