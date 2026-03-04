@@ -95,7 +95,28 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
     }
     setSaving(true);
     try {
-      await onSubmit(form as any);
+      const result = await onSubmit(form as any);
+      
+      // Save vinculos
+      const processoId = initialData?.id || (result as any)?.id;
+      if (processoId) {
+        // Remove deleted vinculos
+        for (const removed of removedVinculos) {
+          await removeVinculo(removed.id, removed.processo_origem_id, removed.processo_vinculado_id);
+        }
+        // Add new vinculos (ones without an existing DB id)
+        for (const v of vinculos) {
+          if (!v.id && v.tipoVinculo) {
+            await addVinculo(
+              processoId,
+              v.isExisting ? v.processoVinculadoId : null,
+              v.isExisting ? null : v.numeroManual,
+              v.tipoVinculo,
+            );
+          }
+        }
+      }
+      
       toast.success(mode === 'create' ? 'Processo cadastrado!' : 'Processo atualizado!');
       navigate('/processos');
     } catch {
@@ -104,6 +125,32 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
       setSaving(false);
     }
   };
+
+  const addVinculoEntry = () => {
+    setVinculos(prev => [...prev, { processoVinculadoId: null, numeroManual: '', tipoVinculo: '', isExisting: false }]);
+  };
+
+  const updateVinculoEntry = (index: number, field: keyof VinculoEntry, value: any) => {
+    setVinculos(prev => prev.map((v, i) => i === index ? { ...v, [field]: value } : v));
+  };
+
+  const removeVinculoEntry = (index: number) => {
+    const entry = vinculos[index];
+    if (entry.id) {
+      // Track removed existing vinculos for deletion on save
+      setRemovedVinculos(prev => [...prev, {
+        id: entry.id!,
+        processo_origem_id: initialData?.id || '',
+        processo_vinculado_id: entry.processoVinculadoId,
+        numero_processo_vinculado: entry.numeroManual || null,
+        tipo_vinculo: entry.tipoVinculo,
+        created_at: '',
+      }]);
+    }
+    setVinculos(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const availableProcessos = processos.filter(p => p.id !== initialData?.id);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl">
