@@ -187,7 +187,12 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">SISTEMA DE ACESSO</Label>
-            <Input value={form.sistemaAcesso} onChange={e => update('sistemaAcesso', e.target.value)} placeholder="Ex: PJe, PROJUDI, E-SAJ" className="h-10" />
+            <Select value={form.sistemaAcesso || undefined} onValueChange={v => update('sistemaAcesso', v)}>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>
+                {SISTEMAS_ACESSO.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">TELEFONES DO JUÍZO</Label>
