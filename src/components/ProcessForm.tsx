@@ -195,7 +195,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
             </Select>
           </div>
           <div className="space-y-2">
-            <Label className="text-sm font-medium">TELEFONES DO JUÍZO</Label>
+            <Label className="text-sm font-medium">TELEFONES</Label>
             <Input value={form.telefoneSecretaria} onChange={e => update('telefoneSecretaria', e.target.value)} placeholder="(00) 0000-0000, (00) 0000-0000" className="h-10" />
           </div>
         </CardContent>
