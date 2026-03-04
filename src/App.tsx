@@ -16,6 +16,9 @@ import { ProcessImport } from "@/components/ProcessImport";
 import { GrupoManager } from "@/components/GrupoManager";
 import ConsultarProcessos from "@/pages/ConsultarProcessos";
 import ProcessoView from "@/pages/ProcessoView";
+import CategoriasPage from "@/pages/CategoriasPage";
+import TiposVinculoPage from "@/pages/TiposVinculoPage";
+import TribunaisPage from "@/pages/TribunaisPage";
 import Auth from "@/pages/Auth";
 import NotFound from "./pages/NotFound";
 
