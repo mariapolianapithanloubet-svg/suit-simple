@@ -388,7 +388,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
                     <Select value={v.tipoVinculo || undefined} onValueChange={val => updateVinculoEntry(index, 'tipoVinculo', val)}>
                       <SelectTrigger className="h-9"><SelectValue placeholder="Selecione" /></SelectTrigger>
                       <SelectContent>
-                        {TIPOS_VINCULO.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                        {tiposVinculo.map(t => <SelectItem key={t.id} value={t.nome}>{t.nome}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Processo, getClienteName, COMPETENCIAS, ESTADOS_BRASIL, CATEGORIAS } from '@/types/process';
+import { Processo, getClienteName, COMPETENCIAS, ESTADOS_BRASIL } from '@/types/process';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
