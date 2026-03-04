@@ -172,7 +172,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
         <CardHeader className="pb-4">
           <CardTitle className="text-base font-display tracking-tight">PRIMEIRA INSTÂNCIA</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
             <Input value={form.primeiraInstanciaNumero} onChange={e => update('primeiraInstanciaNumero', e.target.value)} className="h-10" />
@@ -184,6 +184,14 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
           <div className="space-y-2">
             <Label className="text-sm font-medium">COMARCA</Label>
             <Input value={form.primeiraInstanciaComarca} onChange={e => update('primeiraInstanciaComarca', e.target.value)} className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">SISTEMA DE ACESSO</Label>
+            <Input value={form.sistemaAcesso} onChange={e => update('sistemaAcesso', e.target.value)} placeholder="Ex: PJe, PROJUDI, E-SAJ" className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">TELEFONES DO JUÍZO</Label>
+            <Input value={form.telefoneSecretaria} onChange={e => update('telefoneSecretaria', e.target.value)} placeholder="(00) 0000-0000, (00) 0000-0000" className="h-10" />
           </div>
         </CardContent>
       </Card>
