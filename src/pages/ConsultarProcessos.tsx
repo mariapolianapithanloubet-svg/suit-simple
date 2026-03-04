@@ -32,23 +32,44 @@ const FASE_LABELS: Record<string, string> = {
   TRIBUNAL_SUPERIOR: 'Tribunal Superior',
 };
 
-export default function ConsultarProcessos({ processos, grupos }: Props) {
+export default function ConsultarProcessos({ processos, grupos, categorias = [] }: Props) {
   const [search, setSearch] = useState('');
+  const [filtroCompetencia, setFiltroCompetencia] = useState('all');
+  const [filtroFase, setFiltroFase] = useState('all');
+  const [filtroCategoria, setFiltroCategoria] = useState('all');
+  const [filtroGrupo, setFiltroGrupo] = useState('all');
   const navigate = useNavigate();
 
   const grupoMap = useMemo(() => new Map(grupos.map(g => [g.id, g.nome])), [grupos]);
 
+  const hasFilters = filtroCompetencia !== 'all' || filtroFase !== 'all' || filtroCategoria !== 'all' || filtroGrupo !== 'all';
+
+  const clearFilters = () => {
+    setFiltroCompetencia('all');
+    setFiltroFase('all');
+    setFiltroCategoria('all');
+    setFiltroGrupo('all');
+  };
+
   const filtered = useMemo(() => {
-    if (!search.trim()) return processos;
-    const q = search.toLowerCase();
     return processos.filter(p => {
-      const cliente = getClienteName(p).toLowerCase();
-      const parteContraria = (p.clienteEscritorio === 'Autor' ? p.reu : p.autor).toLowerCase();
-      const grupo = (p.grupoId ? grupoMap.get(p.grupoId) || '' : '').toLowerCase();
-      const numero = getNumeroFaseAtual(p).toLowerCase();
-      return numero.includes(q) || cliente.includes(q) || parteContraria.includes(q) || grupo.includes(q);
+      // Text search
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        const cliente = getClienteName(p).toLowerCase();
+        const parteContraria = (p.clienteEscritorio === 'Autor' ? p.reu : p.autor).toLowerCase();
+        const grupo = (p.grupoId ? grupoMap.get(p.grupoId) || '' : '').toLowerCase();
+        const numero = getNumeroFaseAtual(p).toLowerCase();
+        if (!numero.includes(q) && !cliente.includes(q) && !parteContraria.includes(q) && !grupo.includes(q)) return false;
+      }
+      // Filters
+      if (filtroCompetencia !== 'all' && p.competencia !== filtroCompetencia) return false;
+      if (filtroFase !== 'all' && p.faseAtual !== filtroFase) return false;
+      if (filtroCategoria !== 'all' && p.categoria !== filtroCategoria) return false;
+      if (filtroGrupo !== 'all' && (p.grupoId || '') !== filtroGrupo) return false;
+      return true;
     });
-  }, [search, processos, grupoMap]);
+  }, [search, processos, grupoMap, filtroCompetencia, filtroFase, filtroCategoria, filtroGrupo]);
 
   return (
     <div className="space-y-6">
