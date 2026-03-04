@@ -1,23 +1,52 @@
 
 
-## Plan: Refactor form — merge access/contact fields into PRIMEIRA INSTÂNCIA
+## Plan: Refactor Tramitação to Multi-Instance Layout (adjusted migration)
 
-### Changes to `src/components/ProcessForm.tsx` only
+### 1. Database Migration
 
-**1. Add fields to PRIMEIRA INSTÂNCIA card (lines 176-189)**
-- After Comarca, add two new fields in the same grid:
-  - "SISTEMA DE ACESSO" — plain `Input` (free text), bound to `form.sistemaAcesso`
-  - "TELEFONES DO JUÍZO" — plain `Input` (free text), bound to `form.telefoneSecretaria` (reuse existing DB column to preserve data)
-- Change grid to `sm:grid-cols-2 lg:grid-cols-3` to fit 5 fields
+```sql
+ALTER TABLE public.processos
+  ADD COLUMN primeira_instancia_numero text,
+  ADD COLUMN primeira_instancia_vara text,
+  ADD COLUMN primeira_instancia_comarca text,
+  ADD COLUMN segunda_instancia_tipo_recurso text,
+  ADD COLUMN segunda_instancia_numero text,
+  ADD COLUMN segunda_instancia_turma_camara text,
+  ADD COLUMN segunda_instancia_tribunal text,
+  ADD COLUMN tribunal_superior_nome text,
+  ADD COLUMN tribunal_superior_numero text,
+  ADD COLUMN tribunal_superior_turma text,
+  ADD COLUMN fase_atual text NOT NULL DEFAULT 'PRIMEIRA_INSTANCIA';
+```
 
-**2. Remove the ACESSO E CONTATOS card entirely (lines 271-299)**
-- Delete the whole card including `varaCamaraTurma`, `sistemaAcesso` (Select), `telefoneSecretaria`, `telefoneAssessoria` fields
+All new text columns are nullable with no default. `fase_atual` is NOT NULL with default `'PRIMEIRA_INSTANCIA'`. No existing columns removed.
 
-**3. Remove `SISTEMAS_ACESSO` import (line 3)**
-- No longer needed since the dropdown is replaced by free text
+### 2. Type Updates (`src/types/process.ts`)
 
-**4. Remove form state fields no longer shown**
-- Remove `telefoneAssessoria` and `varaCamaraTurma` from form state initialization (but keep them in the submit payload so existing DB columns are not affected — they'll just send empty/existing values)
+- Add `FaseAtual` type: `'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR'`
+- Add new optional fields to `Processo` interface (all `string | null`)
+- Add `faseAtual: FaseAtual` (required)
+- Add constants: `TIPOS_RECURSO` (7 options) and `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`)
 
-**No database changes, no type changes, no auth changes.**
+### 3. Hook Updates (`src/hooks/useProcessos.ts`)
+
+- `rowToProcesso`: map all new columns (nullable → `null`)
+- `addProcesso` / `updateProcesso`: persist new fields, sending `null` for empty values
+
+### 4. Form Updates (`src/components/ProcessForm.tsx`)
+
+Replace current TRAMITAÇÃO card with four cards:
+
+**PRIMEIRA INSTÂNCIA**: Número do Processo, Vara, Comarca (all text inputs, optional)
+
+**SEGUNDA INSTÂNCIA**: Tipo de Recurso (dropdown, 7 options), Número do Processo, Turma/Câmara, Tribunal (all optional)
+
+**TRIBUNAIS SUPERIORES**: Tribunal Superior (dropdown: STJ/STF), Número do Processo, Turma (all optional)
+
+**FASE ATUAL**: Radio group with 3 options, required, validated on submit
+
+Move `sistema_acesso` and `telefone` fields to a separate "ACESSO E CONTATOS" card. All sections visible simultaneously.
+
+### No changes to
+Authentication, RLS, other pages, existing data/columns
 

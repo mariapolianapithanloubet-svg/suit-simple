@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, SISTEMAS_ACESSO, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, Competencia, Categoria, FaseAtual } from '@/types/process';
+import { Processo, Grupo, COMPETENCIAS, CATEGORIAS, ESTADOS_BRASIL, TIPOS_RECURSO, TRIBUNAIS_SUPERIORES, Competencia, Categoria, FaseAtual } from '@/types/process';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -33,7 +33,6 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
     varaCamaraTurma: initialData?.varaCamaraTurma || '',
     sistemaAcesso: initialData?.sistemaAcesso || '',
     telefoneSecretaria: initialData?.telefoneSecretaria || '',
-    telefoneAssessoria: initialData?.telefoneAssessoria || '',
     senhaAcesso: initialData?.senhaAcesso || '',
     status: initialData?.status || '',
     ultimaMovimentacao: initialData?.ultimaMovimentacao || '',
@@ -173,7 +172,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
         <CardHeader className="pb-4">
           <CardTitle className="text-base font-display tracking-tight">PRIMEIRA INSTÂNCIA</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
             <Input value={form.primeiraInstanciaNumero} onChange={e => update('primeiraInstanciaNumero', e.target.value)} className="h-10" />
@@ -185,6 +184,14 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
           <div className="space-y-2">
             <Label className="text-sm font-medium">COMARCA</Label>
             <Input value={form.primeiraInstanciaComarca} onChange={e => update('primeiraInstanciaComarca', e.target.value)} className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">SISTEMA DE ACESSO</Label>
+            <Input value={form.sistemaAcesso} onChange={e => update('sistemaAcesso', e.target.value)} placeholder="Ex: PJe, PROJUDI, E-SAJ" className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">TELEFONES DO JUÍZO</Label>
+            <Input value={form.telefoneSecretaria} onChange={e => update('telefoneSecretaria', e.target.value)} placeholder="(00) 0000-0000, (00) 0000-0000" className="h-10" />
           </div>
         </CardContent>
       </Card>
@@ -268,35 +275,6 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [] }: Proces
         </CardContent>
       </Card>
 
-      {/* ACESSO E CONTATOS */}
-      <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-display tracking-tight">ACESSO E CONTATOS</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">VARA / CÂMARA / TURMA</Label>
-            <Input value={form.varaCamaraTurma} onChange={e => update('varaCamaraTurma', e.target.value)} className="h-10" />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">SISTEMA DE ACESSO</Label>
-            <Select value={form.sistemaAcesso || undefined} onValueChange={v => update('sistemaAcesso', v)}>
-              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
-              <SelectContent>
-                {SISTEMAS_ACESSO.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">TELEFONE DA SECRETARIA</Label>
-            <Input value={form.telefoneSecretaria} onChange={e => update('telefoneSecretaria', e.target.value)} placeholder="(00) 0000-0000" className="h-10" />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">TELEFONE DA ASSESSORIA</Label>
-            <Input value={form.telefoneAssessoria} onChange={e => update('telefoneAssessoria', e.target.value)} placeholder="(00) 0000-0000" className="h-10" />
-          </div>
-        </CardContent>
-      </Card>
 
       {/* CONTROLE INTERNO */}
       <Card className="shadow-card border-border/60">
