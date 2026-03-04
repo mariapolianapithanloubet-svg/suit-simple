@@ -42,6 +42,7 @@ export interface Processo {
   criadoEm: string;
   atualizadoEm: string;
   // Multi-instance fields
+  tribunalPrimeiraInstancia: string | null;
   primeiraInstanciaNumero: string | null;
   primeiraInstanciaVara: string | null;
   primeiraInstanciaComarca: string | null;

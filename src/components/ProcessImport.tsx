@@ -48,6 +48,7 @@ function normalizeHeader(h: string): string {
   if (s.includes('numero') || s.includes('processo')) return 'numero';
   if (s.includes('orgao') || s.includes('julgador') || s.includes('vara')) return 'orgaoJulgador';
   if (s.includes('classe') || s.includes('tipo') || s.includes('acao')) return 'classe';
+  if (s.includes('tribunal') && s.includes('primeira')) return 'tribunalPrimeiraInstancia';
   return '';
 }
 
@@ -125,6 +126,7 @@ export function ProcessImport({ onImport }: ProcessImportProps) {
         reu: r.parteContraria,
         clienteEscritorio: 'Autor' as const,
         varaCamaraTurma: r.orgaoJulgador,
+        tribunalPrimeiraInstancia: (r as any).tribunalPrimeiraInstancia || '',
         sistemaAcesso: '',
         telefoneSecretaria: '',
         telefoneAssessoria: '',

@@ -1,0 +1,1 @@
+ALTER TABLE public.processos ADD COLUMN tribunal_primeira_instancia text;

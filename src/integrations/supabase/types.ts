@@ -116,6 +116,7 @@ export type Database = {
           telefone_assessoria: string
           telefone_secretaria: string
           tipo_acao: string
+          tribunal_primeira_instancia: string | null
           tribunal_superior_nome: string | null
           tribunal_superior_numero: string | null
           tribunal_superior_turma: string | null
@@ -149,6 +150,7 @@ export type Database = {
           telefone_assessoria?: string
           telefone_secretaria?: string
           tipo_acao?: string
+          tribunal_primeira_instancia?: string | null
           tribunal_superior_nome?: string | null
           tribunal_superior_numero?: string | null
           tribunal_superior_turma?: string | null
@@ -182,6 +184,7 @@ export type Database = {
           telefone_assessoria?: string
           telefone_secretaria?: string
           tipo_acao?: string
+          tribunal_primeira_instancia?: string | null
           tribunal_superior_nome?: string | null
           tribunal_superior_numero?: string | null
           tribunal_superior_turma?: string | null

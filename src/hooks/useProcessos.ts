@@ -24,6 +24,7 @@ function rowToProcesso(row: any): Processo {
     documentos: [],
     criadoEm: row.criado_em,
     atualizadoEm: row.atualizado_em,
+    tribunalPrimeiraInstancia: row.tribunal_primeira_instancia ?? null,
     primeiraInstanciaNumero: row.primeira_instancia_numero ?? null,
     primeiraInstanciaVara: row.primeira_instancia_vara ?? null,
     primeiraInstanciaComarca: row.primeira_instancia_comarca ?? null,
@@ -124,6 +125,7 @@ export function useProcessos() {
       status: data.status,
       ultima_movimentacao: data.ultimaMovimentacao,
       grupo_id: data.grupoId || null,
+      tribunal_primeira_instancia: data.tribunalPrimeiraInstancia || null,
       primeira_instancia_numero: data.primeiraInstanciaNumero || null,
       primeira_instancia_vara: data.primeiraInstanciaVara || null,
       primeira_instancia_comarca: data.primeiraInstanciaComarca || null,
@@ -162,6 +164,7 @@ export function useProcessos() {
     if (data.status !== undefined) updates.status = data.status;
     if (data.ultimaMovimentacao !== undefined) updates.ultima_movimentacao = data.ultimaMovimentacao;
     if (data.grupoId !== undefined) updates.grupo_id = data.grupoId || null;
+    if (data.tribunalPrimeiraInstancia !== undefined) updates.tribunal_primeira_instancia = data.tribunalPrimeiraInstancia || null;
     if (data.primeiraInstanciaNumero !== undefined) updates.primeira_instancia_numero = data.primeiraInstanciaNumero || null;
     if (data.primeiraInstanciaVara !== undefined) updates.primeira_instancia_vara = data.primeiraInstanciaVara || null;
     if (data.primeiraInstanciaComarca !== undefined) updates.primeira_instancia_comarca = data.primeiraInstanciaComarca || null;
@@ -229,6 +232,7 @@ export function useProcessos() {
         reu: data.reu || null,
         cliente_escritorio: data.clienteEscritorio || 'Autor',
         vara_camara_turma: data.varaCamaraTurma,
+        tribunal_primeira_instancia: data.tribunalPrimeiraInstancia || null,
         sistema_acesso: data.sistemaAcesso,
         telefone_secretaria: data.telefoneSecretaria,
         telefone_assessoria: data.telefoneAssessoria || '',
