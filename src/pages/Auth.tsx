@@ -13,10 +13,16 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const ALLOWED_DOMAIN = '@pithan-loubet.com.br';
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       toast.error('Preencha todos os campos');
+      return;
+    }
+    if (mode === 'signup' && !email.toLowerCase().endsWith(ALLOWED_DOMAIN)) {
+      toast.error('Apenas e-mails @pithan-loubet.com.br são permitidos.');
       return;
     }
     setLoading(true);
