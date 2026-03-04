@@ -291,7 +291,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
         <CardHeader className="pb-2 border-b border-border/40">
           <CardTitle className="text-lg font-display font-semibold tracking-tight">SEGUNDA INSTÂNCIA</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">TIPO DE RECURSO</Label>
             <Select value={form.segundaInstanciaTipoRecurso || undefined} onValueChange={v => update('segundaInstanciaTipoRecurso', v)}>
