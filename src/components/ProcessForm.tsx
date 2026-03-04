@@ -326,7 +326,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
         <CardHeader className="pb-2 border-b border-border/40">
           <CardTitle className="text-lg font-display font-semibold tracking-tight">TRIBUNAIS SUPERIORES</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">TRIBUNAL SUPERIOR</Label>
             <Select value={form.tribunalSuperiorNome || undefined} onValueChange={v => update('tribunalSuperiorNome', v)}>
