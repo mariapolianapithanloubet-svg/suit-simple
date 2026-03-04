@@ -183,6 +183,48 @@ export type Database = {
           },
         ]
       }
+      processos_vinculados: {
+        Row: {
+          created_at: string
+          id: string
+          numero_processo_vinculado: string | null
+          processo_origem_id: string
+          processo_vinculado_id: string | null
+          tipo_vinculo: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          numero_processo_vinculado?: string | null
+          processo_origem_id: string
+          processo_vinculado_id?: string | null
+          tipo_vinculo: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          numero_processo_vinculado?: string | null
+          processo_origem_id?: string
+          processo_vinculado_id?: string | null
+          tipo_vinculo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processos_vinculados_processo_origem_id_fkey"
+            columns: ["processo_origem_id"]
+            isOneToOne: false
+            referencedRelation: "processos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processos_vinculados_processo_vinculado_id_fkey"
+            columns: ["processo_vinculado_id"]
+            isOneToOne: false
+            referencedRelation: "processos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
