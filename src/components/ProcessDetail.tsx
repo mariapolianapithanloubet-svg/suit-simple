@@ -124,7 +124,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
         </Card>
 
         <Card className="shadow-card border-border/60 lg:col-span-2">
-          <CardHeader className="pb-4"><CardTitle className="text-base font-display tracking-tight">CONTROLE INTERNO</CardTitle></CardHeader>
+          <CardHeader className="pb-4"><CardTitle className="text-[18px] font-semibold tracking-[0.02em]">CONTROLE INTERNO</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
