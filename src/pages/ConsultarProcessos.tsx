@@ -198,6 +198,7 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
                 <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort('competencia')}>
                   <span className="inline-flex items-center">Competência<SortIcon col="competencia" /></span>
                 </TableHead>
+                <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
