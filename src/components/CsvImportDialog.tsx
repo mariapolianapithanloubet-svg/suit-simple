@@ -148,7 +148,7 @@ export function CsvImportDialog({ open, onOpenChange, onImportComplete }: CsvImp
       }
 
       if (validInserts.length > 0) {
-        const { error } = await supabase.from('processos').insert(validInserts);
+        const { error } = await supabase.from('processos').insert(validInserts as any);
         if (error) {
           errors.push({ row: 0, message: `Erro ao inserir: ${error.message}` });
         }
