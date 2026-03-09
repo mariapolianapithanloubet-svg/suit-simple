@@ -20,6 +20,7 @@ interface Props {
   categorias?: CategoriaRow[];
   onDelete: (id: string) => void;
   isAdmin: boolean;
+  onRefresh?: () => void;
 }
 
 function getNumeroFaseAtual(p: Processo): string {
