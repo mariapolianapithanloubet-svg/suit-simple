@@ -26,7 +26,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { session, loading: authLoading, signOut, isAdmin } = useAuth();
-  const { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, addGrupo, updateGrupo, deleteGrupo, refetch } = useProcessos();
+  const { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, addGrupo, updateGrupo, deleteGrupo, refetch, refetch } = useProcessos();
   const admin = useAdminTables();
 
   if (authLoading) {
@@ -48,7 +48,7 @@ function AppContent() {
     <AppLayout onSignOut={signOut} userEmail={session.user?.email}>
       <Routes>
         <Route path="/" element={<DashboardStats processos={processos} />} />
-        <Route path="/consultar" element={<ConsultarProcessos processos={processos} grupos={grupos} categorias={admin.categorias} onDelete={deleteProcesso} isAdmin={isAdmin} onRefresh={() => { /* trigger refetch */ const r = (useProcessos as any).__refetch; }} />} />
+        <Route path="/consultar" element={<ConsultarProcessos processos={processos} grupos={grupos} categorias={admin.categorias} onDelete={deleteProcesso} isAdmin={isAdmin} onrefetchefetch; }} />} />
         <Route path="/consultar/:id" element={<ProcessoView processos={processos} grupos={grupos} />} />
         <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} loading={loading} isAdmin={isAdmin} onClearImported={clearImported} />} />
         <Route path="/processos/importar" element={<ProcessImport onImport={bulkImport} />} />
