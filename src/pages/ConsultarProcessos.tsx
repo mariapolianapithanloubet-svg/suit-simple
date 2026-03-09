@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
-import { Search, X, ArrowUpDown, ArrowUp, ArrowDown, Pencil, Trash2 } from 'lucide-react';
+import { Search, X, ArrowUpDown, ArrowUp, ArrowDown, Pencil, Trash2, FileUp } from 'lucide-react';
+import { CsvImportDialog } from '@/components/CsvImportDialog';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -19,6 +20,7 @@ interface Props {
   categorias?: CategoriaRow[];
   onDelete: (id: string) => void;
   isAdmin: boolean;
+  onRefresh?: () => void;
 }
 
 function getNumeroFaseAtual(p: Processo): string {
@@ -41,7 +43,8 @@ const FASE_LABELS: Record<string, string> = {
 type SortKey = 'numero' | 'cliente' | 'grupo' | 'fase' | 'competencia';
 type SortDir = 'asc' | 'desc';
 
-export default function ConsultarProcessos({ processos, grupos, categorias = [], onDelete, isAdmin }: Props) {
+export default function ConsultarProcessos({ processos, grupos, categorias = [], onDelete, isAdmin, onRefresh }: Props) {
+  const [csvDialogOpen, setCsvDialogOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [filtroCompetencia, setFiltroCompetencia] = useState('all');
   const [filtroFase, setFiltroFase] = useState('all');
@@ -116,10 +119,17 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-[28px] font-semibold text-foreground tracking-tight">Consultar Processos</h2>
-        <p className="text-sm text-muted-foreground mt-1">Pesquise por número, cliente, parte contrária ou grupo</p>
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 className="text-[28px] font-semibold text-foreground tracking-tight">Consultar Processos</h2>
+          <p className="text-sm text-muted-foreground mt-1">Pesquise por número, cliente, parte contrária ou grupo</p>
+        </div>
+        <Button variant="outline" size="sm" className="gap-2" onClick={() => setCsvDialogOpen(true)}>
+          <FileUp className="h-4 w-4" />Importar Planilha
+        </Button>
       </div>
+
+      <CsvImportDialog open={csvDialogOpen} onOpenChange={setCsvDialogOpen} onImportComplete={() => onRefresh?.()} />
 
       {/* Enhanced search bar */}
       <div className="relative max-w-2xl">
