@@ -119,10 +119,17 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-[28px] font-semibold text-foreground tracking-tight">Consultar Processos</h2>
-        <p className="text-sm text-muted-foreground mt-1">Pesquise por número, cliente, parte contrária ou grupo</p>
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 className="text-[28px] font-semibold text-foreground tracking-tight">Consultar Processos</h2>
+          <p className="text-sm text-muted-foreground mt-1">Pesquise por número, cliente, parte contrária ou grupo</p>
+        </div>
+        <Button variant="outline" size="sm" className="gap-2" onClick={() => setCsvDialogOpen(true)}>
+          <FileUp className="h-4 w-4" />Importar Planilha
+        </Button>
       </div>
+
+      <CsvImportDialog open={csvDialogOpen} onOpenChange={setCsvDialogOpen} onImportComplete={() => onRefresh?.()} />
 
       {/* Enhanced search bar */}
       <div className="relative max-w-2xl">
