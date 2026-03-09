@@ -43,7 +43,8 @@ const FASE_LABELS: Record<string, string> = {
 type SortKey = 'numero' | 'cliente' | 'grupo' | 'fase' | 'competencia';
 type SortDir = 'asc' | 'desc';
 
-export default function ConsultarProcessos({ processos, grupos, categorias = [], onDelete, isAdmin }: Props) {
+export default function ConsultarProcessos({ processos, grupos, categorias = [], onDelete, isAdmin, onRefresh }: Props) {
+  const [csvDialogOpen, setCsvDialogOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [filtroCompetencia, setFiltroCompetencia] = useState('all');
   const [filtroFase, setFiltroFase] = useState('all');
