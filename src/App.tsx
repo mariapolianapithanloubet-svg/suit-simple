@@ -26,7 +26,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { session, loading: authLoading, signOut, isAdmin } = useAuth();
-  const { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, addGrupo, updateGrupo, deleteGrupo } = useProcessos();
+  const { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, addGrupo, updateGrupo, deleteGrupo, refetch } = useProcessos();
   const admin = useAdminTables();
 
   if (authLoading) {
