@@ -224,6 +224,16 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">RELEVÂNCIA DO PROCESSO</Label>
+            <Select value={form.relevancia || undefined} onValueChange={v => update('relevancia', v)}>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="relevante">Relevante</SelectItem>
+                <SelectItem value="acompanhamento">Mero acompanhamento</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardContent>
       </Card>
 

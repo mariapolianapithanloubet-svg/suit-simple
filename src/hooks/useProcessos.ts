@@ -178,6 +178,7 @@ export function useProcessos() {
     if (data.tribunalSuperiorNumero !== undefined) updates.tribunal_superior_numero = data.tribunalSuperiorNumero || null;
     if (data.tribunalSuperiorTurma !== undefined) updates.tribunal_superior_turma = data.tribunalSuperiorTurma || null;
     if (data.faseAtual !== undefined) updates.fase_atual = data.faseAtual;
+    if (data.relevancia !== undefined) updates.relevancia = data.relevancia;
 
     await supabase.from('processos').update(updates).eq('id', id);
     await fetchProcessos();
