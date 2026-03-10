@@ -215,10 +215,15 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
               {filtered.map(p => (
                 <TableRow
                   key={p.id}
-                  className="cursor-pointer"
+                  className={`cursor-pointer ${p.relevancia === 'relevante' ? 'bg-yellow-50 border-l-4 border-yellow-400' : ''}`}
                   onClick={() => navigate(`/consultar/${p.id}`)}
                 >
-                  <TableCell className="font-medium">{getNumeroFaseAtual(p)}</TableCell>
+                  <TableCell className="font-medium">
+                    <span className="inline-flex items-center gap-1.5">
+                      {p.relevancia === 'relevante' && <Star className="h-4 w-4 text-yellow-500 fill-yellow-400 shrink-0" />}
+                      {getNumeroFaseAtual(p)}
+                    </span>
+                  </TableCell>
                   <TableCell>{getClienteName(p)}</TableCell>
                   <TableCell>{p.grupoId ? grupoMap.get(p.grupoId) || '—' : '—'}</TableCell>
                   <TableCell>
