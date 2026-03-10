@@ -118,7 +118,7 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
     });
 
     return result;
-  }, [search, processos, grupoMap, filtroCompetencia, filtroFase, filtroCategoria, filtroGrupo, sortKey, sortDir]);
+  }, [search, processos, grupoMap, filtroCompetencia, filtroFase, filtroCategoria, filtroGrupo, filtroRelevancia, sortKey, sortDir]);
 
   return (
     <div className="space-y-6">
