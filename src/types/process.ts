@@ -84,6 +84,7 @@ export const TIPOS_RECURSO = [
   'Agravo em Recurso Especial',
   'Agravo em Recurso Extraordinário',
   'Agravo Interno',
+  'Precatório',
 ];
 
 export const TRIBUNAIS_SUPERIORES = ['STJ', 'STF'];
