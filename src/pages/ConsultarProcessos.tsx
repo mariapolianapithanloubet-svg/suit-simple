@@ -99,6 +99,7 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
       if (filtroFase !== 'all' && p.faseAtual !== filtroFase) return false;
       if (filtroCategoria !== 'all' && p.categoria !== filtroCategoria) return false;
       if (filtroGrupo !== 'all' && (p.grupoId || '') !== filtroGrupo) return false;
+      if (filtroRelevancia !== 'all' && (p.relevancia || '') !== filtroRelevancia) return false;
       return true;
     });
 
