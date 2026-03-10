@@ -77,14 +77,12 @@ export const PASTAS_DOCUMENTO = [
 ];
 
 export const TIPOS_RECURSO = [
-  'Apelação Cível',
+  'Apelação',
+  'Agravo de Instrumento',
   'Embargos de Declaração',
-  'Recurso Especial',
-  'Recurso Extraordinário',
-  'Agravo em Recurso Especial',
-  'Agravo em Recurso Extraordinário',
-  'Agravo Interno',
+  'Incidente de Arguição de Inconstitucionalidade Cível',
   'Precatório',
+  'RPV',
 ];
 
 export const TRIBUNAIS_SUPERIORES = ['STJ', 'STF'];
