@@ -1,52 +1,28 @@
 
 
-## Plan: Refactor Tramitação to Multi-Instance Layout (adjusted migration)
+## Fix Admin Role Detection in Frontend
 
-### 1. Database Migration
+### Problem
+The `useAuth` hook uses `supabase.rpc('has_role', ...)` which may be returning unexpected data (e.g., the RPC result isn't being parsed as a boolean correctly). The delete button in Consultar Processos is hidden because `isAdmin` stays `false`.
 
-```sql
-ALTER TABLE public.processos
-  ADD COLUMN primeira_instancia_numero text,
-  ADD COLUMN primeira_instancia_vara text,
-  ADD COLUMN primeira_instancia_comarca text,
-  ADD COLUMN segunda_instancia_tipo_recurso text,
-  ADD COLUMN segunda_instancia_numero text,
-  ADD COLUMN segunda_instancia_turma_camara text,
-  ADD COLUMN segunda_instancia_tribunal text,
-  ADD COLUMN tribunal_superior_nome text,
-  ADD COLUMN tribunal_superior_numero text,
-  ADD COLUMN tribunal_superior_turma text,
-  ADD COLUMN fase_atual text NOT NULL DEFAULT 'PRIMEIRA_INSTANCIA';
-```
+### Solution
+Replace the RPC call with a direct query to `user_roles` table, which is more reliable and debuggable.
 
-All new text columns are nullable with no default. `fase_atual` is NOT NULL with default `'PRIMEIRA_INSTANCIA'`. No existing columns removed.
+### Changes
 
-### 2. Type Updates (`src/types/process.ts`)
+**`src/hooks/useAuth.ts`** — Update `checkAdmin` function:
+- Replace `supabase.rpc('has_role', ...)` with a direct query:
+  ```ts
+  const { data } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', userId)
+    .eq('role', 'admin')
+    .maybeSingle();
+  setIsAdmin(!!data);
+  ```
+- This bypasses any RPC serialization issues and queries the table directly
+- The existing RLS policy "Users can read own roles" allows authenticated users to read their own roles
 
-- Add `FaseAtual` type: `'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR'`
-- Add new optional fields to `Processo` interface (all `string | null`)
-- Add `faseAtual: FaseAtual` (required)
-- Add constants: `TIPOS_RECURSO` (7 options) and `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`)
-
-### 3. Hook Updates (`src/hooks/useProcessos.ts`)
-
-- `rowToProcesso`: map all new columns (nullable → `null`)
-- `addProcesso` / `updateProcesso`: persist new fields, sending `null` for empty values
-
-### 4. Form Updates (`src/components/ProcessForm.tsx`)
-
-Replace current TRAMITAÇÃO card with four cards:
-
-**PRIMEIRA INSTÂNCIA**: Número do Processo, Vara, Comarca (all text inputs, optional)
-
-**SEGUNDA INSTÂNCIA**: Tipo de Recurso (dropdown, 7 options), Número do Processo, Turma/Câmara, Tribunal (all optional)
-
-**TRIBUNAIS SUPERIORES**: Tribunal Superior (dropdown: STJ/STF), Número do Processo, Turma (all optional)
-
-**FASE ATUAL**: Radio group with 3 options, required, validated on submit
-
-Move `sistema_acesso` and `telefone` fields to a separate "ACESSO E CONTATOS" card. All sections visible simultaneously.
-
-### No changes to
-Authentication, RLS, other pages, existing data/columns
+No other files need changes — `isAdmin` is already correctly passed through `App.tsx` → `ConsultarProcessos`.
 
