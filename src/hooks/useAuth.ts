@@ -14,9 +14,10 @@ export function useAuth() {
         .from('user_roles')
         .select('role')
         .eq('user_id', userId)
-        .eq('role', 'admin')
         .maybeSingle();
-      setIsAdmin(!!data);
+      console.log('User role:', data);
+      const admin = data?.role === 'admin';
+      setIsAdmin(admin);
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
