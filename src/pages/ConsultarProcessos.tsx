@@ -50,7 +50,8 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
   const [filtroFase, setFiltroFase] = useState('all');
   const [filtroCategoria, setFiltroCategoria] = useState('all');
   const [filtroGrupo, setFiltroGrupo] = useState('all');
-  const [sortKey, setSortKey] = useState<SortKey>('numero');
+  const [filtroRelevancia, setFiltroRelevancia] = useState('all');
+  const [sortKey, setSortKey] = useState<SortKey>('cliente');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const navigate = useNavigate();
 
