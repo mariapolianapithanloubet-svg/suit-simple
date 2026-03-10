@@ -111,17 +111,17 @@ export type Database = {
           segunda_instancia_tribunal: string | null
           segunda_instancia_turma_camara: string | null
           senha_acesso: string
-          sistema_acesso: string
+          sistema_acesso: string | null
           status: string
-          telefone_assessoria: string
-          telefone_secretaria: string
+          telefone_assessoria: string | null
+          telefone_secretaria: string | null
           tipo_acao: string
           tribunal_primeira_instancia: string | null
           tribunal_superior_nome: string | null
           tribunal_superior_numero: string | null
           tribunal_superior_turma: string | null
           ultima_movimentacao: string
-          vara_camara_turma: string
+          vara_camara_turma: string | null
         }
         Insert: {
           atualizado_em?: string
@@ -145,17 +145,17 @@ export type Database = {
           segunda_instancia_tribunal?: string | null
           segunda_instancia_turma_camara?: string | null
           senha_acesso?: string
-          sistema_acesso?: string
+          sistema_acesso?: string | null
           status?: string
-          telefone_assessoria?: string
-          telefone_secretaria?: string
+          telefone_assessoria?: string | null
+          telefone_secretaria?: string | null
           tipo_acao?: string
           tribunal_primeira_instancia?: string | null
           tribunal_superior_nome?: string | null
           tribunal_superior_numero?: string | null
           tribunal_superior_turma?: string | null
           ultima_movimentacao?: string
-          vara_camara_turma?: string
+          vara_camara_turma?: string | null
         }
         Update: {
           atualizado_em?: string
@@ -179,17 +179,17 @@ export type Database = {
           segunda_instancia_tribunal?: string | null
           segunda_instancia_turma_camara?: string | null
           senha_acesso?: string
-          sistema_acesso?: string
+          sistema_acesso?: string | null
           status?: string
-          telefone_assessoria?: string
-          telefone_secretaria?: string
+          telefone_assessoria?: string | null
+          telefone_secretaria?: string | null
           tipo_acao?: string
           tribunal_primeira_instancia?: string | null
           tribunal_superior_nome?: string | null
           tribunal_superior_numero?: string | null
           tribunal_superior_turma?: string | null
           ultima_movimentacao?: string
-          vara_camara_turma?: string
+          vara_camara_turma?: string | null
         }
         Relationships: [
           {
