@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
-import { Search, X, ArrowUpDown, ArrowUp, ArrowDown, Pencil, Trash2, FileUp } from 'lucide-react';
+import { Search, X, ArrowUpDown, ArrowUp, ArrowDown, Pencil, Trash2, FileUp, Star } from 'lucide-react';
 import { CsvImportDialog } from '@/components/CsvImportDialog';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -215,10 +215,15 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
               {filtered.map(p => (
                 <TableRow
                   key={p.id}
-                  className="cursor-pointer"
+                  className={`cursor-pointer ${p.relevancia === 'relevante' ? 'bg-yellow-50 border-l-4 border-yellow-400' : ''}`}
                   onClick={() => navigate(`/consultar/${p.id}`)}
                 >
-                  <TableCell className="font-medium">{getNumeroFaseAtual(p)}</TableCell>
+                  <TableCell className="font-medium">
+                    <span className="inline-flex items-center gap-1.5">
+                      {p.relevancia === 'relevante' && <Star className="h-4 w-4 text-yellow-500 fill-yellow-400 shrink-0" />}
+                      {getNumeroFaseAtual(p)}
+                    </span>
+                  </TableCell>
                   <TableCell>{getClienteName(p)}</TableCell>
                   <TableCell>{p.grupoId ? grupoMap.get(p.grupoId) || '—' : '—'}</TableCell>
                   <TableCell>

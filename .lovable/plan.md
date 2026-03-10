@@ -1,27 +1,52 @@
 
 
-## Highlight Relevant Processes in Consultar Processos
+## Plan: Refactor Tramitação to Multi-Instance Layout (adjusted migration)
 
-### Changes
+### 1. Database Migration
 
-**`src/pages/ConsultarProcessos.tsx`** — Two modifications in the `TableBody` mapping (lines 215-257):
+```sql
+ALTER TABLE public.processos
+  ADD COLUMN primeira_instancia_numero text,
+  ADD COLUMN primeira_instancia_vara text,
+  ADD COLUMN primeira_instancia_comarca text,
+  ADD COLUMN segunda_instancia_tipo_recurso text,
+  ADD COLUMN segunda_instancia_numero text,
+  ADD COLUMN segunda_instancia_turma_camara text,
+  ADD COLUMN segunda_instancia_tribunal text,
+  ADD COLUMN tribunal_superior_nome text,
+  ADD COLUMN tribunal_superior_numero text,
+  ADD COLUMN tribunal_superior_turma text,
+  ADD COLUMN fase_atual text NOT NULL DEFAULT 'PRIMEIRA_INSTANCIA';
+```
 
-1. **Row styling** — Add conditional classes to `TableRow` when `p.relevancia === 'relevante'`:
-   ```
-   bg-yellow-50 border-l-4 border-yellow-400
-   ```
+All new text columns are nullable with no default. `fase_atual` is NOT NULL with default `'PRIMEIRA_INSTANCIA'`. No existing columns removed.
 
-2. **Star icon in number cell** — Prepend a `Star` icon (from lucide-react, filled yellow) before the process number when relevant:
-   ```tsx
-   <TableCell className="font-medium">
-     <span className="inline-flex items-center gap-1.5">
-       {p.relevancia === 'relevante' && <Star className="h-4 w-4 text-yellow-500 fill-yellow-400" />}
-       {getNumeroFaseAtual(p)}
-     </span>
-   </TableCell>
-   ```
+### 2. Type Updates (`src/types/process.ts`)
 
-3. **Import** — Add `Star` to the lucide-react import.
+- Add `FaseAtual` type: `'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR'`
+- Add new optional fields to `Processo` interface (all `string | null`)
+- Add `faseAtual: FaseAtual` (required)
+- Add constants: `TIPOS_RECURSO` (7 options) and `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`)
 
-No other files affected.
+### 3. Hook Updates (`src/hooks/useProcessos.ts`)
+
+- `rowToProcesso`: map all new columns (nullable → `null`)
+- `addProcesso` / `updateProcesso`: persist new fields, sending `null` for empty values
+
+### 4. Form Updates (`src/components/ProcessForm.tsx`)
+
+Replace current TRAMITAÇÃO card with four cards:
+
+**PRIMEIRA INSTÂNCIA**: Número do Processo, Vara, Comarca (all text inputs, optional)
+
+**SEGUNDA INSTÂNCIA**: Tipo de Recurso (dropdown, 7 options), Número do Processo, Turma/Câmara, Tribunal (all optional)
+
+**TRIBUNAIS SUPERIORES**: Tribunal Superior (dropdown: STJ/STF), Número do Processo, Turma (all optional)
+
+**FASE ATUAL**: Radio group with 3 options, required, validated on submit
+
+Move `sistema_acesso` and `telefone` fields to a separate "ACESSO E CONTATOS" card. All sections visible simultaneously.
+
+### No changes to
+Authentication, RLS, other pages, existing data/columns
 
