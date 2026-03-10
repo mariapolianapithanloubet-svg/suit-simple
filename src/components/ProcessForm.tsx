@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
 import { Save, ArrowLeft, Plus, Trash2, Link } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProcessosVinculados, ProcessoVinculado } from '@/hooks/useProcessosVinculados';
@@ -264,10 +264,10 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
         </CardContent>
       </Card>
 
-      {/* PRIMEIRA INSTÂNCIA */}
+      {/* PROCESSO PRINCIPAL */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">PRIMEIRA INSTÂNCIA</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">PROCESSO PRINCIPAL</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-5">
           <div className="space-y-2">
@@ -275,16 +275,12 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             <Input value={form.tribunalPrimeiraInstancia} onChange={e => update('tribunalPrimeiraInstancia', e.target.value)} placeholder="Ex: TJMS, TRF3, TRT24" className="h-10" />
           </div>
           <div className="space-y-2">
-            <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
-            <Input value={form.primeiraInstanciaNumero} onChange={e => update('primeiraInstanciaNumero', e.target.value)} className="h-10" />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">VARA</Label>
-            <Input value={form.primeiraInstanciaVara} onChange={e => update('primeiraInstanciaVara', e.target.value)} className="h-10" />
-          </div>
-          <div className="space-y-2">
             <Label className="text-sm font-medium">COMARCA</Label>
             <Input value={form.primeiraInstanciaComarca} onChange={e => update('primeiraInstanciaComarca', e.target.value)} className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">VARA / CÂMARA / TURMA</Label>
+            <Input value={form.primeiraInstanciaVara} onChange={e => update('primeiraInstanciaVara', e.target.value)} className="h-10" />
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">SISTEMA DE ACESSO</Label>
@@ -297,7 +293,40 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">TELEFONES</Label>
-            <Input value={form.telefoneSecretaria} onChange={e => update('telefoneSecretaria', e.target.value)} placeholder="(00) 0000-0000, (00) 0000-0000" className="h-10" />
+            <Input value={form.telefoneSecretaria} onChange={e => update('telefoneSecretaria', e.target.value)} placeholder="(00) 0000-0000" className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">INSTÂNCIA ATUAL *</Label>
+            <Select
+              value={
+                form.faseAtual === 'TRIBUNAL_SUPERIOR'
+                  ? form.tribunalSuperiorNome === 'STF' ? 'STF' : 'STJ'
+                  : form.faseAtual === 'SEGUNDA_INSTANCIA' ? '2A_INSTANCIA' : '1A_INSTANCIA'
+              }
+              onValueChange={v => {
+                if (v === '1A_INSTANCIA') {
+                  update('faseAtual', 'PRIMEIRA_INSTANCIA');
+                  update('tribunalSuperiorNome', '');
+                } else if (v === '2A_INSTANCIA') {
+                  update('faseAtual', 'SEGUNDA_INSTANCIA');
+                  update('tribunalSuperiorNome', '');
+                } else if (v === 'STJ') {
+                  update('faseAtual', 'TRIBUNAL_SUPERIOR');
+                  update('tribunalSuperiorNome', 'STJ');
+                } else if (v === 'STF') {
+                  update('faseAtual', 'TRIBUNAL_SUPERIOR');
+                  update('tribunalSuperiorNome', 'STF');
+                }
+              }}
+            >
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1A_INSTANCIA">1ª instância</SelectItem>
+                <SelectItem value="2A_INSTANCIA">2ª instância</SelectItem>
+                <SelectItem value="STJ">STJ</SelectItem>
+                <SelectItem value="STF">STF</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
@@ -322,10 +351,6 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             <Input value={form.segundaInstanciaNumero} onChange={e => update('segundaInstanciaNumero', e.target.value)} className="h-10" />
           </div>
           <div className="space-y-2">
-            <Label className="text-sm font-medium">TURMA / CÂMARA</Label>
-            <Input value={form.segundaInstanciaTurmaCamara} onChange={e => update('segundaInstanciaTurmaCamara', e.target.value)} className="h-10" />
-          </div>
-          <div className="space-y-2">
             <Label className="text-sm font-medium">TRIBUNAL</Label>
             <Select value={form.segundaInstanciaTribunal || undefined} onValueChange={v => update('segundaInstanciaTribunal', v)}>
               <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
@@ -334,24 +359,24 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">TURMA / CÂMARA JULGADORA</Label>
+            <Input value={form.segundaInstanciaTurmaCamara} onChange={e => update('segundaInstanciaTurmaCamara', e.target.value)} className="h-10" />
+          </div>
         </CardContent>
       </Card>
 
       {/* TRIBUNAIS SUPERIORES */}
       <Card className="shadow-card border-border/60">
         <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">TRIBUNAIS SUPERIORES</CardTitle>
+          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">
+            TRIBUNAIS SUPERIORES
+            {form.faseAtual === 'TRIBUNAL_SUPERIOR' && form.tribunalSuperiorNome && (
+              <Badge variant="secondary" className="ml-2 text-xs">{form.tribunalSuperiorNome}</Badge>
+            )}
+          </CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-5">
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">TRIBUNAL SUPERIOR</Label>
-            <Select value={form.tribunalSuperiorNome || undefined} onValueChange={v => update('tribunalSuperiorNome', v)}>
-              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
-              <SelectContent>
-                {TRIBUNAIS_SUPERIORES.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
+        <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
             <Input value={form.tribunalSuperiorNumero} onChange={e => update('tribunalSuperiorNumero', e.target.value)} className="h-10" />
@@ -360,29 +385,6 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             <Label className="text-sm font-medium">TURMA</Label>
             <Input value={form.tribunalSuperiorTurma} onChange={e => update('tribunalSuperiorTurma', e.target.value)} className="h-10" />
           </div>
-        </CardContent>
-      </Card>
-
-      {/* FASE ATUAL */}
-      <Card className="shadow-card border-border/60">
-        <CardHeader className="pb-2 border-b border-border/40">
-          <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">FASE ATUAL *</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-5">
-          <RadioGroup value={form.faseAtual} onValueChange={(v: FaseAtual) => update('faseAtual', v)} className="flex flex-col sm:flex-row gap-4">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="PRIMEIRA_INSTANCIA" id="fase-1" />
-              <Label htmlFor="fase-1" className="text-sm font-medium cursor-pointer">Primeira Instância</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="SEGUNDA_INSTANCIA" id="fase-2" />
-              <Label htmlFor="fase-2" className="text-sm font-medium cursor-pointer">Segunda Instância</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="TRIBUNAL_SUPERIOR" id="fase-3" />
-              <Label htmlFor="fase-3" className="text-sm font-medium cursor-pointer">Tribunal Superior</Label>
-            </div>
-          </RadioGroup>
         </CardContent>
       </Card>
 
