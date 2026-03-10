@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
-import { Search, X, ArrowUpDown, ArrowUp, ArrowDown, Pencil, Trash2, FileUp } from 'lucide-react';
+import { Search, X, ArrowUpDown, ArrowUp, ArrowDown, Pencil, Trash2, FileUp, Star } from 'lucide-react';
 import { CsvImportDialog } from '@/components/CsvImportDialog';
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
