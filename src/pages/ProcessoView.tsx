@@ -90,7 +90,7 @@ export default function ProcessoView({ processos, grupos }: Props) {
         <Card className="shadow-card border-border/60">
           <CardHeader className="pb-3"><CardTitle className="text-sm font-display tracking-tight">SEGUNDA INSTÂNCIA</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            <Field label="TIPO DE RECURSO" value={processo.segundaInstanciaTipoRecurso} />
+            <Field label="CLASSE PROCESSUAL" value={processo.segundaInstanciaTipoRecurso} />
             <Field label="NÚMERO" value={processo.segundaInstanciaNumero} />
             <Field label="TURMA / CÂMARA" value={processo.segundaInstanciaTurmaCamara} />
             <Field label="TRIBUNAL" value={processo.segundaInstanciaTribunal} />
