@@ -1,31 +1,52 @@
 
 
-## Add Relevance Filter & Default Sort by Client Name
+## Plan: Refactor Tramitação to Multi-Instance Layout (adjusted migration)
 
-### Changes — `src/pages/ConsultarProcessos.tsx`
+### 1. Database Migration
 
-**1. New state** (line 52 area):
-```typescript
-const [filtroRelevancia, setFiltroRelevancia] = useState('all');
+```sql
+ALTER TABLE public.processos
+  ADD COLUMN primeira_instancia_numero text,
+  ADD COLUMN primeira_instancia_vara text,
+  ADD COLUMN primeira_instancia_comarca text,
+  ADD COLUMN segunda_instancia_tipo_recurso text,
+  ADD COLUMN segunda_instancia_numero text,
+  ADD COLUMN segunda_instancia_turma_camara text,
+  ADD COLUMN segunda_instancia_tribunal text,
+  ADD COLUMN tribunal_superior_nome text,
+  ADD COLUMN tribunal_superior_numero text,
+  ADD COLUMN tribunal_superior_turma text,
+  ADD COLUMN fase_atual text NOT NULL DEFAULT 'PRIMEIRA_INSTANCIA';
 ```
 
-**2. Relevance filter buttons** — Add after the existing filter dropdowns (line 185 area), a row of 3 toggle-style buttons:
-- **Todos** → `'all'`
-- **⭐ Relevante** → `'relevante'`
-- **Acompanhamento** → `'acompanhamento'`
+All new text columns are nullable with no default. `fase_atual` is NOT NULL with default `'PRIMEIRA_INSTANCIA'`. No existing columns removed.
 
-Using `Button` with `variant={active ? 'default' : 'outline'}` for visual toggle.
+### 2. Type Updates (`src/types/process.ts`)
 
-**3. Filter logic** — Add inside the `filtered` useMemo filter callback (after line 99):
-```typescript
-if (filtroRelevancia !== 'all' && (p.relevancia || '') !== filtroRelevancia) return false;
-```
+- Add `FaseAtual` type: `'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR'`
+- Add new optional fields to `Processo` interface (all `string | null`)
+- Add `faseAtual: FaseAtual` (required)
+- Add constants: `TIPOS_RECURSO` (7 options) and `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`)
 
-**4. Default sort by client name** — Change initial sort state from `'numero'` to `'cliente'` (line 53).
+### 3. Hook Updates (`src/hooks/useProcessos.ts`)
 
-**5. Update `hasFilters`** — Include `filtroRelevancia !== 'all'` and reset it in `clearFilters`.
+- `rowToProcesso`: map all new columns (nullable → `null`)
+- `addProcesso` / `updateProcesso`: persist new fields, sending `null` for empty values
 
-**6. Update `filtered` dependency array** — Add `filtroRelevancia`.
+### 4. Form Updates (`src/components/ProcessForm.tsx`)
 
-No other files changed.
+Replace current TRAMITAÇÃO card with four cards:
+
+**PRIMEIRA INSTÂNCIA**: Número do Processo, Vara, Comarca (all text inputs, optional)
+
+**SEGUNDA INSTÂNCIA**: Tipo de Recurso (dropdown, 7 options), Número do Processo, Turma/Câmara, Tribunal (all optional)
+
+**TRIBUNAIS SUPERIORES**: Tribunal Superior (dropdown: STJ/STF), Número do Processo, Turma (all optional)
+
+**FASE ATUAL**: Radio group with 3 options, required, validated on submit
+
+Move `sistema_acesso` and `telefone` fields to a separate "ACESSO E CONTATOS" card. All sections visible simultaneously.
+
+### No changes to
+Authentication, RLS, other pages, existing data/columns
 

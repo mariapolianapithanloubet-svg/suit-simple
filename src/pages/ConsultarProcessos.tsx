@@ -50,7 +50,8 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
   const [filtroFase, setFiltroFase] = useState('all');
   const [filtroCategoria, setFiltroCategoria] = useState('all');
   const [filtroGrupo, setFiltroGrupo] = useState('all');
-  const [sortKey, setSortKey] = useState<SortKey>('numero');
+  const [filtroRelevancia, setFiltroRelevancia] = useState('all');
+  const [sortKey, setSortKey] = useState<SortKey>('cliente');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const navigate = useNavigate();
 
@@ -58,13 +59,14 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
   const sortedGrupos = useMemo(() => [...grupos].sort((a, b) => a.nome.localeCompare(b.nome)), [grupos]);
   const sortedCategorias = useMemo(() => [...categorias].sort((a, b) => a.nome.localeCompare(b.nome)), [categorias]);
 
-  const hasFilters = filtroCompetencia !== 'all' || filtroFase !== 'all' || filtroCategoria !== 'all' || filtroGrupo !== 'all';
+  const hasFilters = filtroCompetencia !== 'all' || filtroFase !== 'all' || filtroCategoria !== 'all' || filtroGrupo !== 'all' || filtroRelevancia !== 'all';
 
   const clearFilters = () => {
     setFiltroCompetencia('all');
     setFiltroFase('all');
     setFiltroCategoria('all');
     setFiltroGrupo('all');
+    setFiltroRelevancia('all');
   };
 
   const toggleSort = (key: SortKey) => {
@@ -97,6 +99,7 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
       if (filtroFase !== 'all' && p.faseAtual !== filtroFase) return false;
       if (filtroCategoria !== 'all' && p.categoria !== filtroCategoria) return false;
       if (filtroGrupo !== 'all' && (p.grupoId || '') !== filtroGrupo) return false;
+      if (filtroRelevancia !== 'all' && (p.relevancia || '') !== filtroRelevancia) return false;
       return true;
     });
 
@@ -115,7 +118,7 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
     });
 
     return result;
-  }, [search, processos, grupoMap, filtroCompetencia, filtroFase, filtroCategoria, filtroGrupo, sortKey, sortDir]);
+  }, [search, processos, grupoMap, filtroCompetencia, filtroFase, filtroCategoria, filtroGrupo, filtroRelevancia, sortKey, sortDir]);
 
   return (
     <div className="space-y-6">
@@ -182,6 +185,19 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
             <X className="h-3.5 w-3.5" />Limpar filtros
           </Button>
         )}
+      </div>
+
+      {/* Relevance filter buttons */}
+      <div className="flex gap-2">
+        <Button variant={filtroRelevancia === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setFiltroRelevancia('all')}>
+          Todos
+        </Button>
+        <Button variant={filtroRelevancia === 'relevante' ? 'default' : 'outline'} size="sm" onClick={() => setFiltroRelevancia('relevante')} className="gap-1.5">
+          <Star className="h-3.5 w-3.5" />Relevante
+        </Button>
+        <Button variant={filtroRelevancia === 'acompanhamento' ? 'default' : 'outline'} size="sm" onClick={() => setFiltroRelevancia('acompanhamento')}>
+          Acompanhamento
+        </Button>
       </div>
 
       {filtered.length === 0 ? (
