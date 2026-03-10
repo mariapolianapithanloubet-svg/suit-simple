@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
 import { Save, ArrowLeft, Plus, Trash2, Link } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProcessosVinculados, ProcessoVinculado } from '@/hooks/useProcessosVinculados';
