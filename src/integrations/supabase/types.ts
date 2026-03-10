@@ -105,6 +105,7 @@ export type Database = {
           primeira_instancia_comarca: string | null
           primeira_instancia_numero: string | null
           primeira_instancia_vara: string | null
+          relevancia: string | null
           reu: string | null
           segunda_instancia_numero: string | null
           segunda_instancia_tipo_recurso: string | null
@@ -139,6 +140,7 @@ export type Database = {
           primeira_instancia_comarca?: string | null
           primeira_instancia_numero?: string | null
           primeira_instancia_vara?: string | null
+          relevancia?: string | null
           reu?: string | null
           segunda_instancia_numero?: string | null
           segunda_instancia_tipo_recurso?: string | null
@@ -173,6 +175,7 @@ export type Database = {
           primeira_instancia_comarca?: string | null
           primeira_instancia_numero?: string | null
           primeira_instancia_vara?: string | null
+          relevancia?: string | null
           reu?: string | null
           segunda_instancia_numero?: string | null
           segunda_instancia_tipo_recurso?: string | null
