@@ -88,6 +88,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
     tribunalSuperiorNumero: initialData?.tribunalSuperiorNumero || '',
     tribunalSuperiorTurma: initialData?.tribunalSuperiorTurma || '',
     faseAtual: (initialData?.faseAtual || 'PRIMEIRA_INSTANCIA') as FaseAtual,
+    relevancia: initialData?.relevancia || 'acompanhamento',
   });
 
   const update = (field: string, value: any) => setForm(prev => ({ ...prev, [field]: value }));
