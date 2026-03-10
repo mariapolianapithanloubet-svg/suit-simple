@@ -54,6 +54,7 @@ export interface Processo {
   tribunalSuperiorNumero: string | null;
   tribunalSuperiorTurma: string | null;
   faseAtual: FaseAtual;
+  relevancia: string;
 }
 
 export const COMPETENCIAS: Competencia[] = ['Estadual', 'Federal', 'Trabalhista', 'Administrativo'];

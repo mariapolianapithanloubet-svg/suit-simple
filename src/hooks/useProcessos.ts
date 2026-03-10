@@ -36,6 +36,7 @@ function rowToProcesso(row: any): Processo {
     tribunalSuperiorNumero: row.tribunal_superior_numero ?? null,
     tribunalSuperiorTurma: row.tribunal_superior_turma ?? null,
     faseAtual: row.fase_atual || 'PRIMEIRA_INSTANCIA',
+    relevancia: row.relevancia || 'acompanhamento',
   };
 }
 
@@ -137,6 +138,7 @@ export function useProcessos() {
       tribunal_superior_numero: data.tribunalSuperiorNumero || null,
       tribunal_superior_turma: data.tribunalSuperiorTurma || null,
       fase_atual: data.faseAtual,
+      relevancia: data.relevancia || 'acompanhamento',
     }).select().single();
 
     if (!error && row) {
@@ -176,6 +178,7 @@ export function useProcessos() {
     if (data.tribunalSuperiorNumero !== undefined) updates.tribunal_superior_numero = data.tribunalSuperiorNumero || null;
     if (data.tribunalSuperiorTurma !== undefined) updates.tribunal_superior_turma = data.tribunalSuperiorTurma || null;
     if (data.faseAtual !== undefined) updates.fase_atual = data.faseAtual;
+    if (data.relevancia !== undefined) updates.relevancia = data.relevancia;
 
     await supabase.from('processos').update(updates).eq('id', id);
     await fetchProcessos();

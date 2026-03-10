@@ -88,6 +88,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
     tribunalSuperiorNumero: initialData?.tribunalSuperiorNumero || '',
     tribunalSuperiorTurma: initialData?.tribunalSuperiorTurma || '',
     faseAtual: (initialData?.faseAtual || 'PRIMEIRA_INSTANCIA') as FaseAtual,
+    relevancia: initialData?.relevancia || 'acompanhamento',
   });
 
   const update = (field: string, value: any) => setForm(prev => ({ ...prev, [field]: value }));
@@ -220,6 +221,16 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
               <SelectContent>
                 <SelectItem value="none">Nenhum</SelectItem>
                 {[...grupos].sort((a, b) => a.nome.localeCompare(b.nome)).map(g => <SelectItem key={g.id} value={g.id}>{g.nome}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">RELEVÂNCIA DO PROCESSO</Label>
+            <Select value={form.relevancia || undefined} onValueChange={v => update('relevancia', v)}>
+              <SelectTrigger className="h-10"><SelectValue placeholder="Selecione" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="relevante">Relevante</SelectItem>
+                <SelectItem value="acompanhamento">Mero acompanhamento</SelectItem>
               </SelectContent>
             </Select>
           </div>
