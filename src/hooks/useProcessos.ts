@@ -36,6 +36,7 @@ function rowToProcesso(row: any): Processo {
     tribunalSuperiorNumero: row.tribunal_superior_numero ?? null,
     tribunalSuperiorTurma: row.tribunal_superior_turma ?? null,
     faseAtual: row.fase_atual || 'PRIMEIRA_INSTANCIA',
+    relevancia: row.relevancia || 'acompanhamento',
   };
 }
 
