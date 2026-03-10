@@ -138,6 +138,7 @@ export function useProcessos() {
       tribunal_superior_numero: data.tribunalSuperiorNumero || null,
       tribunal_superior_turma: data.tribunalSuperiorTurma || null,
       fase_atual: data.faseAtual,
+      relevancia: data.relevancia || 'acompanhamento',
     }).select().single();
 
     if (!error && row) {
