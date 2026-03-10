@@ -336,7 +336,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
         <CardHeader className="pb-2 border-b border-border/40">
           <CardTitle className="text-[18px] font-semibold tracking-[0.02em]">SEGUNDA INSTÂNCIA</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 pt-5">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-5">
           <div className="space-y-2">
             <Label className="text-sm font-medium">TIPO DE RECURSO</Label>
             <Select value={form.segundaInstanciaTipoRecurso || undefined} onValueChange={v => update('segundaInstanciaTipoRecurso', v)}>
@@ -345,10 +345,6 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
                 {TIPOS_RECURSO.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
               </SelectContent>
             </Select>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
-            <Input value={form.segundaInstanciaNumero} onChange={e => update('segundaInstanciaNumero', e.target.value)} className="h-10" />
           </div>
           <div className="space-y-2">
             <Label className="text-sm font-medium">TRIBUNAL</Label>
@@ -360,7 +356,11 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             </Select>
           </div>
           <div className="space-y-2">
-            <Label className="text-sm font-medium">TURMA / CÂMARA JULGADORA</Label>
+            <Label className="text-sm font-medium">NÚMERO DO PROCESSO</Label>
+            <Input value={form.segundaInstanciaNumero} onChange={e => update('segundaInstanciaNumero', e.target.value)} className="h-10" />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">TURMA / CÂMARA</Label>
             <Input value={form.segundaInstanciaTurmaCamara} onChange={e => update('segundaInstanciaTurmaCamara', e.target.value)} className="h-10" />
           </div>
         </CardContent>
