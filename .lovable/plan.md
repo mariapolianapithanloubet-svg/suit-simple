@@ -1,52 +1,32 @@
 
 
-## Plan: Refactor Tramitação to Multi-Instance Layout (adjusted migration)
+## Fix Admin Detection
 
-### 1. Database Migration
+### Root Cause
+The `user_roles` table has **all RESTRICTIVE** RLS policies (Permissive: No). In PostgreSQL, restrictive policies only narrow access — they require at least one **permissive** policy to grant initial access. Since there are zero permissive SELECT policies, the query always returns empty results regardless of the data.
 
+The network logs confirm this: `GET /user_roles?...role=eq.admin` returns `[]`.
+
+### Changes
+
+**1. Database migration** — Change the SELECT policy to PERMISSIVE:
 ```sql
-ALTER TABLE public.processos
-  ADD COLUMN primeira_instancia_numero text,
-  ADD COLUMN primeira_instancia_vara text,
-  ADD COLUMN primeira_instancia_comarca text,
-  ADD COLUMN segunda_instancia_tipo_recurso text,
-  ADD COLUMN segunda_instancia_numero text,
-  ADD COLUMN segunda_instancia_turma_camara text,
-  ADD COLUMN segunda_instancia_tribunal text,
-  ADD COLUMN tribunal_superior_nome text,
-  ADD COLUMN tribunal_superior_numero text,
-  ADD COLUMN tribunal_superior_turma text,
-  ADD COLUMN fase_atual text NOT NULL DEFAULT 'PRIMEIRA_INSTANCIA';
+DROP POLICY "Users can read own roles" ON public.user_roles;
+CREATE POLICY "Users can read own roles" ON public.user_roles
+  FOR SELECT TO authenticated USING (auth.uid() = user_id);
 ```
 
-All new text columns are nullable with no default. `fase_atual` is NOT NULL with default `'PRIMEIRA_INSTANCIA'`. No existing columns removed.
-
-### 2. Type Updates (`src/types/process.ts`)
-
-- Add `FaseAtual` type: `'PRIMEIRA_INSTANCIA' | 'SEGUNDA_INSTANCIA' | 'TRIBUNAL_SUPERIOR'`
-- Add new optional fields to `Processo` interface (all `string | null`)
-- Add `faseAtual: FaseAtual` (required)
-- Add constants: `TIPOS_RECURSO` (7 options) and `TRIBUNAIS_SUPERIORES` (`['STJ', 'STF']`)
-
-### 3. Hook Updates (`src/hooks/useProcessos.ts`)
-
-- `rowToProcesso`: map all new columns (nullable → `null`)
-- `addProcesso` / `updateProcesso`: persist new fields, sending `null` for empty values
-
-### 4. Form Updates (`src/components/ProcessForm.tsx`)
-
-Replace current TRAMITAÇÃO card with four cards:
-
-**PRIMEIRA INSTÂNCIA**: Número do Processo, Vara, Comarca (all text inputs, optional)
-
-**SEGUNDA INSTÂNCIA**: Tipo de Recurso (dropdown, 7 options), Número do Processo, Turma/Câmara, Tribunal (all optional)
-
-**TRIBUNAIS SUPERIORES**: Tribunal Superior (dropdown: STJ/STF), Número do Processo, Turma (all optional)
-
-**FASE ATUAL**: Radio group with 3 options, required, validated on submit
-
-Move `sistema_acesso` and `telefone` fields to a separate "ACESSO E CONTATOS" card. All sections visible simultaneously.
-
-### No changes to
-Authentication, RLS, other pages, existing data/columns
+**2. `src/hooks/useAuth.ts`** — Update `checkAdmin` per your suggestion with explicit role check and console.log:
+```typescript
+const checkAdmin = async (userId: string) => {
+  const { data } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', userId)
+    .maybeSingle();
+  console.log('User role:', data);
+  const admin = data?.role === 'admin';
+  setIsAdmin(admin);
+};
+```
 
