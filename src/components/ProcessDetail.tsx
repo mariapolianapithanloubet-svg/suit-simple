@@ -116,7 +116,7 @@ export function ProcessDetail({ processos, onDelete, onUploadDocumento, onDelete
         <Card className="shadow-card border-border/60">
           <CardHeader className="pb-4"><CardTitle className="text-[18px] font-semibold tracking-[0.02em]">TRAMITAÇÃO</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <Field label="VARA / CÂMARA / TURMA" value={processo.varaCamaraTurma} />
+            <Field label="VARA" value={processo.varaCamaraTurma} />
             <Field label="SISTEMA DE ACESSO" value={processo.sistemaAcesso} />
             <Field label="TELEFONE DA SECRETARIA" value={processo.telefoneSecretaria} />
             <Field label="TELEFONE DA ASSESSORIA" value={processo.telefoneAssessoria} />
