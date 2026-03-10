@@ -59,13 +59,14 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
   const sortedGrupos = useMemo(() => [...grupos].sort((a, b) => a.nome.localeCompare(b.nome)), [grupos]);
   const sortedCategorias = useMemo(() => [...categorias].sort((a, b) => a.nome.localeCompare(b.nome)), [categorias]);
 
-  const hasFilters = filtroCompetencia !== 'all' || filtroFase !== 'all' || filtroCategoria !== 'all' || filtroGrupo !== 'all';
+  const hasFilters = filtroCompetencia !== 'all' || filtroFase !== 'all' || filtroCategoria !== 'all' || filtroGrupo !== 'all' || filtroRelevancia !== 'all';
 
   const clearFilters = () => {
     setFiltroCompetencia('all');
     setFiltroFase('all');
     setFiltroCategoria('all');
     setFiltroGrupo('all');
+    setFiltroRelevancia('all');
   };
 
   const toggleSort = (key: SortKey) => {
