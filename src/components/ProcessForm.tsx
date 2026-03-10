@@ -279,7 +279,7 @@ export function ProcessForm({ initialData, onSubmit, mode, grupos = [], processo
             <Input value={form.primeiraInstanciaComarca} onChange={e => update('primeiraInstanciaComarca', e.target.value)} className="h-10" />
           </div>
           <div className="space-y-2">
-            <Label className="text-sm font-medium">VARA / CÂMARA / TURMA</Label>
+            <Label className="text-sm font-medium">VARA</Label>
             <Input value={form.primeiraInstanciaVara} onChange={e => update('primeiraInstanciaVara', e.target.value)} className="h-10" />
           </div>
           <div className="space-y-2">
