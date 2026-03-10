@@ -187,6 +187,19 @@ export default function ConsultarProcessos({ processos, grupos, categorias = [],
         )}
       </div>
 
+      {/* Relevance filter buttons */}
+      <div className="flex gap-2">
+        <Button variant={filtroRelevancia === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setFiltroRelevancia('all')}>
+          Todos
+        </Button>
+        <Button variant={filtroRelevancia === 'relevante' ? 'default' : 'outline'} size="sm" onClick={() => setFiltroRelevancia('relevante')} className="gap-1.5">
+          <Star className="h-3.5 w-3.5" />Relevante
+        </Button>
+        <Button variant={filtroRelevancia === 'acompanhamento' ? 'default' : 'outline'} size="sm" onClick={() => setFiltroRelevancia('acompanhamento')}>
+          Acompanhamento
+        </Button>
+      </div>
+
       {filtered.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-12">
           {search || hasFilters ? 'Nenhum processo encontrado para esta pesquisa.' : 'Nenhum processo cadastrado.'}
