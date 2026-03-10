@@ -180,7 +180,9 @@ export function useProcessos() {
     if (data.faseAtual !== undefined) updates.fase_atual = data.faseAtual;
     if (data.relevancia !== undefined) updates.relevancia = data.relevancia;
 
-    await supabase.from('processos').update(updates).eq('id', id);
+    console.log('updateProcesso updates:', updates);
+    const { error } = await supabase.from('processos').update(updates).eq('id', id);
+    if (error) throw error;
     await fetchProcessos();
   }, [fetchProcessos]);
 

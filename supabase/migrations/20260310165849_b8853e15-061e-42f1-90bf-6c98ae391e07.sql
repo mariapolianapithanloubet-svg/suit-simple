@@ -1,0 +1,1 @@
+ALTER TABLE public.processos DROP CONSTRAINT IF EXISTS processos_categoria_check;
