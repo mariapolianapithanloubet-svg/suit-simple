@@ -26,7 +26,14 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { session, loading: authLoading, signOut, isAdmin } = useAuth();
-  const { processos, grupos, loading, addProcesso, updateProcesso, deleteProcesso, uploadDocumento, deleteDocumento, bulkImport, clearImported, addGrupo, updateGrupo, deleteGrupo, refetch } = useProcessos();
+  const {
+    processos, grupos, loading,
+    addProcesso, updateProcesso, deleteProcesso,
+    uploadDocumento, deleteDocumento,
+    bulkImport, clearImported,
+    addGrupo, updateGrupo, deleteGrupo,
+    refetch,
+  } = useProcessos();
   const admin = useAdminTables();
 
   if (authLoading) {
@@ -48,31 +55,122 @@ function AppContent() {
     <AppLayout onSignOut={signOut} userEmail={session.user?.email}>
       <Routes>
         <Route path="/" element={<DashboardStats processos={processos} />} />
-        <Route path="/consultar" element={<ConsultarProcessos processos={processos} grupos={grupos} categorias={admin.categorias} onDelete={deleteProcesso} isAdmin={isAdmin} onRefresh={refetch} />} />
+        <Route
+          path="/consultar"
+          element={
+            <ConsultarProcessos
+              processos={processos}
+              grupos={grupos}
+              categorias={admin.categorias}
+              onDelete={deleteProcesso}
+              isAdmin={isAdmin}
+              onRefresh={refetch}
+            />
+          }
+        />
         <Route path="/consultar/:id" element={<ProcessoView processos={processos} grupos={grupos} />} />
-        <Route path="/processos" element={<ProcessList processos={processos} onDelete={deleteProcesso} loading={loading} isAdmin={isAdmin} onClearImported={clearImported} />} />
+        <Route
+          path="/processos"
+          element={
+            <ProcessList
+              processos={processos}
+              onDelete={deleteProcesso}
+              loading={loading}
+              isAdmin={isAdmin}
+              onClearImported={clearImported}
+            />
+          }
+        />
         <Route path="/processos/importar" element={<ProcessImport onImport={bulkImport} />} />
-        <Route path="/processos/novo" element={
-          <ProcessForm mode="create" onSubmit={addProcesso} grupos={grupos} processos={processos} categorias={admin.categorias} tiposVinculo={admin.tiposVinculo} tribunais={admin.tribunais} />
-        } />
-        <Route path="/processos/:id" element={
-          <ProcessDetail processos={processos} onDelete={deleteProcesso} onUploadDocumento={uploadDocumento} onDeleteDocumento={deleteDocumento} />
-        } />
-        <Route path="/processos/:id/editar" element={
-          <EditProcessPage processos={processos} onUpdate={updateProcesso} grupos={grupos} categorias={admin.categorias} tiposVinculo={admin.tiposVinculo} tribunais={admin.tribunais} />
-        } />
+        <Route
+          path="/processos/novo"
+          element={
+            <ProcessForm
+              mode="create"
+              onSubmit={addProcesso}
+              grupos={grupos}
+              processos={processos}
+              classes={admin.classes}
+              tiposVinculo={admin.tiposVinculo}
+              tribunais={admin.tribunais}
+            />
+          }
+        />
+        <Route
+          path="/processos/:id"
+          element={
+            <ProcessDetail
+              processos={processos}
+              onDelete={deleteProcesso}
+              onUploadDocumento={uploadDocumento}
+              onDeleteDocumento={deleteDocumento}
+            />
+          }
+        />
+        <Route
+          path="/processos/:id/editar"
+          element={
+            <EditProcessPage
+              processos={processos}
+              onUpdate={updateProcesso}
+              grupos={grupos}
+              classes={admin.classes}
+              tiposVinculo={admin.tiposVinculo}
+              tribunais={admin.tribunais}
+            />
+          }
+        />
         <Route path="/clientes" element={<ClientRanking processos={processos} grupos={grupos} />} />
         <Route path="/grupos" element={<GrupoManager grupos={grupos} onAdd={addGrupo} onUpdate={updateGrupo} onDelete={deleteGrupo} />} />
-        <Route path="/admin/categorias" element={<CategoriasPage categorias={admin.categorias} onAdd={admin.addCategoria} onUpdate={admin.updateCategoria} onDelete={admin.deleteCategoria} />} />
-        <Route path="/admin/tipos-vinculo" element={<TiposVinculoPage tiposVinculo={admin.tiposVinculo} onAdd={admin.addTipoVinculo} onUpdate={admin.updateTipoVinculo} onDelete={admin.deleteTipoVinculo} />} />
-        <Route path="/admin/tribunais" element={<TribunaisPage tribunais={admin.tribunais} onAdd={admin.addTribunal} onUpdate={admin.updateTribunal} onDelete={admin.deleteTribunal} />} />
+        <Route
+          path="/admin/categorias"
+          element={
+            <CategoriasPage
+              categorias={admin.categorias}
+              onAdd={admin.addCategoria}
+              onUpdate={admin.updateCategoria}
+              onDelete={admin.deleteCategoria}
+            />
+          }
+        />
+        <Route
+          path="/admin/tipos-vinculo"
+          element={
+            <TiposVinculoPage
+              tiposVinculo={admin.tiposVinculo}
+              onAdd={admin.addTipoVinculo}
+              onUpdate={admin.updateTipoVinculo}
+              onDelete={admin.deleteTipoVinculo}
+            />
+          }
+        />
+        <Route
+          path="/admin/tribunais"
+          element={
+            <TribunaisPage
+              tribunais={admin.tribunais}
+              onAdd={admin.addTribunal}
+              onUpdate={admin.updateTribunal}
+              onDelete={admin.deleteTribunal}
+            />
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>
   );
 }
 
-function EditProcessPage({ processos, onUpdate, grupos, categorias, tiposVinculo, tribunais }: { processos: any[]; onUpdate: (id: string, data: any) => void; grupos: any[]; categorias: any[]; tiposVinculo: any[]; tribunais: any[] }) {
+function EditProcessPage({
+  processos, onUpdate, grupos, classes, tiposVinculo, tribunais,
+}: {
+  processos: any[];
+  onUpdate: (id: string, data: any) => void;
+  grupos: any[];
+  classes: any[];
+  tiposVinculo: any[];
+  tribunais: any[];
+}) {
   const { id } = useParams();
   const processo = processos.find((p: any) => p.id === id);
   if (!processo) return <div className="text-center py-20 text-muted-foreground text-sm">Processo não encontrado</div>;
@@ -83,7 +181,7 @@ function EditProcessPage({ processos, onUpdate, grupos, categorias, tiposVinculo
       onSubmit={(data) => onUpdate(processo.id, data)}
       grupos={grupos}
       processos={processos}
-      categorias={categorias}
+      classes={classes}
       tiposVinculo={tiposVinculo}
       tribunais={tribunais}
     />
