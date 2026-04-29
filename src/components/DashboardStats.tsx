@@ -1,7 +1,13 @@
+// =====================================================================
+// components/DashboardStats.tsx — versão Fase 1
+// Mudanças:
+// - Conta relevantes pela coluna 'relevancia' (correto)
+// - "Acompanhamento" agora é o complemento (total - relevantes)
+// =====================================================================
 import { useMemo } from 'react';
 import { Processo, getClienteName, COMPETENCIAS } from '@/types/process';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Scale, FolderOpen, Users } from 'lucide-react';
+import { FileText, Star, FolderOpen, Users } from 'lucide-react';
 
 interface DashboardStatsProps {
   processos: Processo[];
@@ -10,8 +16,8 @@ interface DashboardStatsProps {
 export function DashboardStats({ processos }: DashboardStatsProps) {
   const stats = useMemo(() => {
     const total = processos.length;
-    const relevantes = processos.filter(p => p.categoria === 'Relevante').length;
-    const acompanhamento = processos.filter(p => p.categoria === 'Mero Acompanhamento').length;
+    const relevantes = processos.filter(p => p.relevancia === 'relevante').length;
+    const acompanhamento = total - relevantes;
 
     const porCompetencia = COMPETENCIAS.map(c => ({
       label: c,
@@ -20,14 +26,15 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
 
     const porEstado: Record<string, number> = {};
     processos.forEach(p => {
-      porEstado[p.estado] = (porEstado[p.estado] || 0) + 1;
+      const e = p.estado || '—';
+      porEstado[e] = (porEstado[e] || 0) + 1;
     });
     const estadosOrdenados = Object.entries(porEstado).sort((a, b) => b[1] - a[1]);
 
     const clienteCount: Record<string, number> = {};
     processos.forEach(p => {
       const c = getClienteName(p);
-      clienteCount[c] = (clienteCount[c] || 0) + 1;
+      if (c) clienteCount[c] = (clienteCount[c] || 0) + 1;
     });
     const totalClientes = Object.keys(clienteCount).length;
 
@@ -43,7 +50,7 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard icon={FileText} label="TOTAL DE PROCESSOS" value={stats.total} />
-        <StatCard icon={Scale} label="RELEVANTES" value={stats.relevantes} />
+        <StatCard icon={Star} label="RELEVANTES" value={stats.relevantes} highlight />
         <StatCard icon={FolderOpen} label="ACOMPANHAMENTO" value={stats.acompanhamento} />
         <StatCard icon={Users} label="CLIENTES" value={stats.totalClientes} />
       </div>
@@ -100,13 +107,15 @@ export function DashboardStats({ processos }: DashboardStatsProps) {
   );
 }
 
-function StatCard({ icon: Icon, label, value }: { icon: any; label: string; value: number }) {
+function StatCard({
+  icon: Icon, label, value, highlight,
+}: { icon: any; label: string; value: number; highlight?: boolean }) {
   return (
-    <Card className="shadow-card border-border/60">
+    <Card className={`shadow-card border-border/60 ${highlight ? 'ring-1 ring-amber-200/60' : ''}`}>
       <CardContent className="pt-6 pb-5 px-6">
         <div className="flex items-start gap-4">
-          <div className="p-2.5 rounded-lg bg-primary/8">
-            <Icon className="h-5 w-5 text-primary/70" />
+          <div className={`p-2.5 rounded-lg ${highlight ? 'bg-amber-100' : 'bg-primary/8'}`}>
+            <Icon className={`h-5 w-5 ${highlight ? 'text-amber-600' : 'text-primary/70'}`} />
           </div>
           <div>
             <p className="text-3xl font-bold text-foreground tabular-nums leading-none">{value}</p>
